@@ -7,6 +7,7 @@
     <style>
         body{
             font-family: 'Linotype Didot', Serif;
+            background-color: #333333;
         }
 
         a {
@@ -151,7 +152,7 @@
     </style>
 
 </head>
-<body style=" background-color: #333333">
+<body>
 <div id="navbar-top">
     <div style=" font-size: 25px; ">
         <div style=" padding-top: 25px; margin-left: 10px; ">
@@ -161,7 +162,7 @@
             <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
         </div>
     </div>
-    <div style=" text-align: center; margin-top: -75px; "><h2 style=" font-size: 40px; ">CodeTask</h2></div>
+    <div style=" text-align: center; margin-top: -75px; "><a href="index.html" style=" text-decoration: none; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
     <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
         <span style=" font-size: 21px;">
             <a href="index.html" style=" text-decoration: underline; ">LogIn</a>
@@ -178,7 +179,7 @@
            <td class="banner_td"></td>
        </tr>
         <tr valign="top">
-            <td class="banner_td"><h7 style=" font-size: 15px ">Find vetted professionals for all your coding needs at CodeTask<br><br><button class="hire_now" type="button">Hire Now!</button></h7></td>
+            <td class="banner_td"><h7 style=" font-size: 15px ">Find vetted professionals for all your coding needs at CodeTask<br><br><button class="hire_now" type="button" onclick="hireNow()">Hire Now!</button></h7></td>
             <td class="banner_td"></td>
         </tr>
     </table>
@@ -225,7 +226,7 @@
     </table>
 </div>
 
-<div id="footer">
+<footer id="footer">
     <div style=" font-size: 30px; margin-top: 10px ">CodeTask</div>
     <div style=" font-size: 20px; padding-top: 10px; ">
         <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
@@ -234,9 +235,16 @@
         <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
     </div>
     <div style=" padding-top: 20px; "><a href="https://www.cs.unipi.gr/index.php?lang=el">University of Piraeus 2023 ®</a></div>
-</div>
+</footer>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    function hireNow(){
+        window.location.href = "task_search.html";
+    }
+</script>
+
 </body>
 </html>
