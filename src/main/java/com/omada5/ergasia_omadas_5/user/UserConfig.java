@@ -16,10 +16,9 @@ import static java.time.Month.*;
 
 @Configuration
 public class UserConfig {
-    @Autowired RoleRepository roleRepository;
 
     @Bean
-    CommandLineRunner commandLineRunner(UserRepository repository){
+    CommandLineRunner commandLineRunner(UserRepository repository, RoleRepository roleRepository){
 
         return args -> {
             User user1 = new User(
@@ -30,7 +29,7 @@ public class UserConfig {
                     LocalDate.of(2000, AUGUST, 21)
             );
 
-            Optional<Role> optionalClientRole = roleRepository.findByName("client");
+            Optional<Role> optionalClientRole = roleRepository.findByName("developer");
             if (optionalClientRole.isPresent())
                 user1.addRole(optionalClientRole.get());
 
@@ -42,7 +41,7 @@ public class UserConfig {
                     LocalDate.of(1997, MARCH, 30)
             );
 
-            Optional<Role> optionalDeveloperRole = roleRepository.findByName("developer");
+            Optional<Role> optionalDeveloperRole = roleRepository.findByName("client");
             if (optionalDeveloperRole.isPresent())
                 user2.addRole(optionalDeveloperRole.get());
 
