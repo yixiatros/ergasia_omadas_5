@@ -46,7 +46,21 @@ public class TaskConfig {
             if (optionalCategory2.isPresent())
                 task2.setCategory(optionalCategory2.get());
 
-            repository.saveAll(List.of(task1, task2));
+            Task task3 = new Task(
+                    "Web application",
+                    "Spring boot web application for a fiverr like app.",
+                    true,
+                    true,
+                    true,
+                    1000,
+                    48 * 60
+            );
+
+            Optional<Category> optionalCategory3 = categoryRepository.findCategoryByName("web application");
+            if (optionalCategory3.isPresent())
+                task3.setCategory(optionalCategory3.get());
+
+            repository.saveAll(List.of(task1, task2, task3));
         };
     }
 }

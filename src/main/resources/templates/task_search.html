@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Search Tasks</title>
@@ -75,9 +75,10 @@
             color: rgb(255, 255, 255);
             border-radius: 8px;
             border: none;
-            width: 2.2rem;
+            width: 2.35rem;
             height: 1.5rem;
         }
+
 
         .dropdown-check-list, #results_per_page{
             -webkit-touch-callout: none; /* iOS Safari */
@@ -143,6 +144,20 @@
         }
 
 
+        .task_tr {
+            width: 95%;
+            height: 150px;
+            color: rgb(255, 255, 255);
+        }
+
+        .task_td {
+            vertical-align: top;
+            padding: 10px;
+            background-color: rgb(255, 89, 20);
+            border-radius: 8px;
+        }
+
+
         #filter_button {
             height: 40px;
             width: 80px;
@@ -176,12 +191,12 @@
       <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
     </div>
   </div>
-    <div style=" text-align: center; margin-top: -75px; "><a href="index.html" style=" text-decoration: none; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
+    <div style=" text-align: center; margin-top: -75px; "><a href="../static/index.html" style=" text-decoration: none; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
   <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
         <span style=" font-size: 21px;">
-            <a href="index.html" style=" text-decoration: underline; ">LogIn</a>
+            <a href="../static/index.html" style=" text-decoration: underline; ">LogIn</a>
             /
-            <a href="index.html" style=" text-decoration: underline; ">SignUp</a>
+            <a href="../static/index.html" style=" text-decoration: underline; ">SignUp</a>
         </span>
   </div>
 </div>
@@ -231,15 +246,26 @@
     </form>
 </div>
 
+<div id="task_list" style=" display: flex; align-items: center; justify-content: center; ">
+    <table style =" width: 100%; border-spacing: 0px 15px; ">
+        <tr class ="task_tr" th:each="task: ${tasks}" >
+            <td class="task_td" >
+                <span th:text="${task.getTitle()}">Title</span>
+                <p th:text="${task.getDescription()}">Description</p><br>
+            </td>
+        </tr>
+    </table>
+</div>
+
 <div style=" display: flex; align-items: center; justify-content: center; margin-top: 20px; margin-bottom: 20px; ">
     <span style=" color: #FFFFFF; ">Showing 1 to 6 of 210</span>
     <div style=" display: inline; margin-left: 25px; ">
         <label style=" color: #FFFFFF">Results per page</label>
         <select id="results_per_page">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
+            <option class="results_per_page_val" value="5">5</option>
+            <option class="results_per_page_val" value="10">10</option>
+            <option class="results_per_page_val" value="20">20</option>
+            <option class="results_per_page_val" value="30">30</option>
         </select>
     </div>
     <span style=" color: #FFFFFF; margin-left: 25px; "><a href="task_search.html">< previous</a> &nbsp&nbsp&nbsp 1 &nbsp&nbsp&nbsp 2 &nbsp&nbsp&nbsp 3 &nbsp&nbsp&nbsp <a href="task_search.html">next ></a></span>
@@ -283,13 +309,6 @@
             checkListTechnologies.classList.remove('visible');
         else
             checkListTechnologies.classList.add('visible');
-    }
-
-
-    function showContent() {
-        let temp = document.getElementsByTagName("template")[0];
-        let clon = temp.content.cloneNode(true);
-        document.body.appendChild(clon);
     }
 </script>
 

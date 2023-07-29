@@ -1,12 +1,13 @@
 package com.omada5.ergasia_omadas_5.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping(path="api/v0.1/tasks")
+@Controller
 public class TaskController {
 
     private final TaskService taskService;
@@ -29,5 +30,12 @@ public class TaskController {
     @DeleteMapping(path="{taskid}")
     public void deleteTask(@PathVariable("taskid") Long taskId){
         taskService.deleteTask(taskId);
+    }
+
+    @GetMapping("/task_search")
+    public String showTasks(Model model){
+        List<Task> tasks = getTasks();
+        model.addAttribute("tasks", tasks);
+        return "task_search";
     }
 }
