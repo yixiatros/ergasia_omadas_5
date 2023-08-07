@@ -135,7 +135,7 @@
             z-index: 9999;
         }
         .dropdown-check-list.visible .anchor {
-            color: rgb(0, 206, 209);
+            color: rgb(0, 0, 0);
             z-index: 9999;
         }
         .dropdown-check-list.visible .items {
@@ -143,6 +143,11 @@
             z-index: 9999;
         }
 
+
+        #task_table {
+            width: 90%;
+            border-spacing: 0px 20px;
+        }
 
         .task_tr {
             width: 95%;
@@ -153,7 +158,9 @@
         .task_td {
             vertical-align: top;
             padding: 10px;
-            background-color: rgb(255, 89, 20);
+            background-color: #FF5719;
+            border: 1px solid #222222;
+            box-shadow: 3px 3px 5px #222222;
             border-radius: 8px;
         }
 
@@ -164,6 +171,45 @@
             border-radius: 8px;
             color: rgb(255, 255, 255);
             background-color: rgb(255, 89, 20);
+            cursor: pointer;
+            border: none;
+            outline:none;
+        }
+
+        #contact_us {
+            color: rgb(255, 255, 255);
+            background-color: rgb(255, 89, 20);
+            height: 300px;
+            margin: 80px -8px 0px -8px;
+            padding-top: 5px;
+        }
+
+        .contact_td {
+            width: 50%;
+            height: 50%;
+        }
+
+        .input {
+            color: rgb(255, 255, 255);
+            background-color: rgb(255, 69, 0);
+            font: inherit;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            margin: 0 auto;
+            border-radius: 0.05rem;
+            border: none;
+            width: 90%;
+            display: block;
+            border-bottom: 0.3rem solid transparent;
+            transition: all 0.3s;
+        }
+
+        #contact_button {
+            height: 40px;
+            width: 80px;
+            border-radius: 8px;
+            color: rgb(0, 0, 0);
+            background-color: rgb(0, 206, 209);
             cursor: pointer;
             border: none;
             outline:none;
@@ -191,36 +237,41 @@
       <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
     </div>
   </div>
-    <div style=" text-align: center; margin-top: -75px; "><a href="../static/index.html" style=" text-decoration: none; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
+    <a th:href="@{/index}" href="index.html" style=" text-decoration: none; cursor: pointer; "><div style=" text-align: center; margin-top: -75px; "><h2 style=" font-size: 40px; ">CodeTask</h2></div></a>
   <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
         <span style=" font-size: 21px;">
-            <a href="../static/index.html" style=" text-decoration: underline; ">LogIn</a>
+            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
             /
-            <a href="../static/index.html" style=" text-decoration: underline; ">SignUp</a>
+            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
         </span>
   </div>
 </div>
 
 <div style=" width: 100%; margin-top: 20px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
-    <form id="search_form" onsubmit="/* event.preventDefault(); */" role="search">
-        <input id="search" type="search" placeholder="Search for tasks..." autofocus required />
-        <button id="search_button" type="submit"><ion-icon name="search-outline" style="padding-top: 5px;"></ion-icon></button>
+    <form id="search_form" role="search" th:action="@{/task_search}" method="get">
+        <input id="search" type="search" name="keyword" placeholder="Search for tasks..." autofocus required />
+        <button id="search_button" onclick="onFilter()" type="button"><ion-icon name="search-outline" style="padding-top: 5px;"></ion-icon></button>
     </form>
 </div>
 
 <div style=" margin-top: 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; ">
-    <form>
+    <form id="filter_form" th:action="@{/task_search}" method="get">
+        <input type="hidden" id="hidden_search" name="keyword" />
         <div id="categories" class="dropdown-check-list" tabindex="100">
             <span class="anchor">Categories</span>
-            <ul class="items">
-                <li><input type="checkbox" />Web App </li>
-                <li><input type="checkbox" />Android App</li>
-                <li><input type="checkbox" />IOS App</li>
-                <li><input type="checkbox" />Video Game</li>
-                <li><input type="checkbox" />UI/UX</li>
+            <ul class="items" th:each="category, iteration: ${categories}">
+                <li><input th:if="${iteration.index} < 1" type="hidden" name="category" value="-1"></li>
+                <li><input type="checkbox" name="category" th:value="${category.getId()}" th:text="${category.getName()}"/></li>
             </ul>
         </div>
-        <div id="languages" class="dropdown-check-list" tabindex="100" style=" margin-left: 150px; ">
+        <div id="sub_categories" class="dropdown-check-list" tabindex="100" style=" margin-left: 150px; ">
+            <span class="anchor">Subcategories</span>
+            <ul class="items" th:each="subcategory, iteration: ${subcategories}">
+                <li><input th:if="${iteration.index} < 1" type="hidden" name="subcategory" value="-1"></li>
+                <li><input type="checkbox" name="subcategory" th:value="${subcategory.getId()}" th:text="${subcategory.getName()}"/></li>
+            </ul>
+        </div>
+        <div id="languages" class="dropdown-check-list" tabindex="100" style=" margin-left: 320px; ">
             <span class="anchor">Languages</span>
             <ul class="items">
                 <li><input type="checkbox" />English</li>
@@ -231,7 +282,7 @@
                 <li><input type="checkbox" />French</li>
             </ul>
         </div>
-        <div id="technologies" class="dropdown-check-list" tabindex="100" style=" margin-left: 300px; ">
+        <div id="technologies" class="dropdown-check-list" tabindex="100" style=" margin-left: 470px; ">
             <span class="anchor">Technologies</span>
             <ul class="items">
                 <li><input type="checkbox" />Java</li>
@@ -242,23 +293,41 @@
                 <li><input type="checkbox" />SpringBoot</li>
             </ul>
         </div>
-        <button id="filter_button" type="submit" style=" margin-left: 470px; margin-top: -5px; ">Filter</button>
+        <button id="filter_button" type="submit" onclick="onFilter()" style=" margin-left: 640px; margin-top: -5px; ">Filter</button>
     </form>
 </div>
 
+<div>
+    <a th:each="category: ${appliedCategories}"><span th:text="${category.getName()} + ' X'" style=" color: #FFFFFF; margin-right: 50px; "/></a>
+    <a th:each="subcategory: ${appliedSubcategories}"><span th:text="${subcategory.getName()} + ' X'" style=" color: #FFFFFF; margin-right: 50px; "/></a>
+</div>
+
 <div id="task_list" style=" display: flex; align-items: center; justify-content: center; ">
-    <table style =" width: 100%; border-spacing: 0px 15px; ">
+    <table id="task_table">
         <tr class ="task_tr" th:each="task: ${tasks}" >
             <td class="task_td" >
-                <span th:text="${task.getTitle()}">Title</span>
-                <p th:text="${task.getDescription()}">Description</p><br>
+                <div>
+                    <span th:text="${task.getTitle()}" style=" font-size: 22px; ">Title</span>
+                    <div style=" display: flex; justify-content: right; margin-top: -20px; ">
+                        <span th:text="'Max Bidding Price: ' + ${task.getMaxPrice()} + ' €'" style="margin-right: 50px;">Max Bidding Price: 500€</span>
+                        <span th:text="'Max Bidding Time: ' + ${task.getMaxBiddingTime()} + ' minutes'" style="margin-right: 10px; ">Max Bidding Time: 1000 minutes</span>
+                    </div>
+                </div>
+                <p th:text="${task.getDescription()}" >Description</p><br>
+                <div style=" margin-top: 15px;">
+                    <span th:text="'Creator: ' + ${task.getCreator()?.getName()}">Creator: a</span>
+                    <div style=" display: flex; justify-content: right; margin-top: -17px; margin-right: 10px; ">
+                        <span th:text="'Category: ' + ${task.getCategory()?.getName()}" style="margin-left: 50px;">Category: b</span>
+                        <span th:text="'Subcategory: ' + ${task.getSubcategory()?.getName()}" style="margin-left: 25px;">Subcategory: c</span>
+                    </div>
+                </div>
             </td>
         </tr>
     </table>
 </div>
 
 <div style=" display: flex; align-items: center; justify-content: center; margin-top: 20px; margin-bottom: 20px; ">
-    <span style=" color: #FFFFFF; ">Showing 1 to 6 of 210</span>
+    <span th:text="${'Showing 1 to 3 of ' + tasksSize}" style=" color: #FFFFFF; ">Showing 1 to 6 of 210</span>
     <div style=" display: inline; margin-left: 25px; ">
         <label style=" color: #FFFFFF">Results per page</label>
         <select id="results_per_page">
@@ -266,9 +335,37 @@
             <option class="results_per_page_val" value="10">10</option>
             <option class="results_per_page_val" value="20">20</option>
             <option class="results_per_page_val" value="30">30</option>
+            <option class="results_per_page_val" value="0">all</option>
         </select>
     </div>
     <span style=" color: #FFFFFF; margin-left: 25px; "><a href="task_search.html">< previous</a> &nbsp&nbsp&nbsp 1 &nbsp&nbsp&nbsp 2 &nbsp&nbsp&nbsp 3 &nbsp&nbsp&nbsp <a href="task_search.html">next ></a></span>
+</div>
+
+<div id="contact_us">
+    <table style=" width: 70%; margin-left: auto; margin-right: auto; ">
+        <tr>
+            <td class="contact_td">
+                <h5 style=" font-size: 40px; margin-bottom: 10px; margin-top: 5px; ">Contact us</h5>
+                <span style=" font-size: 20px; ">Complete the form to get in touch with us. We are here to assist you with any questions or inquiries you may have about our marketplace for freelance services.</span>
+            </td>
+            <td class="contact_td" style=" padding-left: 50px; ">
+                <form>
+                    <table style=" display: block; ">
+                        <tr>
+                            <td class="contact_td"><label>Name</label><br><input class="input" type="text"/></td>
+                            <td class="contact_td"><label style=" margin-left: 10px; ">E-mail</label><br><input class="input" type="email" style=" margin-left: 10px; "/></td>
+                        </tr>
+                    </table>
+                    <div style=" margin-top: 10px; text-align: left ">
+                        <label>Message</label><br><textarea class="input" type="text" cols="40" rows="5" style=" margin-left: 0px; width: 90%; height: 80px; "></textarea>
+                    </div>
+                    <div style=" text-align: right; padding-right: 25px; padding-top: 5px; ">
+                        <button id="contact_button" type="submit">Sent</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
 </div>
 
 <footer id="footer">
@@ -287,6 +384,7 @@
 
 <script>
     const checkListCategories = document.getElementById('categories');
+    const  checkListSubcategories = document.getElementById('sub_categories');
     const  checkListLanguages = document.getElementById('languages');
     const  checkListTechnologies = document.getElementById('technologies');
 
@@ -295,6 +393,13 @@
             checkListCategories.classList.remove('visible');
         else
             checkListCategories.classList.add('visible');
+    }
+
+    checkListSubcategories.getElementsByClassName('anchor')[0].onclick = function(evt) {
+        if (checkListSubcategories.classList.contains('visible'))
+            checkListSubcategories.classList.remove('visible');
+        else
+            checkListSubcategories.classList.add('visible');
     }
 
     checkListLanguages.getElementsByClassName('anchor')[0].onclick = function(evt) {
@@ -309,6 +414,14 @@
             checkListTechnologies.classList.remove('visible');
         else
             checkListTechnologies.classList.add('visible');
+    }
+
+    const keyword = document.getElementById("search");
+    const hidden = document.getElementById("hidden_search");
+    const filter_form = document.getElementById("filter_form");
+    function onFilter(){
+        hidden.setAttribute('value', keyword.value);
+        filter_form.submit();
     }
 </script>
 

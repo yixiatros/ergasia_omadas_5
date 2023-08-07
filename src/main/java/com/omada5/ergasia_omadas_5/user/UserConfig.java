@@ -1,16 +1,14 @@
 package com.omada5.ergasia_omadas_5.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.omada5.ergasia_omadas_5.task.Task;
+import com.omada5.ergasia_omadas_5.task.TaskRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.time.Month.*;
 
@@ -18,7 +16,9 @@ import static java.time.Month.*;
 public class UserConfig {
 
     @Bean
-    CommandLineRunner commandLineRunner(UserRepository repository, RoleRepository roleRepository){
+    CommandLineRunner commandLineRunner(UserRepository repository,
+                                        RoleRepository roleRepository,
+                                        TaskRepository taskRepository){
 
         return args -> {
             User user1 = new User(
@@ -29,9 +29,8 @@ public class UserConfig {
                     LocalDate.of(2000, AUGUST, 21)
             );
 
-            Optional<Role> optionalClientRole = roleRepository.findByName("developer");
-            if (optionalClientRole.isPresent())
-                user1.addRole(optionalClientRole.get());
+            Optional<Role> optionalDeveloperRole = roleRepository.findByName("developer");
+            optionalDeveloperRole.ifPresent(user1::addRole);
 
             User user2 = new User(
                     "Giannis",
@@ -41,13 +40,25 @@ public class UserConfig {
                     LocalDate.of(1997, MARCH, 30)
             );
 
-            Optional<Role> optionalDeveloperRole = roleRepository.findByName("client");
-            if (optionalDeveloperRole.isPresent())
-                user2.addRole(optionalDeveloperRole.get());
+            Optional<Role> optionalClientRole = roleRepository.findByName("client");
+            optionalClientRole.ifPresent(user2::addRole);
 
-            repository.saveAll(
-                    List.of(user1, user2)
+            User user3 = new User(
+                    "juana",
+                    "juanita",
+                    "juanitaLindita",
+                    "juana.linda@gmail.com",
+                    LocalDate.of(1995, DECEMBER, 17)
             );
+            optionalDeveloperRole.ifPresent(user3::addRole);
+
+            List<Task> tasks = taskRepository.findAll();
+            tasks.get(0).setCreator(user3);
+            tasks.get(1).setCreator(user1);
+            tasks.get(2).setCreator(user2);
+            taskRepository.saveAll(tasks);
+
+            repository.saveAll(List.of(user1, user2, user3));
         };
     }
 }

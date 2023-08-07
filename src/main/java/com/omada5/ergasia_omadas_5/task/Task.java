@@ -1,5 +1,6 @@
 package com.omada5.ergasia_omadas_5.task;
 
+import com.omada5.ergasia_omadas_5.user.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -37,9 +38,56 @@ public class Task {
     private Subcategory subcategory;
     private boolean isPayingByTheHour;
     private float maxPrice;
-    private float maxBiddingTime;
+    private float maxBiddingTime; // in minutes
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "tasks_users",
+            joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+    private User creator;
 
     public Task() {
+    }
+
+    public Task(String title,
+                String description,
+                boolean isPublic,
+                boolean showPrice,
+                Category category,
+                Subcategory subcategory,
+                boolean isPayingByTheHour,
+                float maxPrice,
+                float maxBiddingTime,
+                User creator) {
+        this.title = title;
+        this.description = description;
+        this.isPublic = isPublic;
+        this.showPrice = showPrice;
+        this.category = category;
+        this.subcategory = subcategory;
+        this.isPayingByTheHour = isPayingByTheHour;
+        this.maxPrice = maxPrice;
+        this.maxBiddingTime = maxBiddingTime;
+        this.creator = creator;
+    }
+
+    public Task(String title,
+                String description,
+                boolean isPublic,
+                boolean showPrice,
+                boolean isPayingByTheHour,
+                float maxPrice,
+                float maxBiddingTime,
+                User creator) {
+        this.title = title;
+        this.description = description;
+        this.isPublic = isPublic;
+        this.showPrice = showPrice;
+        this.isPayingByTheHour = isPayingByTheHour;
+        this.maxPrice = maxPrice;
+        this.maxBiddingTime = maxBiddingTime;
+        this.creator = creator;
     }
 
     public Task(String title,
@@ -60,7 +108,7 @@ public class Task {
         this.subcategory = subcategory;
         this.isPayingByTheHour = isPayingByTheHour;
         this.maxPrice = maxPrice;
-        this.maxBiddingTime = maxBiddingTime; // in minutes
+        this.maxBiddingTime = maxBiddingTime;
     }
 
     public Task(String title,
@@ -185,5 +233,13 @@ public class Task {
 
     public void setMaxBiddingTime(float maxBiddingTime) {
         this.maxBiddingTime = maxBiddingTime;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User user) {
+        this.creator = user;
     }
 }
