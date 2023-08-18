@@ -76,6 +76,26 @@ public class Task {
                 String description,
                 boolean isPublic,
                 boolean showPrice,
+                Category category,
+                Subcategory subcategory,
+                boolean isPayingByTheHour,
+                float maxPrice,
+                float maxBiddingTime) {
+        this.title = title;
+        this.description = description;
+        this.isPublic = isPublic;
+        this.showPrice = showPrice;
+        this.category = category;
+        this.subcategory = subcategory;
+        this.isPayingByTheHour = isPayingByTheHour;
+        this.maxPrice = maxPrice;
+        this.maxBiddingTime = maxBiddingTime;
+    }
+
+    public Task(String title,
+                String description,
+                boolean isPublic,
+                boolean showPrice,
                 boolean isPayingByTheHour,
                 float maxPrice,
                 float maxBiddingTime,
@@ -96,27 +116,6 @@ public class Task {
                 boolean showPrice,
                 Category category,
                 Subcategory subcategory,
-                boolean isPayingByTheHour,
-                float maxPrice,
-                float maxBiddingTime) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.isPublic = isPublic;
-        this.showPrice = showPrice;
-        this.category = category;
-        this.subcategory = subcategory;
-        this.isPayingByTheHour = isPayingByTheHour;
-        this.maxPrice = maxPrice;
-        this.maxBiddingTime = maxBiddingTime;
-    }
-
-    public Task(String title,
-                String description,
-                boolean isPublic,
-                boolean showPrice,
-                Category category,
-                Subcategory subcategory,
                 boolean isPayingByTheHour) {
         this.title = title;
         this.description = description;
@@ -153,6 +152,12 @@ public class Task {
         this.isPublic = isPublic;
         this.showPrice = showPrice;
         this.isPayingByTheHour = isPayingByTheHour;
+    }
+
+    public Task(String title, String description, float maxPrice) {
+        this.title = title;
+        this.description = description;
+        this.maxPrice = maxPrice;
     }
 
     public Long getId() {

@@ -6,8 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 public class TaskController {
@@ -17,11 +22,6 @@ public class TaskController {
     @Autowired
     public TaskController(TaskService taskService){
         this.taskService = taskService;
-    }
-
-    @RequestMapping("/index")
-    public String goToIndex() {
-        return "index";
     }
 
     @GetMapping
@@ -146,5 +146,67 @@ public class TaskController {
         }
 
         return newTasks;
+    }
+
+    @GetMapping("/task_create")
+    public String createTask(Model model){
+        model.addAttribute("currentDateTime", LocalDate.now());
+        List<Category> categories = taskService.getCategories();
+        List<Subcategory> subcategories = taskService.getSubCategories();
+        model.addAttribute("categories", categories);
+        model.addAttribute("subcategories", subcategories);
+        return "task_create";
+    }
+
+    public List<Subcategory> getSubcategoriesByCategories(Long categoryId){
+        List<Subcategory> subcategories = taskService.getSubCategories();
+        List<Subcategory> newSubcategories = new ArrayList<>();
+        for (Subcategory sub:
+             subcategories) {
+            if (sub.getCategory() != null)
+                if (Objects.equals(sub.getCategory().getId(), categoryId))
+                    newSubcategories.add(sub);
+        }
+        return newSubcategories;
+    }
+
+    @PostMapping("/task_create")
+    public String login(@RequestParam("title") String title,
+                        @RequestParam("description") String description,
+                        @Param("isPublic") boolean isPublic,
+                        @Param("showPrice") boolean showPrice,
+                        @Param("isPayingByTheHour") boolean isPayingByTheHour,
+                        @RequestParam("maxPrice") float maxPrice,
+                        @RequestParam("endDate") LocalDateTime endDate,
+                        @RequestParam("category") String categoryId,
+                        @RequestParam(value = "subcategory", required = false, defaultValue = "-1") String subcategoryId){
+        Optional<Task> userOptional = taskService.getTasks().stream()
+                .filter(u->title.equals(u.getTitle()))
+                .findAny();
+
+        if (userOptional.isPresent())
+            return "task_search";
+
+        Task task = new Task(
+                title,
+                description,
+                isPublic,
+                showPrice,
+                isPayingByTheHour,
+                maxPrice,
+                ChronoUnit.MINUTES.between(LocalDateTime.now(), endDate)
+        );
+
+        Category category = taskService.getCategoriesById(Long.valueOf(categoryId));
+        task.setCategory(category);
+
+        if (!subcategoryId.equals("-1")){
+            Subcategory subcategory = taskService.getSubcategoriesById(Long.valueOf(subcategoryId));
+            task.setSubcategory(subcategory);
+        }
+
+        taskService.addNewTask(task);
+
+        return "index";
     }
 }

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Create Task</title>
+
+    <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+
+    <style>
+
+        .creation_label {
+            margin-left: 15px;
+            color: rgb(255, 255, 255);
+            font-size: 17px;
+        }
+
+        .creation_input, .creation_textarea, #creation_category, #creation_subcategory {
+            margin-left: 15px;
+            color: rgb(51, 51, 51);
+            background: rgb(255, 255, 255);
+            outline: 0;
+            padding: 0.5rem 1.2rem;
+            margin-bottom: 20px;
+            margin-top: 5px;
+            border-radius: 0.8rem;
+            font-size: 20px;
+        }
+        .creation_input {
+            height: 25px;
+        }
+        #creation_category, #creation_subcategory {
+            font-size: 15px;
+        }
+
+        .creation_checkbox {
+            margin-top: -8px;
+            margin-left: 10px;
+            margin-right: 25px;
+            -webkit-appearance: initial;
+            appearance: initial;
+            background: rgb(0,0,0,0.0);
+            width: 20px;
+            height: 25px;
+            border: 2px solid rgb(255, 255, 255);
+            border-radius: 30%;
+            position: relative;
+            vertical-align: middle;
+            transform: scale(80%);
+        }
+
+        .creation_checkbox:checked {
+            background: rgb(0,0,0,0.2);
+        }
+
+        .creation_checkbox:checked:after {
+            content: "✔";
+            color: rgb(255, 255, 255);
+            zoom: 0.75;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%,-50%);
+            -moz-transform: translate(-50%,-50%);
+            -ms-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+        }
+
+        #date_time {
+            margin-left: 15px;
+            color: rgb(51, 51, 51);
+            background: rgb(255, 255, 255);
+            border-radius: 0.8rem;
+            width: 91%;
+        }
+
+        .create_button {
+            width: 150px;
+            margin-left: 15px;
+            margin-top: 15px;
+            background-image: linear-gradient(92.88deg, #ff5914 9.16%, #ff3500 43.89%, #ff4500 64.72%);
+            border-radius: 8px;
+            border-style: none;
+            box-sizing: border-box;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            flex-shrink: 0;
+            font-family: "Inter UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,Ubuntu,Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            height: 3rem;
+            padding: 0 1.6rem;
+            text-align: center;
+            text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+            transition: all .5s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        .create_button:hover {
+            box-shadow: rgba(255, 53, 0, 0.5) 0 1px 30px;
+            transition-duration: .1s;
+        }
+
+        @media (min-width: 768px) {
+            .create_button {
+                padding: 0 2.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="navbar-top">
+    <div style=" font-size: 25px; ">
+        <div style=" padding-top: 25px; margin-left: 10px; ">
+            <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
+            <a class="icon" href="https://www.facebook.com/"><ion-icon name="logo-facebook"></ion-icon></a>
+            <a class="icon" href="https://www.instagram.com/"><ion-icon name="logo-instagram"></ion-icon></a>
+            <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
+        </div>
+    </div>
+    <div style=" text-align: center; margin-top: -75px; "><a th:href="@{/index}" href="index.html" style=" text-decoration: none; cursor: pointer; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
+    <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
+        <span style=" font-size: 21px;">
+            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
+            /
+            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
+        </span>
+    </div>
+</div>
+
+<div style=" margin-top: 25px; color: rgb(255, 255, 255); ">
+    <H3 style=" font-size: 25px; ">Create a new Task:</H3>
+    <form id="task_creation_form" action="#" th:action="@{/task_create}" method="post">
+        <label class="creation_label">Title</label><br>
+        <input class="creation_input" type="text" name="title" required/><br>
+        <label class="creation_label">Description</label><br>
+        <textarea class="creation_textarea" type="text" name="description" cols="40" rows="5" required></textarea>
+        <div style=" margin-top: 5px; ">
+            <label class="creation_label">Public</label>
+            <input class="creation_checkbox" name="isPublic" type="checkbox" />
+            <label class="creation_label">Show the price</label>
+            <input class="creation_checkbox" name="showPrice" type="checkbox" />
+            <label class="creation_label">Paying by the hour</label>
+            <input class="creation_checkbox" name="isPayingByTheHour" type="checkbox" />
+        </div>
+        <div style=" margin-top: 25px;">
+            <label class="creation_label">Max price (€)</label><br>
+            <input class="creation_input" type="number" name="maxPrice" min="0.1"/><br>
+            <label class="creation_label">End of bidding time</label><br>
+            <input id="date_time" type="datetime-local" name="endDate" th:min="${currentDateTime}" min="2023-08-07T00:00" th:value="${currentDateTime}" required />
+        </div>
+        <div style=" margin-top: 25px;">
+            <label class="creation_label" for="creation_category" >Category</label>
+            <select id="creation_category" name="category" onchange="filterSubs(this.value)" required >
+                <option value="">Please select</option>
+                <option th:each="category: ${categories}" th:value="${category.getId()}" th:text="${category.getName()}">Web app</option>
+            </select>
+            <label class="creation_label" for="creation_subcategory" style="margin-left: 35px;" >Subcategory</label>
+            <select name="subcategory" id="creation_subcategory">
+                <option value="">Please select</option>
+                <option class="subcategories_creation" th:each="subcategory: ${subcategories}" th:value="${subcategory.getId()}" th:text="${subcategory.getName()}">Spring boot</option>
+            </select>
+        </div>
+        <input class="create_button" type="submit" value="Create" />
+    </form>
+</div>
+
+<div id="contact_us">
+    <table style=" width: 70%; margin-left: auto; margin-right: auto; ">
+        <tr>
+            <td class="contact_td">
+                <h5 style=" font-size: 40px; margin-bottom: 10px; margin-top: 5px; ">Contact us</h5>
+                <span style=" font-size: 20px; ">Complete the form to get in touch with us. We are here to assist you with any questions or inquiries you may have about our marketplace for freelance services.</span>
+            </td>
+            <td class="contact_td" style=" padding-left: 50px; padding-top: 25px ">
+                <form>
+                    <table style=" display: block; ">
+                        <tr>
+                            <td class="contact_td"><label>Name</label><br><input class="input" type="text"/></td>
+                            <td class="contact_td"><label style=" margin-left: 10px; ">E-mail</label><br><input class="input" type="email" style=" margin-left: 10px; "/></td>
+                        </tr>
+                    </table>
+                    <div style=" margin-top: 10px; text-align: left ">
+                        <label>Message</label><br><textarea class="input" type="text" cols="40" rows="5" style=" margin-left: 0px; width: 90%; height: 80px; "></textarea>
+                    </div>
+                    <div style=" text-align: right; padding-right: 25px; padding-top: 5px; ">
+                        <button id="contact_button" type="submit">Sent</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<footer id="footer">
+    <div style=" font-size: 30px; margin-top: 10px ">CodeTask</div>
+    <div style=" font-size: 20px; padding-top: 10px; ">
+        <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
+        <a class="icon" href="https://www.facebook.com/"><ion-icon name="logo-facebook"></ion-icon></a>
+        <a class="icon" href="https://www.instagram.com/"><ion-icon name="logo-instagram"></ion-icon></a>
+        <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
+    </div>
+    <div style=" padding-top: 20px; "><a href="https://www.cs.unipi.gr/index.php?lang=el">University of Piraeus 2023 ®</a></div>
+</footer>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    const listOfSubcategories = document.getElementsByClassName("subcategories_creation");
+    const creation_subcategory = document.getElementById("creation_subcategory");
+
+    function filterSubs(id){
+        if (id == "") return;
+
+        refillSubs();
+
+        const subcategories_creation = document.getElementsByClassName("subcategories_creation");
+        for (var i = 0; i < subcategories_creation.length; i++) {
+            if (subcategories_creation.item(i).value == id){
+                subcategories_creation.item(i).style.display = "none";
+            }
+        }
+
+        creation_subcategory.value = "";
+    }
+
+    function refillSubs(){
+        for (var i = 0; i < listOfSubcategories.length; i++){
+            if (listOfSubcategories.item(i).style.display == "none"){
+                listOfSubcategories.item(i).style.display = "block";
+            }
+        }
+    }
+</script>
+</body>
+</html>
