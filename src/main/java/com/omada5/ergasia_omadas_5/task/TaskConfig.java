@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class TaskConfig {
                     true,
                     false,
                     200,
-                    5 * 60
+                    LocalDateTime.of(2023, 11, 3, 20, 30)
             );
 
             Task task2 = new Task(
@@ -35,7 +36,7 @@ public class TaskConfig {
                     false,
                     true,
                     500,
-                    24 * 60
+                    LocalDateTime.of(2023, 12, 20, 14, 0)
             );
 
             Optional<Category> optionalCategory2 = categoryRepository.findCategoryByName("Android App");
@@ -48,7 +49,7 @@ public class TaskConfig {
                     true,
                     true,
                     1000,
-                    48 * 60
+                    LocalDateTime.of(2023, 12, 28, 12, 40)
             );
 
             Optional<Category> optionalCategory1 = categoryRepository.findCategoryByName("Web App");

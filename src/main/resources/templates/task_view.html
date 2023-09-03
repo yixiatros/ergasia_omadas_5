@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>View Task</title>
+
+  <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+
+  <style>
+    .container {
+      height: 100%;
+      margin-bottom: 60px;
+    }
+
+    .container:before
+    {
+      content: '';
+      height: 100%;
+      float: left;
+      margin-bottom: 600px;
+    }
+
+    .content
+    {
+      position: relative;
+      z-index: 1;
+    }
+    .content:after
+    {
+      content: '';
+      clear: both;
+      display: block;
+    }
+
+    .wrapper
+    {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    .wrapper > div
+    {
+      height: 100%;
+    }
+
+    .rightContent
+    {
+      margin-right: 10px;
+      margin-left: 20px;
+      border-radius: 8px;
+      width: 40%;
+      background-color: rgb(255, 69, 0);
+      float: right;
+    }
+
+    .leftContent
+    {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+      overflow: auto;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .leftContent::-webkit-scrollbar {
+      display: none;
+    }
+
+    #bid_input {
+      width: 80%;
+      height: 1rem;
+      background-color: #FFFFFF;
+      border-radius: 8px;
+      font-size: 20px;
+      padding-top: 12px;
+      color: black;
+    }
+
+    .bid_button {
+      width: 150px;
+      margin-left: 15px;
+      margin-top: 15px;
+      background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%);
+      border-radius: 8px;
+      border-style: none;
+      box-sizing: border-box;
+      color: rgb(255, 255, 255);
+      cursor: pointer;
+      flex-shrink: 0;
+      font-family: "Inter UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,Ubuntu,Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      height: 3rem;
+      padding: 0 1.6rem;
+      text-align: center;
+      text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+      transition: all .5s;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    .bid_button:hover {
+      box-shadow: rgba(255, 53, 0, 0.5) 0 1px 30px;
+      transition-duration: .1s;
+    }
+
+    @media (min-width: 768px) {
+      .bid_button {
+        padding: 0 2.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="navbar-top">
+  <div style=" font-size: 25px; ">
+    <div style=" padding-top: 25px; margin-left: 10px; ">
+      <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
+      <a class="icon" href="https://www.facebook.com/"><ion-icon name="logo-facebook"></ion-icon></a>
+      <a class="icon" href="https://www.instagram.com/"><ion-icon name="logo-instagram"></ion-icon></a>
+      <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
+    </div>
+  </div>
+  <div style=" text-align: center; margin-top: -75px; "><a th:href="@{/index}" href="index.html" style=" text-decoration: none; cursor: pointer; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
+  <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
+        <span style=" font-size: 21px;">
+            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
+            /
+            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
+        </span>
+  </div>
+</div>
+
+<div class="container" style=" margin-top: 25px; ">
+  <a th:href="@{/tasks}" href="task_search.html" style=" text-decoration: underline; position: absolute; left: 0; margin-left: 15px; ">< Back</a>
+</div>
+
+<div class="content" style=" color: #FFFFFF; text-align: center; " th:object="${task}">
+  <div class="wrapper">
+    <div class="rightContent" style=" font-size: 20px; padding-top: 20px; ">
+      <label for="end_date">End Date</label><br>
+      <p id="end_date" th:text="${task.getEndDate()}" >time</p>
+      <br>
+      <label for="time_till_end">Time remaining</label><br>
+      <p id="time_till_end" th:text="${task.getRemainingMinutes()} + ' minutes'" >500 minutes</p>
+      <br>
+      <label for="max_price">Max bidding price</label><br>
+      <p id="max_price" th:text="${task.getMaxPrice()} + ' €'" >500 €</p>
+      <br><label for="current_price">Active bid</label><br>
+      <p id="current_price" th:text="${task.getCurrentPrice()} + ' €'">400 €</p>
+      <br>
+      <input id="bid_input" type="number" name="maxPrice" th:max="${task.getMaxPrice()}" min="0"/><br>
+      <button class="bid_button" type="button">Bid</button>
+    </div>
+    <div class="leftContent" style=" font-size: 20px; text-align: left; margin-left: 15px; ">
+      <h3 style=" font-size: 25px; " th:text="${task.getTitle()}">Title</h3>
+
+
+
+
+      <!-- replace with profile image -->
+      <span style="height: 65px; width: 65px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
+      <!-- replace with profile image -->
+
+
+
+
+      <h5 th:text="${task.getCreator().getUsername()}" style=" margin: -45px 0px 50px 85px; ">thisIsAUsername</h5>
+      <h4>About this task</h4>
+      <p style=" text-align: justify; " th:text="${task.getDescription()}">Description</p>
+      <p th:text="'category: ' + ${task.getCategory().getName()}">category: app</p>
+      <p th:text="'subcategory: ' + ${task.getSubcategory()?.getName()}" style=" margin-top: -15px; ">subcategory: app</p>
+    </div>
+  </div>
+</div>
+
+<div id="contact_us">
+  <table style=" width: 70%; margin-left: auto; margin-right: auto; ">
+    <tr>
+      <td class="contact_td">
+        <h5 style=" font-size: 40px; margin-bottom: 10px; margin-top: 5px; ">Contact us</h5>
+        <span style=" font-size: 20px; ">Complete the form to get in touch with us. We are here to assist you with any questions or inquiries you may have about our marketplace for freelance services.</span>
+      </td>
+      <td class="contact_td" style=" padding-left: 50px; padding-top: 25px ">
+        <form>
+          <table style=" display: block; ">
+            <tr>
+              <td class="contact_td"><label>Name</label><br><input class="input" type="text"/></td>
+              <td class="contact_td"><label style=" margin-left: 10px; ">E-mail</label><br><input class="input" type="email" style=" margin-left: 10px; "/></td>
+            </tr>
+          </table>
+          <div style=" margin-top: 10px; text-align: left ">
+            <label>Message</label><br><textarea class="input" type="text" cols="40" rows="5" style=" margin-left: 0px; width: 90%; height: 80px; "></textarea>
+          </div>
+          <div style=" text-align: right; padding-right: 25px; padding-top: 5px; ">
+            <button id="contact_button" type="submit">Sent</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<footer id="footer">
+  <div style=" font-size: 30px; margin-top: 10px ">CodeTask</div>
+  <div style=" font-size: 20px; padding-top: 10px; ">
+    <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
+    <a class="icon" href="https://www.facebook.com/"><ion-icon name="logo-facebook"></ion-icon></a>
+    <a class="icon" href="https://www.instagram.com/"><ion-icon name="logo-instagram"></ion-icon></a>
+    <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
+  </div>
+  <div style=" padding-top: 20px; "><a href="https://www.cs.unipi.gr/index.php?lang=el">University of Piraeus 2023 ®</a></div>
+</footer>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>

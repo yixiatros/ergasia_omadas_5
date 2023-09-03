@@ -28,6 +28,10 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+    public Optional<Task> getTaskById(Long taskId) {
+        return taskRepository.findTaskById(taskId);
+    }
+
     public List<Category> getCategories() {
         return categoryRepository.findAll();
     }

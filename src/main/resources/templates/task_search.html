@@ -136,6 +136,10 @@
             color: rgb(255, 255, 255);
         }
 
+        .task_td:hover {
+            cursor: pointer;
+        }
+
         .task_td {
             vertical-align: top;
             padding: 10px;
@@ -269,23 +273,27 @@
 
 <div id="task_list" style=" display: flex; align-items: center; justify-content: center; ">
     <table id="task_table">
-        <tr class ="task_tr" th:each="task: ${tasks}" >
+        <tr class ="task_tr" th:each="task: ${tasks}">
             <td class="task_td" >
-                <div>
-                    <span th:text="${task.getTitle()}" style=" font-size: 22px; ">Title</span>
-                    <div style=" display: flex; justify-content: right; margin-top: -20px; ">
-                        <span th:text="'Max Bidding Price: ' + ${task.getMaxPrice()} + ' €'" style="margin-right: 50px;">Max Bidding Price: 500€</span>
-                        <span th:text="'Max Bidding Time: ' + ${task.getMaxBiddingTime()} + ' minutes'" style="margin-right: 10px; ">Max Bidding Time: 1000 minutes</span>
+                <a th:href="@{/task_view/{type}(type=${task.getId()})}" href="task_view.html" style=" text-decoration: none; ">
+                    <div>
+                        <div>
+                            <span th:text="${task.getTitle()}" style=" font-size: 22px; ">Title</span>
+                            <div style=" display: flex; justify-content: right; margin-top: -20px; ">
+                                <span th:text="'Max Bidding Price: ' + ${task.getMaxPrice()} + ' €'" style="margin-right: 50px;">Max Bidding Price: 500€</span>
+                                <span th:text="'Time Remaining: ' + ${task.getRemainingMinutes()} + ' minutes'" style="margin-right: 10px; ">Time Remaining: 1000 minutes</span>
+                            </div>
+                        </div>
+                        <p th:text="${task.getDescription()}" >Description</p><br>
+                        <div style=" margin-top: 15px;">
+                            <span th:text="'Creator: ' + ${task.getCreator()?.getName()}">Creator: a</span>
+                            <div style=" display: flex; justify-content: right; margin-top: -17px; margin-right: 10px; ">
+                                <span th:text="'Category: ' + ${task.getCategory()?.getName()}" style="margin-left: 50px;">Category: b</span>
+                                <span th:text="'Subcategory: ' + ${task.getSubcategory()?.getName()}" style="margin-left: 25px;">Subcategory: c</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <p th:text="${task.getDescription()}" >Description</p><br>
-                <div style=" margin-top: 15px;">
-                    <span th:text="'Creator: ' + ${task.getCreator()?.getName()}">Creator: a</span>
-                    <div style=" display: flex; justify-content: right; margin-top: -17px; margin-right: 10px; ">
-                        <span th:text="'Category: ' + ${task.getCategory()?.getName()}" style="margin-left: 50px;">Category: b</span>
-                        <span th:text="'Subcategory: ' + ${task.getSubcategory()?.getName()}" style="margin-left: 25px;">Subcategory: c</span>
-                    </div>
-                </div>
+                </a>
             </td>
         </tr>
     </table>

@@ -171,7 +171,7 @@ public class TaskController {
     }
 
     @PostMapping("/task_create")
-    public String login(@RequestParam("title") String title,
+    public String setCreatedTask(@RequestParam("title") String title,
                         @RequestParam("description") String description,
                         @Param("isPublic") boolean isPublic,
                         @Param("showPrice") boolean showPrice,
@@ -194,7 +194,7 @@ public class TaskController {
                 showPrice,
                 isPayingByTheHour,
                 maxPrice,
-                ChronoUnit.MINUTES.between(LocalDateTime.now(), endDate)
+                endDate
         );
 
         Category category = taskService.getCategoriesById(Long.valueOf(categoryId));
@@ -208,5 +208,16 @@ public class TaskController {
         taskService.addNewTask(task);
 
         return "index";
+    }
+
+    @GetMapping(path = "/task_view/{taskId}")
+    public String seeTask(@PathVariable("taskId") Long taskId, Model model){
+        Optional<Task> optionalTask = taskService.getTaskById(taskId);
+        Task task = null;
+        if (optionalTask.isPresent())
+            task = optionalTask.get();
+
+        model.addAttribute("task", task);
+        return "task_view";
     }
 }

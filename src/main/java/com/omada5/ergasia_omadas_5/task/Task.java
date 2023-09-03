@@ -3,6 +3,9 @@ package com.omada5.ergasia_omadas_5.task;
 import com.omada5.ergasia_omadas_5.user.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 @Entity
 @Table(name = "tasks")
 public class Task {
@@ -38,7 +41,8 @@ public class Task {
     private Subcategory subcategory;
     private boolean isPayingByTheHour;
     private float maxPrice;
-    private float maxBiddingTime; // in minutes
+    private float currentPrice = 0;
+    private LocalDateTime endDate;
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "tasks_users",
@@ -58,7 +62,7 @@ public class Task {
                 Subcategory subcategory,
                 boolean isPayingByTheHour,
                 float maxPrice,
-                float maxBiddingTime,
+                LocalDateTime endDate,
                 User creator) {
         this.title = title;
         this.description = description;
@@ -68,7 +72,7 @@ public class Task {
         this.subcategory = subcategory;
         this.isPayingByTheHour = isPayingByTheHour;
         this.maxPrice = maxPrice;
-        this.maxBiddingTime = maxBiddingTime;
+        this.endDate = endDate;
         this.creator = creator;
     }
 
@@ -80,7 +84,7 @@ public class Task {
                 Subcategory subcategory,
                 boolean isPayingByTheHour,
                 float maxPrice,
-                float maxBiddingTime) {
+                LocalDateTime endDate) {
         this.title = title;
         this.description = description;
         this.isPublic = isPublic;
@@ -89,7 +93,7 @@ public class Task {
         this.subcategory = subcategory;
         this.isPayingByTheHour = isPayingByTheHour;
         this.maxPrice = maxPrice;
-        this.maxBiddingTime = maxBiddingTime;
+        this.endDate = endDate;
     }
 
     public Task(String title,
@@ -98,7 +102,7 @@ public class Task {
                 boolean showPrice,
                 boolean isPayingByTheHour,
                 float maxPrice,
-                float maxBiddingTime,
+                LocalDateTime endDate,
                 User creator) {
         this.title = title;
         this.description = description;
@@ -106,7 +110,7 @@ public class Task {
         this.showPrice = showPrice;
         this.isPayingByTheHour = isPayingByTheHour;
         this.maxPrice = maxPrice;
-        this.maxBiddingTime = maxBiddingTime;
+        this.endDate = endDate;
         this.creator = creator;
     }
 
@@ -132,14 +136,14 @@ public class Task {
                 boolean showPrice,
                 boolean isPayingByTheHour,
                 float maxPrice,
-                float maxBiddingTime) {
+                LocalDateTime endDate) {
         this.title = title;
         this.description = description;
         this.isPublic = isPublic;
         this.showPrice = showPrice;
         this.isPayingByTheHour = isPayingByTheHour;
         this.maxPrice = maxPrice;
-        this.maxBiddingTime = maxBiddingTime;
+        this.endDate = endDate;
     }
 
     public Task(String title,
@@ -232,12 +236,16 @@ public class Task {
         this.maxPrice = maxPrice;
     }
 
-    public float getMaxBiddingTime() {
-        return maxBiddingTime;
+    public LocalDateTime getEndDate() {
+        return endDate;
     }
 
-    public void setMaxBiddingTime(float maxBiddingTime) {
-        this.maxBiddingTime = maxBiddingTime;
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public float getRemainingMinutes(){
+        return ChronoUnit.MINUTES.between(LocalDateTime.now(), endDate);
     }
 
     public User getCreator() {
@@ -246,5 +254,13 @@ public class Task {
 
     public void setCreator(User user) {
         this.creator = user;
+    }
+
+    public float getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(float currentPrice) {
+        this.currentPrice = currentPrice;
     }
 }
