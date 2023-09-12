@@ -6,8 +6,14 @@
 
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
     <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
     <style>
+
+        form, select {
+            font-family: 'Poppins',sans-serif;
+        }
 
         .creation_label {
             margin-left: 15px;
@@ -17,20 +23,23 @@
 
         .creation_input, .creation_textarea, #creation_category, #creation_subcategory {
             margin-left: 15px;
-            color: rgb(51, 51, 51);
-            background: rgb(255, 255, 255);
+            color: #FFFFFF;
             outline: 0;
             padding: 0.5rem 1.2rem;
             margin-bottom: 20px;
             margin-top: 5px;
             border-radius: 0.8rem;
             font-size: 20px;
+            background-color: rgba(255, 255, 255, 0.07);
         }
         .creation_input {
             height: 25px;
         }
         #creation_category, #creation_subcategory {
             font-size: 15px;
+        }
+        #creation_category option, #creation_subcategory option {
+            background: rgba(0, 0, 0, 0.7);
         }
 
         .creation_checkbox {
@@ -67,11 +76,12 @@
         }
 
         #date_time {
+            color-scheme: dark;
             margin-left: 15px;
-            color: rgb(51, 51, 51);
-            background: rgb(255, 255, 255);
+            color: #FFFFFF;
             border-radius: 0.8rem;
             width: 91%;
+            background-color: rgba(255,255,255,0.07);
         }
 
         .create_button {
@@ -122,15 +132,15 @@
     <div style=" text-align: center; margin-top: -75px; "><a th:href="@{/index}" href="index.html" style=" text-decoration: none; cursor: pointer; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
     <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
         <span style=" font-size: 21px;">
-            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
+            <a th:href="@{/users/login}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
             /
-            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
+            <a th:href="@{/users/register}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
         </span>
     </div>
 </div>
 
 <div style=" margin-top: 25px; color: rgb(255, 255, 255); ">
-    <H3 style=" font-size: 25px; ">Create a new Task:</H3>
+    <H3 style=" font-size: 30px; margin-left: 15px; ">Create a new Task:</H3>
     <form id="task_creation_form" action="#" th:action="@{/task_create}" method="post">
         <label class="creation_label">Title</label><br>
         <input class="creation_input" type="text" name="title" required/><br>

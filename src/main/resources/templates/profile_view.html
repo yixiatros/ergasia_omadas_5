@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>View Profile</title>
+
+  <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    .profile_table {
+      width: 100%;
+      font-family: 'Poppins',sans-serif;
+    }
+    .profile_table > tr, td {
+      width: 50%;
+    }
+
+    #task_table {
+      width: 90%;
+      border-spacing: 0px 20px;
+    }
+    .task_tr {
+      width: 95%;
+      height: 150px;
+      color: rgb(255, 255, 255);
+    }
+    .task_td:hover {
+      cursor: pointer;
+    }
+    .task_td {
+      vertical-align: top;
+      padding: 10px;
+      background-color: #FF5719;
+      border: 1px solid #222222;
+      box-shadow: 3px 3px 5px #222222;
+      border-radius: 8px;
+    }
+
+    .checked {
+      color: yellow;
+    }
+
+    .container {
+      margin: 8px auto;
+      width: 150px;
+      text-align: center;
+    }
+    .progress {
+      padding: 5px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.25);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25),
+      0 1px #222222;
+    }
+    #progress-bar {
+      height: 18px;
+      border-radius: 5px;
+      background-image: linear-gradient(
+              to bottom,
+              rgba(255, 255, 255, 0.2),
+              rgba(0, 0, 0, 0.05)
+      );
+      transition: 0.4s linear;
+      transition-property: width, background-color;
+    }
+    .progress-moved #progress-bar {
+      width: 0%;
+      background-color: #ff4500;
+    }
+
+    .horizontal_line {
+      border: 1px solid white;
+    }
+  </style>
+</head>
+<body>
+<div id="navbar-top">
+  <div style=" font-size: 25px; ">
+    <div style=" padding-top: 25px; margin-left: 10px; ">
+      <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
+      <a class="icon" href="https://www.facebook.com/"><ion-icon name="logo-facebook"></ion-icon></a>
+      <a class="icon" href="https://www.instagram.com/"><ion-icon name="logo-instagram"></ion-icon></a>
+      <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
+    </div>
+  </div>
+  <div style=" text-align: center; margin-top: -75px; "><a th:href="@{/index}" href="index.html" style=" text-decoration: none; cursor: pointer; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
+  <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
+        <span style=" font-size: 21px;">
+            <a th:href="@{/users/login}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
+            /
+            <a th:href="@{/users/register}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
+        </span>
+  </div>
+</div>
+
+<div style=" color: #FFFFFF; margin-top: 25px;" th:object="${user}" >
+  <table class="profile_table">
+    <tr>
+
+      <td style=" width: 30%; text-align: center; vertical-align: bottom; ">
+        <div id="user_preview">
+          <!-- replace with profile image -->
+          <span style="height: 11rem; width: 11rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
+          <!-- replace with profile image -->
+
+          <h5 th:text="${user.getUsername()}" style=" margin-top: 5px; font-size: 20px; ">thisIsAUsername</h5>
+        </div>
+      </td>
+
+      <td style=" vertical-align: top; ">
+        <div class="tasks">
+          <h5 style=" font-size: 20px; margin-bottom: -2px; ">Tasks</h5>
+          <table id="task_table">
+            <tr class ="task_tr" th:each="task: ${tasks}">
+              <td class="task_td">
+                <a th:href="@{/task_view/{type}(type=${task.getId()})}" href="task_view.html" style=" text-decoration: none; ">
+                  <div>
+                    <div>
+                      <span th:text="${task.getTitle()}" style=" font-size: 22px; ">Title</span>
+                      <div style=" display: flex; justify-content: right; margin-top: -27px; ">
+                        <span th:text="'Max Bidding Price: ' + ${task.getMaxPrice()} + ' €'" style="margin-right: 50px;">Max Bidding Price: 500€</span>
+                        <span th:text="'End Date: ' + ${task.getEndDate().toString()}" style="margin-right: 10px; ">End Date: date</span>
+                      </div>
+                    </div>
+                    <p th:text="${task.getDescription()}" >Description</p><br>
+                    <div style=" margin-top: 15px;">
+                      <span th:text="'Creator: ' + ${task.getCreator()?.getName()}">Creator: a</span>
+                      <div style=" display: flex; justify-content: right; margin-top: -17px; margin-right: 10px; ">
+                        <span th:text="'Category: ' + ${task.getCategory()?.getName()}" style="margin-left: 50px;">Category: b</span>
+                        <span th:text="'Subcategory: ' + ${task.getSubcategory()?.getName()}" style="margin-left: 25px;">Subcategory: c</span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+
+    </tr>
+
+    <tr>
+      <td colspan="2" style=" padding: 10px 25px 10px 25px; ">
+        <hr class="horizontal_line">
+      </td>
+    </tr>
+
+    <tr>
+
+      <td style=" width: 30%; text-align: center; vertical-align: top; ">
+        <h5 style=" font-size:  20px; ">Ratings</h5>
+        <div style=" margin-top: -20px; ">
+          <span class="fa fa-star checked"></span>
+          <span class="fa fa-star checked"></span>
+          <span class="fa fa-star checked"></span>
+          <span class="fa fa-star"></span>
+          <span class="fa fa-star"></span>&nbsp&nbsp
+          <span>3</span>
+          <div class="container">
+            <div class="progress progress-moved">
+              <div id="progress-bar" >
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+
+      <td style=" padding-right: 25px;">
+        <table id="review_table">
+          <tr>
+            <td style="padding-top: 25px;">
+              <!-- replace with profile image -->
+              <span style="height: 5rem; width: 5rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
+              <!-- replace with profile image -->
+
+              <h5 style=" margin: -65px 0px 50px 90px; font-size: 15px; ">thisIsAnotherUsername</h5>
+              <div style=" margin: -40px 0px 50px 90px; ">
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>&nbsp&nbsp
+                <span>2</span>
+                <span>&nbsp&nbsp|&nbsp&nbsp</span>
+                <span>2 months ago</span>
+              </div>
+              <div style="margin: -15px 0px 20px 15px; ">This is a comment about this user. He was mediocre at best...</div>
+              <hr class="horizontal_line">
+            </td>
+          </tr>
+          <tr>
+            <td style="padding-top: 25px;">
+              <!-- replace with profile image -->
+              <span style="height: 5rem; width: 5rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
+              <!-- replace with profile image -->
+
+              <h5 style=" margin: -65px 0px 50px 90px; font-size: 15px; ">totallyLegitUser</h5>
+              <div style=" margin: -40px 0px 50px 90px; ">
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>&nbsp&nbsp
+                <span>4</span>
+                <span>&nbsp&nbsp|&nbsp&nbsp</span>
+                <span>3 weeks ago</span>
+              </div>
+              <div style="margin: -15px 0px 20px 15px; ">A totally legit comment from a satisfied customer. 4 stars because there is always room for improvement</div>
+              <hr class="horizontal_line">
+            </td>
+          </tr>
+        </table>
+      </td>
+
+    </tr>
+  </table>
+</div>
+
+<div id="contact_us">
+  <table style=" width: 70%; margin-left: auto; margin-right: auto; ">
+    <tr>
+      <td class="contact_td">
+        <h5 style=" font-size: 40px; margin-bottom: 10px; margin-top: 5px; ">Contact us</h5>
+        <span style=" font-size: 20px; ">Complete the form to get in touch with us. We are here to assist you with any questions or inquiries you may have about our marketplace for freelance services.</span>
+      </td>
+      <td class="contact_td" style=" padding-left: 50px; padding-top: 25px ">
+        <form>
+          <table style=" display: block; ">
+            <tr>
+              <td class="contact_td"><label>Name</label><br><input class="input" type="text"/></td>
+              <td class="contact_td"><label style=" margin-left: 10px; ">E-mail</label><br><input class="input" type="email" style=" margin-left: 10px; "/></td>
+            </tr>
+          </table>
+          <div style=" margin-top: 10px; text-align: left ">
+            <label>Message</label><br><textarea class="input" type="text" cols="40" rows="5" style=" margin-left: 0px; width: 90%; height: 80px; "></textarea>
+          </div>
+          <div style=" text-align: right; padding-right: 25px; padding-top: 5px; ">
+            <button id="contact_button" type="submit">Sent</button>
+          </div>
+        </form>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<footer id="footer">
+  <div style=" font-size: 30px; margin-top: 10px ">CodeTask</div>
+  <div style=" font-size: 20px; padding-top: 10px; ">
+    <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
+    <a class="icon" href="https://www.facebook.com/"><ion-icon name="logo-facebook"></ion-icon></a>
+    <a class="icon" href="https://www.instagram.com/"><ion-icon name="logo-instagram"></ion-icon></a>
+    <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
+  </div>
+  <div style=" padding-top: 20px; "><a href="https://www.cs.unipi.gr/index.php?lang=el">University of Piraeus 2023 ®</a></div>
+</footer>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+  var i = 0;
+  function moveProgressBar(fillAmount) {
+    if (i == 0) {
+      i = 1;
+      var elem = document.getElementById("progress-bar");
+      var width = 1;
+      var id = setInterval(frame, 10);
+      function frame() {
+        if (width >= fillAmount) {
+          clearInterval(id);
+          i = 0;
+        } else {
+          width++;
+          elem.style.width = width + "%";
+        }
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -5,11 +5,14 @@
   <title>View Task</title>
 
   <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
   <style>
     .container {
       height: 100%;
       margin-bottom: 60px;
+      font-family: 'Poppins',sans-serif;
     }
 
     .container:before
@@ -37,6 +40,7 @@
       position: absolute;
       width: 100%;
       height: 100%;
+      font-family: 'Poppins',sans-serif;
     }
     .wrapper > div
     {
@@ -65,6 +69,10 @@
       display: none;
     }
 
+    .bid_label {
+      font-weight: bold;
+    }
+
     #bid_input {
       width: 80%;
       height: 1rem;
@@ -72,7 +80,7 @@
       border-radius: 8px;
       font-size: 20px;
       padding-top: 12px;
-      color: black;
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     .bid_button {
@@ -99,7 +107,7 @@
       touch-action: manipulation;
     }
     .bid_button:hover {
-      box-shadow: rgba(255, 53, 0, 0.5) 0 1px 30px;
+      box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
       transition-duration: .1s;
     }
 
@@ -123,9 +131,9 @@
   <div style=" text-align: center; margin-top: -75px; "><a th:href="@{/index}" href="index.html" style=" text-decoration: none; cursor: pointer; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
   <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
         <span style=" font-size: 21px;">
-            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
+            <a th:href="@{/users/login}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
             /
-            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
+            <a th:href="@{/users/register}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
         </span>
   </div>
 </div>
@@ -136,19 +144,20 @@
 
 <div class="content" style=" color: #FFFFFF; text-align: center; " th:object="${task}">
   <div class="wrapper">
-    <div class="rightContent" style=" font-size: 20px; padding-top: 20px; ">
-      <label for="end_date">End Date</label><br>
+    <div class="rightContent" style=" font-size: 17px; padding-top: 20px; ">
+      <label class="bid_label" for="end_date">End Date</label><br>
       <p id="end_date" th:text="${task.getEndDate()}" >time</p>
       <br>
-      <label for="time_till_end">Time remaining</label><br>
-      <p id="time_till_end" th:text="${task.getRemainingMinutes()} + ' minutes'" >500 minutes</p>
+      <label class="bid_label" for="time_till_end">Time remaining</label><br>
+      <p id="time_till_end" >remaining</p> <!--th:text="${task.getRemainingMinutes()} + ' minutes'"-->
       <br>
-      <label for="max_price">Max bidding price</label><br>
+      <label class="bid_label" for="max_price">Max bidding price</label><br>
       <p id="max_price" th:text="${task.getMaxPrice()} + ' €'" >500 €</p>
-      <br><label for="current_price">Active bid</label><br>
+      <br>
+      <label class="bid_label" for="current_price">Active bid</label><br>
       <p id="current_price" th:text="${task.getCurrentPrice()} + ' €'">400 €</p>
       <br>
-      <input id="bid_input" type="number" name="maxPrice" th:max="${task.getMaxPrice()}" min="0"/><br>
+      <input id="bid_input" type="number" name="maxPrice" th:max="${task.getMaxPrice()}" min="0" th:value="${task.getMaxPrice()}" /><br>
       <button class="bid_button" type="button">Bid</button>
     </div>
     <div class="leftContent" style=" font-size: 20px; text-align: left; margin-left: 15px; ">
@@ -213,6 +222,32 @@
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+
+  var endDate = /*[[${endDate}]]*/ 'january 1, 2024 00:00:00';
+  var countDownDate = new Date(endDate.toString()).getTime();
+
+  var x = setInterval(function() {
+    var now = new Date().getTime();
+    var distance = countDownDate - now;
+
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("time_till_end").innerHTML = days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s ";
+
+    if (distance < 0) {
+      clearInterval(x);
+      document.getElementById("time_till_end").innerHTML = "EXPIRED";
+    }
+  }, 1000);
+  /*]]>*/
+</script>
 
 </body>
 </html>

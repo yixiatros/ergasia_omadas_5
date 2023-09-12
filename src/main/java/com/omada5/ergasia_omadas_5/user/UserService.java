@@ -1,6 +1,11 @@
 package com.omada5.ergasia_omadas_5.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.omada5.ergasia_omadas_5.security.auth.AuthenticationResponse;
+import com.omada5.ergasia_omadas_5.security.auth.AuthenticationService;
+import com.omada5.ergasia_omadas_5.security.auth.RegisterRequest;
+import com.omada5.ergasia_omadas_5.task.Task;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -8,21 +13,39 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
 
     @GetMapping
     public List<User> getUsers(){
         return userRepository.findAll();
     }
 
-    public void addNewUser(User user){
+    @GetMapping
+    public Optional<User> getUserByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
+
+    @GetMapping
+    public Optional<User> getUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    @GetMapping
+    public List<Task> getTasksOfUser(Long userId){
+        return userRepository.findTasksOfUserById(userId);
+    }
+
+    @GetMapping
+    public Optional<User> getUserById(Long userId){
+        return userRepository.findUserById(userId);
+    }
+
+    public AuthenticationResponse addNewUser(User user){
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         Optional<User> userOptional1 = userRepository.findByUsername(user.getUsername());
 
@@ -34,7 +57,14 @@ public class UserService {
             throw new IllegalStateException("username taken");
         }
 
-        userRepository.save(user);
+        return authenticationService.register(
+                new RegisterRequest(
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getEmail(),
+                        user.getRoles()
+                )
+        );
     }
 
     public void deleteUser(Long userId){

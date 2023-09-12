@@ -218,6 +218,7 @@ public class TaskController {
             task = optionalTask.get();
 
         model.addAttribute("task", task);
+        model.addAttribute("endDate", task.getEndDate());
         return "task_view";
     }
 }

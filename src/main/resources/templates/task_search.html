@@ -5,9 +5,13 @@
     <title>Search For Tasks</title>
 
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
     <style>
 
         #search_form {
+            font-family: 'Poppins',sans-serif;
             position: relative;
             width: 30rem;
             background: rgb(255, 69, 0);
@@ -67,6 +71,8 @@
             -moz-user-select: none; /* Old versions of Firefox */
             -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none;
+            font-family: 'Poppins',sans-serif;
+            font-size: 12px;
         }
         .dropdown-check-list {
             position: absolute;
@@ -128,6 +134,7 @@
         #task_table {
             width: 90%;
             border-spacing: 0px 20px;
+            font-family: 'Poppins',sans-serif;
         }
 
         .task_tr {
@@ -159,6 +166,7 @@
             cursor: pointer;
             border: none;
             outline:none;
+            font-family: 'Poppins',sans-serif;
         }
 
         input[type="checkbox"] {
@@ -176,11 +184,9 @@
             vertical-align: middle;
             transform: scale(70%);
         }
-
         input[type="checkbox"]:checked {
             background: rgb(0,0,0,0.2);
         }
-
         input[type="checkbox"]:checked:after {
             content: "✔";
             color: rgb(255, 255, 255);
@@ -209,16 +215,16 @@
     <div style=" text-align: center; margin-top: -75px; "><a th:href="@{/index}" href="index.html" style=" text-decoration: none; cursor: pointer; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
   <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
         <span style=" font-size: 21px;">
-            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
+            <a th:href="@{/users/login}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
             /
-            <a th:href="@{/index}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
+            <a th:href="@{/users/register}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
         </span>
   </div>
 </div>
 
 <div style=" width: 100%; margin-top: 20px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
     <form id="search_form" role="search" th:action="@{/task_search}" method="get">
-        <input id="search" type="search" name="keyword" placeholder="Search for tasks..." autofocus required />
+        <input style="font-size: 20px;" id="search" type="search" name="keyword" placeholder="Search for tasks..." autofocus required />
         <button id="search_button" onclick="onFilter()" type="button"><ion-icon name="search-outline" style="padding-top: 5px;"></ion-icon></button>
     </form>
 </div>
@@ -279,7 +285,7 @@
                     <div>
                         <div>
                             <span th:text="${task.getTitle()}" style=" font-size: 22px; ">Title</span>
-                            <div style=" display: flex; justify-content: right; margin-top: -20px; ">
+                            <div style=" display: flex; justify-content: right; margin-top: -27px; ">
                                 <span th:text="'Max Bidding Price: ' + ${task.getMaxPrice()} + ' €'" style="margin-right: 50px;">Max Bidding Price: 500€</span>
                                 <span th:text="'Time Remaining: ' + ${task.getRemainingMinutes()} + ' minutes'" style="margin-right: 10px; ">Time Remaining: 1000 minutes</span>
                             </div>
@@ -299,7 +305,7 @@
     </table>
 </div>
 
-<div style=" display: flex; align-items: center; justify-content: center; margin-top: 20px; margin-bottom: 20px; ">
+<div style=" display: flex; align-items: center; justify-content: center; margin-top: 20px; margin-bottom: 20px; font-family: 'Poppins',sans-serif; font-size: 14px;">
     <span th:text="${'Showing 1 to 3 of ' + tasksSize}" style=" color: #FFFFFF; ">Showing 1 to 6 of 210</span>
     <div style=" display: inline; margin-left: 25px; ">
         <label style=" color: #FFFFFF">Results per page</label>
@@ -388,6 +394,14 @@
         else
             checkListTechnologies.classList.add('visible');
     }
+
+    var input = document.getElementById("search");
+    input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            onFilter();
+        }
+    });
 
     const keyword = document.getElementById("search");
     const hidden = document.getElementById("hidden_search");
