@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +17,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private String secretKey = "7952744d724b67304c6b785242576a6d78444f32345148364b61713677716e304c447870366536392f70635662793364712b6644597a6b4c4b55734136476c620d0a78332b3641637050463452542b31337a4947516561513d3d";
+    private final String secretKey = "7952744d724b67304c6b785242576a6d78444f32345148364b61713677716e30";
 
-    private long jwtExpiration = 86400000;
+    private final long jwtExpiration = 86400000; // 24 hours in milliseconds
 
-    private long refreshExpiration = 1800000;
+    private final long refreshExpiration = 604800000; // 7 days in milliseconds
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -48,8 +47,7 @@ public class JwtService {
     private String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
-            long expiration
-    ) {
+            long expiration) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

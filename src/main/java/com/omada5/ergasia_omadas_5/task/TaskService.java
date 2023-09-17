@@ -1,27 +1,30 @@
 package com.omada5.ergasia_omadas_5.task;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.omada5.ergasia_omadas_5.bidding.Offer;
+import com.omada5.ergasia_omadas_5.bidding.OfferRepository;
+import com.omada5.ergasia_omadas_5.user.User;
+import com.omada5.ergasia_omadas_5.user.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepository;
     private final CategoryRepository categoryRepository;
     private  final SubcategoryRepository subcategoryRepository;
-
-    @Autowired
-    public TaskService(TaskRepository taskRepository,
-                       CategoryRepository categoryRepository,
-                       SubcategoryRepository subcategoryRepository){
-        this.taskRepository = taskRepository;
-        this.categoryRepository = categoryRepository;
-        this.subcategoryRepository = subcategoryRepository;
-    }
+    private final OfferRepository offerRepository;
+    private final UserRepository userRepository;
 
     @GetMapping
     public List<Task> getTasks(){
@@ -63,5 +66,51 @@ public class TaskService {
 
     public List<Task> searchTask(String search){
         return taskRepository.findTasksBySearch(search);
+    }
+
+    public List<Offer> getActiveOffersOfTask(Long taskId){
+        return taskRepository.findActiveOffersOfTaskById(taskId);
+    }
+
+    public List<Offer> getOffersOfUser(Long taskId, String username){
+        return taskRepository.findOffersOfUserToTask(taskId, username);
+    }
+
+    public void saveOffer(float offerPrice, Task task){
+        Optional<User> userOptional = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (!userOptional.isPresent())
+            return;
+
+        List<Offer> offers = getOffersOfUser(task.getId(), userOptional.get().getUsername());
+        for (Offer o : offers)
+            if (o.isActive())
+                o.setActive(false);
+        offerRepository.saveAll(offers);
+
+        var offer = Offer.builder()
+                .task(task)
+                .bidder(userOptional.get())
+                .price(offerPrice)
+                .offerDateTime(LocalDateTime.now())
+                .isActive(true)
+                .build();
+        offerRepository.save(offer);
+
+        offers = getActiveOffersOfTask(task.getId());
+        Offer maxOffer = offers.stream().min(Comparator.comparing(Offer::getPrice)).get();
+        task.setActiveLowestPrice(maxOffer.getPrice());
+        taskRepository.save(task);
+    }
+
+    public void deleteOffers(Long taskId){
+        Optional<User> userOptional = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (!userOptional.isPresent())
+            return;
+
+        List<Offer> offers = getOffersOfUser(taskId, userOptional.get().getUsername());
+        for (Offer o : offers)
+            if (o.isActive())
+                o.setActive(false);
+        offerRepository.saveAll(offers);
     }
 }

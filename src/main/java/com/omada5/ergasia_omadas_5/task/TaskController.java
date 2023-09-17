@@ -1,10 +1,21 @@
 package com.omada5.ergasia_omadas_5.task;
 
+import com.omada5.ergasia_omadas_5.bidding.Offer;
+import com.omada5.ergasia_omadas_5.bidding.OfferRepository;
+import com.omada5.ergasia_omadas_5.user.User;
+import com.omada5.ergasia_omadas_5.user.UserRepository;
+import com.omada5.ergasia_omadas_5.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.WebUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,23 +26,20 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Controller
+@RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
+    private final UserService userService;
+    private final OfferRepository offerRepository;
 
-    @Autowired
-    public TaskController(TaskService taskService){
-        this.taskService = taskService;
-    }
-
-    @GetMapping
     public List<Task> getTasks(){
-        return taskService.getTasks();
-    }
-
-    @PostMapping
-    public void registerNewTask(@RequestBody Task task){
-        taskService.addNewTask(task);
+        List<Task> allTasks = taskService.getTasks();
+        List<Task> publicTasks = new ArrayList<>();
+        for (Task task : allTasks)
+            if (task.isPublic())
+                publicTasks.add(task);
+        return publicTasks;
     }
 
     @DeleteMapping(path="{taskid}")
@@ -41,6 +49,8 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public String showTasks(Model model){
+        putUsername(model);
+
         List<Task> tasks = getTasks();
         List<Category> categories = taskService.getCategories();
         List<Subcategory> subcategories = taskService.getSubCategories();
@@ -57,7 +67,7 @@ public class TaskController {
                              @RequestParam("subcategory") List<Long> subcategoryId,
                              Model model){
 
-        System.out.println("\n\n\n\n\n\n\n\n\n\n" + categoryId + "\n\n\n\n\n\n\n\n\n\n\n\n");
+        putUsername(model);
 
         List<Task> tasks = new ArrayList<>();
         if (keyword.equals(""))
@@ -150,6 +160,8 @@ public class TaskController {
 
     @GetMapping("/task_create")
     public String createTask(Model model){
+        putUsername(model);
+
         model.addAttribute("currentDateTime", LocalDate.now());
         List<Category> categories = taskService.getCategories();
         List<Subcategory> subcategories = taskService.getSubCategories();
@@ -171,21 +183,23 @@ public class TaskController {
     }
 
     @PostMapping("/task_create")
-    public String setCreatedTask(@RequestParam("title") String title,
-                        @RequestParam("description") String description,
-                        @Param("isPublic") boolean isPublic,
-                        @Param("showPrice") boolean showPrice,
-                        @Param("isPayingByTheHour") boolean isPayingByTheHour,
-                        @RequestParam("maxPrice") float maxPrice,
-                        @RequestParam("endDate") LocalDateTime endDate,
-                        @RequestParam("category") String categoryId,
-                        @RequestParam(value = "subcategory", required = false, defaultValue = "-1") String subcategoryId){
+    public RedirectView setCreatedTask(@RequestParam("title") String title,
+                                       @RequestParam("description") String description,
+                                       @Param("isPublic") boolean isPublic,
+                                       @Param("showPrice") boolean showPrice,
+                                       @Param("isPayingByTheHour") boolean isPayingByTheHour,
+                                       @RequestParam("creatorUsername") String creatorUsername,
+                                       @RequestParam("maxPrice") float maxPrice,
+                                       @RequestParam("endDate") LocalDateTime endDate,
+                                       @RequestParam("category") String categoryId,
+                                       @RequestParam(value = "subcategory", required = false, defaultValue = "-1") String subcategoryId){
+
         Optional<Task> userOptional = taskService.getTasks().stream()
                 .filter(u->title.equals(u.getTitle()))
                 .findAny();
 
         if (userOptional.isPresent())
-            return "task_search";
+            return new RedirectView("/task_search");
 
         Task task = new Task(
                 title,
@@ -205,13 +219,18 @@ public class TaskController {
             task.setSubcategory(subcategory);
         }
 
+        Optional<User> user = userService.getUserByUsername(creatorUsername);
+        user.ifPresent(task::setCreator);
+
         taskService.addNewTask(task);
 
-        return "index";
+        return new RedirectView("/index");
     }
 
     @GetMapping(path = "/task_view/{taskId}")
     public String seeTask(@PathVariable("taskId") Long taskId, Model model){
+        putUsername(model);
+
         Optional<Task> optionalTask = taskService.getTaskById(taskId);
         Task task = null;
         if (optionalTask.isPresent())
@@ -219,6 +238,45 @@ public class TaskController {
 
         model.addAttribute("task", task);
         model.addAttribute("endDate", task.getEndDate());
+
+        Optional<User> userOptional = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (!userOptional.isPresent())
+            return "task_view";
+
+        List<Offer> thisUserOffers = taskService.getOffersOfUser(taskId, userOptional.get().getUsername());
+        for (Offer o : thisUserOffers) {
+            if (o.isActive()) {
+                model.addAttribute("myActiveOffer", o.getPrice());
+                break;
+            }
+        }
+
+        List<Offer> offers = taskService.getActiveOffersOfTask(taskId);
+        if (offers.size() > 0){
+            model.addAttribute("offers", offers);
+        }
+
         return "task_view";
+    }
+
+    @PostMapping(path = "/bid")
+    public RedirectView makeOffer(@RequestParam("offer") float offerPrice, @RequestParam("currentTask") Long taskId){
+        taskService.saveOffer(offerPrice, taskService.getTaskById(taskId).get());
+        return new RedirectView("/task_view/" + taskId.toString());
+    }
+
+    @GetMapping(path = "/delete_offers/{taskId}")
+    public RedirectView makeOffer(@PathVariable("taskId") Long taskId) {
+        taskService.deleteOffers(taskId);
+        return new RedirectView("/task_view/" + taskId.toString());
+    }
+
+    private void putUsername(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            model.addAttribute("logedInUsername", authentication.getName());
+            Optional<User> user = userService.getUserByUsername(authentication.getName());
+            user.ifPresent(value -> model.addAttribute("logedInUserID", value.getId()));
+        }
     }
 }

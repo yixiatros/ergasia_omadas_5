@@ -71,3 +71,79 @@ input, textarea {
     margin: 0px -8px -100px -8px;
     vertical-align: middle;
 }
+
+
+
+/* username dropdown */
+.drop_list_item .drop_link {
+    text-decoration : none;
+    color : #ffffff;
+    padding: 15px;
+    width: 100%;
+    margin-left: -40px;
+    text-align: center;
+}
+
+.drop_nav {
+    position: absolute;
+    right: 26px;
+    top: 13px;
+    display: inline-block;
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    font-size: 22px;
+    /* select text disabled */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+    /* select text disabled */
+}
+
+.drop_span {
+    min-width: 80px;
+    overflow: hidden;
+    padding: 15px 20px;
+    background-color: rgb(255, 89, 20);
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    font-size : 1em;
+    cursor : pointer;
+    text-align: center;
+}
+
+.slide {
+    margin-top: -20px;
+    background-color: rgb(255, 89, 20);
+    border-radius: 8px;
+    clear: both;
+    height: 0px;
+    overflow: hidden;
+    text-align: center;
+    transition: height .3s ease;
+    list-style-type: none;
+}
+
+.slide li {
+    padding-top: 40px;
+    font-size: 18px;
+}
+
+#touch {
+    position: absolute;
+    opacity: 0;
+    height: 0px;
+}
+
+#touch:checked + .slide {
+    height: 125px;
+}
+
+.drop_list_item .drop_link:hover {
+    background-color: rgb(255, 69, 0);
+    padding: 15px 2rem;
+    border-radius: 8px;
+}
+/* username dropdown */

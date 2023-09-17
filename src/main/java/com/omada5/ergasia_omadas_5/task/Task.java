@@ -41,7 +41,7 @@ public class Task {
     private Subcategory subcategory;
     private boolean isPayingByTheHour;
     private float maxPrice;
-    private float currentPrice = 0;
+    private float activeLowestPrice = 0;
     private LocalDateTime endDate;
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinTable(
@@ -256,11 +256,11 @@ public class Task {
         this.creator = user;
     }
 
-    public float getCurrentPrice() {
-        return currentPrice;
+    public float getActiveLowestPrice() {
+        return activeLowestPrice;
     }
 
-    public void setCurrentPrice(float currentPrice) {
-        this.currentPrice = currentPrice;
+    public void setActiveLowestPrice(float currentPrice) {
+        this.activeLowestPrice = currentPrice;
     }
 }

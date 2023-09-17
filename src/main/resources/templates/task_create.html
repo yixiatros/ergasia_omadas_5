@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Create Task</title>
@@ -120,24 +121,7 @@
     </style>
 </head>
 <body>
-<div id="navbar-top">
-    <div style=" font-size: 25px; ">
-        <div style=" padding-top: 25px; margin-left: 10px; ">
-            <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
-            <a class="icon" href="https://www.facebook.com/"><ion-icon name="logo-facebook"></ion-icon></a>
-            <a class="icon" href="https://www.instagram.com/"><ion-icon name="logo-instagram"></ion-icon></a>
-            <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
-        </div>
-    </div>
-    <div style=" text-align: center; margin-top: -75px; "><a th:href="@{/index}" href="index.html" style=" text-decoration: none; cursor: pointer; "><h2 style=" font-size: 40px; ">CodeTask</h2></a></div>
-    <div style=" text-align: right;  margin-top: -65px; margin-right: 18px">
-        <span style=" font-size: 21px;">
-            <a th:href="@{/users/login}" href="index.html" style=" text-decoration: underline; ">LogIn</a>
-            /
-            <a th:href="@{/users/register}" href="index.html" style=" text-decoration: underline; ">SignUp</a>
-        </span>
-    </div>
-</div>
+<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID})}"></div>
 
 <div style=" margin-top: 25px; color: rgb(255, 255, 255); ">
     <H3 style=" font-size: 30px; margin-left: 15px; ">Create a new Task:</H3>
@@ -172,47 +156,14 @@
                 <option class="subcategories_creation" th:each="subcategory: ${subcategories}" th:value="${subcategory.getId()}" th:text="${subcategory.getName()}">Spring boot</option>
             </select>
         </div>
+        <input type="text" th:value="${logedInUsername}" name="creatorUsername" hidden/>
         <input class="create_button" type="submit" value="Create" />
     </form>
 </div>
 
-<div id="contact_us">
-    <table style=" width: 70%; margin-left: auto; margin-right: auto; ">
-        <tr>
-            <td class="contact_td">
-                <h5 style=" font-size: 40px; margin-bottom: 10px; margin-top: 5px; ">Contact us</h5>
-                <span style=" font-size: 20px; ">Complete the form to get in touch with us. We are here to assist you with any questions or inquiries you may have about our marketplace for freelance services.</span>
-            </td>
-            <td class="contact_td" style=" padding-left: 50px; padding-top: 25px ">
-                <form>
-                    <table style=" display: block; ">
-                        <tr>
-                            <td class="contact_td"><label>Name</label><br><input class="input" type="text"/></td>
-                            <td class="contact_td"><label style=" margin-left: 10px; ">E-mail</label><br><input class="input" type="email" style=" margin-left: 10px; "/></td>
-                        </tr>
-                    </table>
-                    <div style=" margin-top: 10px; text-align: left ">
-                        <label>Message</label><br><textarea class="input" type="text" cols="40" rows="5" style=" margin-left: 0px; width: 90%; height: 80px; "></textarea>
-                    </div>
-                    <div style=" text-align: right; padding-right: 25px; padding-top: 5px; ">
-                        <button id="contact_button" type="submit">Sent</button>
-                    </div>
-                </form>
-            </td>
-        </tr>
-    </table>
-</div>
+<div id="contact_us" th:replace="~{fragments :: contact_us}"></div>
 
-<footer id="footer">
-    <div style=" font-size: 30px; margin-top: 10px ">CodeTask</div>
-    <div style=" font-size: 20px; padding-top: 10px; ">
-        <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
-        <a class="icon" href="https://www.facebook.com/"><ion-icon name="logo-facebook"></ion-icon></a>
-        <a class="icon" href="https://www.instagram.com/"><ion-icon name="logo-instagram"></ion-icon></a>
-        <a class="icon" href="https://twitter.com/"><ion-icon name="logo-twitter"></ion-icon></a>
-    </div>
-    <div style=" padding-top: 20px; "><a href="https://www.cs.unipi.gr/index.php?lang=el">University of Piraeus 2023 ®</a></div>
-</footer>
+<footer id="footer" th:replace="~{fragments :: footer}"></footer>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
