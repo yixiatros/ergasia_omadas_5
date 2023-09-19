@@ -97,4 +97,8 @@ public class UserService {
     public List<UserRating> getUserRatingsOfUser(Long userId){
         return userRatingRepository.findUserRatingByUserWhoIsRated(userId);
     }
+
+    public List<User> searchUsers(String search) {
+        return userRepository.findUsersBySearch(search);
+    }
 }

@@ -58,8 +58,8 @@ public class TaskController {
 
     @GetMapping("/task_search")
     public String searchTask(@RequestParam("keyword") String keyword,
-                             @RequestParam("category") List<Long> categoryId,
-                             @RequestParam("subcategory") List<Long> subcategoryId,
+                             @RequestParam(name = "category", defaultValue = "-1") List<Long> categoryId,
+                             @RequestParam(name = "subcategory", defaultValue = "-1") List<Long> subcategoryId,
                              Model model){
 
         putUsername(model);

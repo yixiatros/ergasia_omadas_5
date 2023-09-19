@@ -1,12 +1,11 @@
 package com.omada5.ergasia_omadas_5.user;
 
-import com.omada5.ergasia_omadas_5.security.JwtService;
+import com.omada5.ergasia_omadas_5.image.FileUploadUtil;
 import com.omada5.ergasia_omadas_5.security.LogoutService;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationRequest;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationResponse;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationService;
 import com.omada5.ergasia_omadas_5.task.Task;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +17,13 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.WebUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -34,6 +35,7 @@ public class UserController {
     private final RoleRepository roleRepository;
     private final AuthenticationService authenticationService;
     private final LogoutService logoutService;
+    private final UserRepository userRepository;
 
     @GetMapping
     public List<User> getUsers(){
@@ -91,8 +93,38 @@ public class UserController {
         model.addAttribute("averageRating", (int) averageRating);
         model.addAttribute("numberOfRatings", percentageOfRatings);
 
+        if (user.getRoles().contains(roleRepository.findByName("developer").get()))
+            model.addAttribute("isDeveloper", true);
+
+        // todo delete
+        // Testing //
+        Random r = new Random();
+        userService.saveUserRating(r.nextInt((5 - 1) + 1) + 1, "aaaaa", userService.getUserById(1L).get());
+        // Testing //
+
         return "profile_view";
     }
+
+    @PostMapping(path = "/profile_view/change_picture")
+    public RedirectView changeProfilePicture(Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException{
+        User user = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        user.setProfilePicture(fileName);
+        userRepository.save(user);
+
+        String uploadDir = "user-photos/" + user.getId();
+        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+        return new RedirectView("/users/profile_view/" + user.getId());
+    }
+
+    /*@GetMapping(path = "/changePicture")
+    public String changeProfilePic(Model model) {
+        putUsername(model);
+        //
+
+        return "/index";
+    }*/
 
     @GetMapping(path = "/loginToAccess")
     public String loginToAccess(Model model){
@@ -167,6 +199,62 @@ public class UserController {
         return "login";
     }
 
+    @GetMapping(path = "/logout")
+    public RedirectView logout(HttpServletRequest request, HttpServletResponse response){
+        logoutService.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        CookieClearingLogoutHandler cookieClearingLogoutHandler = new CookieClearingLogoutHandler(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
+        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
+        cookieClearingLogoutHandler.logout(request, response, null);
+        securityContextLogoutHandler.logout(request, response, null);
+        return new RedirectView("/index");
+    }
+
+    @GetMapping(path = "/user_search")
+    public String searchUser(@RequestParam(name = "keyword", defaultValue = "") String keyword,
+                             @RequestParam(name = "role", defaultValue = "-1") List<Long> roleId,
+                             @RequestParam(name = "ability", defaultValue = "-1") List<Long> abilityId,
+                             Model model){
+
+        putUsername(model);
+
+        List<User> users = new ArrayList<>();
+        if (keyword.equals(""))
+            users = userService.getUsers();
+        else
+            users = userService.searchUsers(keyword);
+
+        List<Role> roles = roleRepository.findAll();
+        roles.remove(roleRepository.findByName("admin").get());
+        model.addAttribute("userRoles", roles);
+
+        users = filterUsersByRole(users, roleId);
+        model.addAttribute("users", users);
+
+        return "/user_search";
+    }
+
+    private List<User> filterUsersByRole(List<User> users, List<Long> roleId){
+        if (roleId.get(0) == -1)
+            roleId.remove(0);
+
+        if (roleId.size() == 0)
+            return users;
+
+        List<Role> roles = new ArrayList<>();
+        for (Long id: roleId)
+            roles.add(roleRepository.findRoleById(id).get());
+        roles.remove(roleRepository.findByName("admin").get());
+
+        List<User> newUsers = new ArrayList<>();
+        for (User user: users)
+            for (Role role: roles)
+                if (user.getRoles().contains(role)){
+                    newUsers.add(user);
+                    break;
+                }
+        return newUsers;
+    }
+
     private ResponseEntity<String> editSession(AuthenticationResponse authenticationResponse) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + authenticationResponse.getAccessToken());
@@ -182,15 +270,5 @@ public class UserController {
             Optional<User> user = userService.getUserByUsername(authentication.getName());
             user.ifPresent(value -> model.addAttribute("logedInUserID", value.getId()));
         }
-    }
-
-    @GetMapping(path = "/logout")
-    public RedirectView logout(HttpServletRequest request, HttpServletResponse response){
-        logoutService.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        CookieClearingLogoutHandler cookieClearingLogoutHandler = new CookieClearingLogoutHandler(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
-        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-        cookieClearingLogoutHandler.logout(request, response, null);
-        securityContextLogoutHandler.logout(request, response, null);
-        return new RedirectView("/index");
     }
 }

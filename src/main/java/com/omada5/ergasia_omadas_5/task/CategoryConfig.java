@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,19 +14,54 @@ public class CategoryConfig {
     @Bean
     CommandLineRunner commandLineRunner4(CategoryRepository categoryRepository, SubcategoryRepository subcategoryRepository){
         return args -> {
-            //Optional<Category> categoryOptional = categoryRepository.findCategoryByName("Andriod App");
-            //if (categoryOptional.isPresent())
+            List<Category> categories = new ArrayList<>();
+            List<Subcategory> subcategories = new ArrayList<>();
 
-            Category category1 = new Category("Android App");
-            Category category2 = new Category("Web App");
+            Optional<Category> categoryOptional = categoryRepository.findCategoryByName("Android App");
+            if (!categoryOptional.isPresent()) {
+                Category category = new Category("Android App");
+                categories.add(category);
+            }
+            categoryOptional = categoryRepository.findCategoryByName("Web App");
+            if (!categoryOptional.isPresent()) {
+                Category category = new Category("Web App");
+                categories.add(category);
+            }
 
-            Subcategory subcategory1 = new Subcategory("Spring Boot", category2);
+            categoryRepository.saveAll(categories);
 
-            categoryRepository.saveAll(
-                    List.of(category1, category2)
-            );
+            Optional<Subcategory> subcategoryOptional = subcategoryRepository.findSubcategoryByName("Spring Boot");
+            if (!subcategoryOptional.isPresent()){
+                Subcategory subcategory = new Subcategory("Spring Boot", categoryRepository.findCategoryByName("Web App").get());
+                subcategories.add(subcategory);
+            }
+            subcategoryOptional = subcategoryRepository.findSubcategoryByName("Portal");
+            if (!subcategoryOptional.isPresent()){
+                Subcategory subcategory = new Subcategory("Portal", categoryRepository.findCategoryByName("Web App").get());
+                subcategories.add(subcategory);
+            }
+            subcategoryOptional = subcategoryRepository.findSubcategoryByName("Corporate Site");
+            if (!subcategoryOptional.isPresent()){
+                Subcategory subcategory = new Subcategory("Corporate Site", categoryRepository.findCategoryByName("Web App").get());
+                subcategories.add(subcategory);
+            }
+            subcategoryOptional = subcategoryRepository.findSubcategoryByName("Educational");
+            if (!subcategoryOptional.isPresent()){
+                Subcategory subcategory = new Subcategory("Educational", categoryRepository.findCategoryByName("Android App").get());
+                subcategories.add(subcategory);
+            }
+            subcategoryOptional = subcategoryRepository.findSubcategoryByName("Social Media");
+            if (!subcategoryOptional.isPresent()){
+                Subcategory subcategory = new Subcategory("Social Media", categoryRepository.findCategoryByName("Android App").get());
+                subcategories.add(subcategory);
+            }
+            subcategoryOptional = subcategoryRepository.findSubcategoryByName("Video Game");
+            if (!subcategoryOptional.isPresent()){
+                Subcategory subcategory = new Subcategory("Video Game", categoryRepository.findCategoryByName("Android App").get());
+                subcategories.add(subcategory);
+            }
 
-            subcategoryRepository.save(subcategory1);
+            subcategoryRepository.saveAll(subcategories);
         };
     }
 }

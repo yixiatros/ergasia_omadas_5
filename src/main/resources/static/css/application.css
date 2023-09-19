@@ -152,3 +152,27 @@ input, textarea {
     border-radius: 8px;
 }
 /* username dropdown */
+
+/* Profile Image */
+.menu {
+    width: 170px;
+    float: left;
+    position: relative;
+}
+
+.menu_label {
+    width: 154px;
+    color: #FFFFFF;
+    float: left;
+    padding: 3px;
+    position: absolute;
+    top: 50%;
+    left: 10px;
+}
+
+.real_photo {
+    max-width:177px;
+    display: inline-block;
+    border-radius: 50%;
+}
+/* Profile Image */

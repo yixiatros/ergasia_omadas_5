@@ -2,57 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Search For Tasks</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Search for Tasks</title>
 
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+    <link rel="stylesheet" th:href="@{/css/search.css}" href="../static/css/search.css"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
     <style>
-
-        #search_form {
-            font-family: 'Poppins',sans-serif;
-            position: relative;
-            width: 30rem;
-            background: rgb(255, 69, 0);
-            border-radius: 0.7rem;
-        }
-        #search, #search_button {
-            height: 2.5rem;
-            border: 0;
-            font-size: 1.8rem;
-        }
-        #search {
-            color: rgb(51, 51, 51);
-            outline: 0;
-            width: 100%;
-            background: rgb(255, 255, 255);
-            padding: 0 1.6rem;
-            border-radius: 0.7rem;
-            appearance: none;
-            transition: all 0.3s cubic-bezier(0, 0, 0.43, 1.49);
-            transition-property: width, border-radius;
-            z-index: 1;
-            position: relative;
-        }
-        #search_button {
-            color: rgb(255, 255, 255);
-            display: block;
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 6rem;
-            font-weight: bold;
-            background: rgb(255, 69, 0);
-            border-radius: 0 0.7rem 0.7rem 0;
-        }
-        #search:not(:placeholder-shown) {
-            border-radius: 0.7rem 0 0 0.7rem;
-            width: calc(100% - 6rem);
-        }
-
-
         #results_per_page {
             z-index: 10;
             display: inline-block;
@@ -64,90 +22,24 @@
             height: 1.5rem;
         }
 
-
-        .dropdown-check-list, #results_per_page{
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none; /* Safari */
-            -khtml-user-select: none; /* Konqueror HTML */
-            -moz-user-select: none; /* Old versions of Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none;
-            font-family: 'Poppins',sans-serif;
-            font-size: 12px;
-        }
-        .dropdown-check-list {
-            position: absolute;
-            display: inline-block;
-            background-color: rgb(255, 89, 20);
-            color: rgb(255, 255, 255);
-            border-radius: 8px;
-            z-index: 9999;
-        }
-        .dropdown-check-list .anchor {
-            position: relative;
-            cursor: pointer;
-            display: inline-block;
-            padding: 5px 50px 5px 10px;
-            z-index: 9999;
-        }
-        .dropdown-check-list .anchor:after {
-            position: absolute;
-            content: "";
-            border-left: 2px solid white;
-            border-top: 2px solid white;
-            padding: 5px;
-            right: 10px;
-            top: 20%;
-            -moz-transform: rotate(-135deg);
-            -ms-transform: rotate(-135deg);
-            -o-transform: rotate(-135deg);
-            -webkit-transform: rotate(-135deg);
-            transform: rotate(-135deg);
-            z-index: 9999;
-        }
-        .dropdown-check-list .anchor:active:after {
-            right: 8px;
-            top: 21%;
-            z-index: 9999;
-        }
-        .dropdown-check-list ul.items {
-            padding: 2px;
-            display: none;
-            margin: 0;
-            border-top: none;
-            z-index: 9999;
-        }
-        .dropdown-check-list ul.items li {
-            margin-bottom: 2px;
-            list-style: none;
-            z-index: 9999;
-        }
-        .dropdown-check-list.visible .anchor {
-            color: rgb(0, 0, 0);
-            z-index: 9999;
-        }
-        .dropdown-check-list.visible .items {
-            display: block;
-            z-index: 9999;
-        }
-
-
         #task_table {
             width: 90%;
             border-spacing: 0px 20px;
             font-family: 'Poppins',sans-serif;
         }
-
+        .task_tr:hover{
+            transform: scale(1.05);
+            box-shadow: 5px 5px 8px #222222;
+        }
         .task_tr {
             width: 95%;
             height: 150px;
             color: rgb(255, 255, 255);
+            transition: all .2s ease-in-out;
         }
-
         .task_td:hover {
             cursor: pointer;
         }
-
         .task_td {
             vertical-align: top;
             padding: 10px;
@@ -156,51 +48,6 @@
             box-shadow: 3px 3px 5px #222222;
             border-radius: 8px;
         }
-
-
-        #filter_button {
-            height: 40px;
-            width: 80px;
-            border-radius: 8px;
-            color: rgb(255, 255, 255);
-            background-color: rgb(255, 89, 20);
-            cursor: pointer;
-            border: none;
-            outline:none;
-            font-family: 'Poppins',sans-serif;
-        }
-
-        input[type="checkbox"] {
-            margin-left: 2px;
-            margin-right: 5px;
-            margin-top: -2px;
-            -webkit-appearance: initial;
-            appearance: initial;
-            background: rgb(0,0,0,0.0);
-            width: 1px;
-            height: 25px;
-            border: 2px solid rgb(255, 255, 255);
-            border-radius: 30%;
-            position: relative;
-            vertical-align: middle;
-            transform: scale(70%);
-        }
-        input[type="checkbox"]:checked {
-            background: rgb(0,0,0,0.2);
-        }
-        input[type="checkbox"]:checked:after {
-            content: "✔";
-            color: rgb(255, 255, 255);
-            zoom: 0.75;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            -webkit-transform: translate(-50%,-50%);
-            -moz-transform: translate(-50%,-50%);
-            -ms-transform: translate(-50%,-50%);
-            transform: translate(-50%,-50%);
-        }
-
     </style>
 </head>
 <body>
@@ -219,14 +66,12 @@
         <div id="categories" class="dropdown-check-list" tabindex="100">
             <span class="anchor">Categories</span>
             <ul class="items" th:each="category, iteration: ${categories}">
-                <li><input th:if="${iteration.index} < 1" type="hidden" name="category" value="-1"></li>
                 <li><input type="checkbox" name="category" th:value="${category.getId()}" th:text="${category.getName()}"/></li>
             </ul>
         </div>
         <div id="sub_categories" class="dropdown-check-list" tabindex="100" style=" margin-left: 150px; ">
             <span class="anchor">Subcategories</span>
             <ul class="items" th:each="subcategory, iteration: ${subcategories}">
-                <li><input th:if="${iteration.index} < 1" type="hidden" name="subcategory" value="-1"></li>
                 <li><input type="checkbox" name="subcategory" th:value="${subcategory.getId()}" th:text="${subcategory.getName()}"/></li>
             </ul>
         </div>
@@ -257,8 +102,8 @@
 </div>
 
 <div>
-    <a th:each="category: ${appliedCategories}"><span th:text="${category.getName()} + ' X'" style=" color: #FFFFFF; margin-right: 50px; "/></a>
-    <a th:each="subcategory: ${appliedSubcategories}"><span th:text="${subcategory.getName()} + ' X'" style=" color: #FFFFFF; margin-right: 50px; "/></a>
+    <a style=" text-decoration: underline; " th:each="category: ${appliedCategories}"><span th:text="${category.getName()} + ' X'" style=" color: #FFFFFF; margin-right: 50px; "/></a>
+    <a style=" text-decoration: underline; " th:each="subcategory: ${appliedSubcategories}"><span th:text="${subcategory.getName()} + ' X'" style=" color: #FFFFFF; margin-right: 50px; "/></a>
 </div>
 
 <div id="task_list" style=" display: flex; align-items: center; justify-content: center; ">
@@ -298,7 +143,7 @@
             <option class="results_per_page_val" value="10">10</option>
             <option class="results_per_page_val" value="20">20</option>
             <option class="results_per_page_val" value="30">30</option>
-            <option class="results_per_page_val" value="0">all</option>
+            <option class="results_per_page_val" value="0" selected>all</option>
         </select>
     </div>
     <span style=" color: #FFFFFF; margin-left: 25px; "><a href="task_search.html">< previous</a> &nbsp&nbsp&nbsp 1 &nbsp&nbsp&nbsp 2 &nbsp&nbsp&nbsp 3 &nbsp&nbsp&nbsp <a href="task_search.html">next ></a></span>
@@ -316,28 +161,24 @@
     const  checkListSubcategories = document.getElementById('sub_categories');
     const  checkListLanguages = document.getElementById('languages');
     const  checkListTechnologies = document.getElementById('technologies');
-
     checkListCategories.getElementsByClassName('anchor')[0].onclick = function(evt) {
         if (checkListCategories.classList.contains('visible'))
             checkListCategories.classList.remove('visible');
         else
             checkListCategories.classList.add('visible');
     }
-
     checkListSubcategories.getElementsByClassName('anchor')[0].onclick = function(evt) {
         if (checkListSubcategories.classList.contains('visible'))
             checkListSubcategories.classList.remove('visible');
         else
             checkListSubcategories.classList.add('visible');
     }
-
     checkListLanguages.getElementsByClassName('anchor')[0].onclick = function(evt) {
         if (checkListLanguages.classList.contains('visible'))
             checkListLanguages.classList.remove('visible');
         else
             checkListLanguages.classList.add('visible');
     }
-
     checkListTechnologies.getElementsByClassName('anchor')[0].onclick = function(evt) {
         if (checkListTechnologies.classList.contains('visible'))
             checkListTechnologies.classList.remove('visible');
@@ -352,7 +193,6 @@
             onFilter();
         }
     });
-
     const keyword = document.getElementById("search");
     const hidden = document.getElementById("hidden_search");
     const filter_form = document.getElementById("filter_form");

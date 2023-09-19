@@ -153,7 +153,7 @@
             <label class="creation_label" for="creation_subcategory" style="margin-left: 35px;" >Subcategory</label>
             <select name="subcategory" id="creation_subcategory">
                 <option value="">Please select</option>
-                <option class="subcategories_creation" th:each="subcategory: ${subcategories}" th:value="${subcategory.getId()}" th:text="${subcategory.getName()}">Spring boot</option>
+                <option class="subcategories_creation" th:data-category="${subcategory.getCategory().getId()}" th:each="subcategory: ${subcategories}" th:value="${subcategory.getId()}" th:text="${subcategory.getName()}">Spring boot</option>
             </select>
         </div>
         <input type="text" th:value="${logedInUsername}" name="creatorUsername" hidden/>
@@ -173,13 +173,13 @@
     const creation_subcategory = document.getElementById("creation_subcategory");
 
     function filterSubs(id){
-        if (id == "") return;
+        if (id == null) return;
 
         refillSubs();
 
-        const subcategories_creation = document.getElementsByClassName("subcategories_creation");
+        var subcategories_creation = document.getElementsByClassName("subcategories_creation");
         for (var i = 0; i < subcategories_creation.length; i++) {
-            if (subcategories_creation.item(i).value == id){
+            if (subcategories_creation.item(i).getAttribute("data-category") != id){
                 subcategories_creation.item(i).style.display = "none";
             }
         }

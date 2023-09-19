@@ -31,11 +31,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/users/profile_view/**", "/tasks", "/task_view/**").permitAll()
+                            .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**","/vendor/**","/fonts/**").permitAll()
+                            .requestMatchers("/index", "/users/profile_view/**", "/users/user_search/**", "/task_search/**", "/tasks", "/task_view/**").permitAll()
                             .requestMatchers("/users/logout").hasAnyAuthority("client", "developer", "admin")
                             .requestMatchers("/users/**").hasAuthority("ROLE_ANONYMOUS")
-                            .requestMatchers("/index", "/auth/**").permitAll()
-                            .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**","/vendor/**","/fonts/**").permitAll()
                             .requestMatchers("/task_create").hasAuthority("client")
                             .anyRequest().authenticated();
                 })

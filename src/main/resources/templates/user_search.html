@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+    <title>Search for Developers</title>
+
+    <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+    <link rel="stylesheet" th:href="@{/css/search.css}" href="../static/css/search.css"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        #user_table {
+            width: 90%;
+            border-spacing: 0px 20px;
+            font-family: 'Poppins',sans-serif;
+        }
+        .user_tr:hover{
+            transform: scale(1.05);
+            box-shadow: 5px 5px 8px #222222;
+        }
+        .user_tr {
+            width: 95%;
+            height: 150px;
+            color: rgb(255, 255, 255);
+            transition: all .2s ease-in-out;
+        }
+        .user_td:hover {
+            cursor: pointer;
+        }
+        .user_td {
+            vertical-align: top;
+            padding: 10px;
+            background-color: #FF5719;
+            border: 1px solid #222222;
+            box-shadow: 3px 3px 5px #222222;
+            border-radius: 8px;
+        }
+
+        #input_datetime {
+            width: 7rem;
+            height: 0.5rem;
+            border-radius: 8px;
+            color-scheme: dark;
+            font-size: 15px;
+            padding-top: 10px;
+            background-color: #FF5719;
+            margin-top: -2px;
+        }
+    </style>
+</head>
+<body>
+<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID})}"></div>
+
+<div style=" width: 100%; margin-top: 20px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+    <form id="search_form" role="search" th:action="@{/users/user_search}" method="get">
+        <input style="font-size: 20px;" id="search" type="search" name="keyword" placeholder="Search for tasks..." autofocus required />
+        <button id="search_button" onclick="onFilter()" type="button"><ion-icon name="search-outline" style="padding-top: 5px;"></ion-icon></button>
+    </form>
+</div>
+
+<div style=" margin-top: 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; ">
+    <form id="filter_form" th:action="@{/users/user_search}" method="get">
+        <input type="hidden" id="hidden_search" name="keyword" />
+
+        <div id="roles" class="dropdown-check-list" tabindex="100" style=" margin-left: 80px; ">
+            <span class="anchor">Roles</span>
+            <ul class="items" th:each="role, iteration: ${userRoles}">
+                <li><input type="checkbox" name="role" th:value="${role.getId()}" th:text="${role.getName()}"/></li>
+            </ul>
+        </div>
+        <div id="abilities" class="dropdown-check-list" tabindex="100" style=" margin-left: 195px; ">
+            <span class="anchor">Abilities</span>
+            <ul class="items" th:each="ability, iteration: ${abilities}">
+                <li><input type="checkbox" name="subcategory" th:value="${role.get}" th:text="${subcategory.getName()}"/></li>
+            </ul>
+        </div>
+        <div id="languages" class="dropdown-check-list" tabindex="100" style=" margin-left: 320px; ">
+            <input id="input_datetime" type="datetime-local"/>
+        </div>
+        <div id="technologies" class="dropdown-check-list" tabindex="100" style=" margin-left: 470px; ">
+            <span class="anchor">Technologies</span>
+        </div>
+        <button id="filter_button" type="submit" onclick="onFilter()" style=" margin-left: 640px; margin-top: -5px; ">Filter</button>
+    </form>
+</div>
+
+<div id="user_list" style=" display: flex; align-items: center; justify-content: center; ">
+    <table id="user_table">
+        <tr class ="user_tr" th:each="user: ${users}">
+            <td class="user_td" >
+                <a th:href="@{/users/profile_view/{id}(id=${user.getId()})}" href="profile_view.html" style=" text-decoration: none; ">
+                    <div>
+                        <div>
+                            <span th:text="${user.getUsername()}" style=" font-size: 22px; ">username</span>
+                        </div>
+                        <div>
+                            <span>[&nbsp;&nbsp;</span>
+                            <span class="user_roles" th:each="role, iterStat: ${user.getRoles()}" th:text="${iterStat.last} ? ${role.getName()} + '&nbsp;&nbsp;' : ${role.getName()} + ',&nbsp;'"></span>
+                            <span>]</span>
+                        </div>
+                        <div style=" margin-top: 15px;">
+                            <span th:text="'Name: ' + ${user.getName()}">Name: a</span>
+                        </div>
+                    </div>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="contact_us" th:replace="~{fragments :: contact_us}"></div>
+
+<footer id="footer" th:replace="~{fragments :: footer}"></footer>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    const checkListRoles = document.getElementById('roles');
+    const  checkListAbilities = document.getElementById('abilities');
+    checkListRoles.getElementsByClassName('anchor')[0].onclick = function(evt) {
+        if (checkListRoles.classList.contains('visible'))
+            checkListRoles.classList.remove('visible');
+        else
+            checkListRoles.classList.add('visible');
+    }
+    checkListAbilities.getElementsByClassName('anchor')[0].onclick = function(evt) {
+        if (checkListAbilities.classList.contains('visible'))
+            checkListAbilities.classList.remove('visible');
+        else
+            checkListAbilities.classList.add('visible');
+    }
+
+    var input = document.getElementById("search");
+    input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            onFilter();
+        }
+    });
+    const keyword = document.getElementById("search");
+    const hidden = document.getElementById("hidden_search");
+    const filter_form = document.getElementById("filter_form");
+    function onFilter(){
+        hidden.setAttribute('value', keyword.value);
+        filter_form.submit();
+    }
+</script>
+
+</body>
+</html>

@@ -196,9 +196,15 @@
 
 
 
-      <!-- replace with profile image -->
-      <span style="height: 65px; width: 65px; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
-      <!-- replace with profile image -->
+      <div style=" height: 5rem; width: 5rem; border-radius: 50%; display: inline-block;">
+        <div class="menu">
+          <img th:src="@{{path}(path=${task.getCreator()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo"
+               style=" height: 5rem; display: inline-block; "/>
+          <span class="menu_label">
+                      <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
+                  </span>
+        </div>
+      </div>
 
 
 
@@ -211,14 +217,20 @@
   </div>
 </div>
 
-<div style=" margin-top: 50px; ">
+<div style=" margin-top: 50px; font-family: 'Poppins',sans-serif;">
   <hr th:if="${task.showPrice}" class="horizontal_line">
   <p th:if="${task.showPrice && #lists.isEmpty(offers)}" style=" margin: 30px 15px; font-size: 20px; color: #ffffff; ">There are no offers yet.</p>
 
-  <div th:if="${task.showPrice}" style=" margin: 25px 20px 0px 20px; font-size: 20px; color: #ffffff" th:each="offer, iterStat: ${offers}">
-    <!-- replace with profile image -->
-    <span style=" margin-left: 15px; display: inline-block; height: 65px; width: 65px; background-color: #bbb; border-radius: 50%; "></span>
-    <!-- replace with profile image -->
+  <div th:if="${task.showPrice}" style=" margin: 25px 20px 0px 20px; font-size: 15px; color: #ffffff" th:each="offer, iterStat: ${offers}">
+    <div style=" height: 4.5rem; width: 4.5rem; border-radius: 50%; display: inline-block;">
+      <div class="menu">
+        <img th:src="@{{path}(path=${offer.getBidder()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo"
+             style=" height: 5rem; display: inline-block; "/>
+        <span class="menu_label">
+                      <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
+                  </span>
+      </div>
+    </div>
 
     <p style=" margin: -60px 0px 50px 95px; " th:text="${offer.getBidder()?.getUsername()}">thisIsAnotherUsername</p>
     <p style=" margin: -45px 0px 50px 95px; " th:text="'Offer: ' + ${offer.getPrice()} + ' €'">Offer: 300 €</p>
@@ -227,21 +239,27 @@
   </div>
 </div>
 
-<div>
+<div style=" font-family: 'Poppins',sans-serif; ">
   <hr class="horizontal_line">
   <div th:if="${#lists.size(taskComments) == 0}" style=" margin: 25px 20px 0px 20px; font-size: 25px; color: #ffffff ">0 Comments
     <hr class="horizontal_line">
   </div>
-  <div style=" margin: 25px 20px 0px 20px; font-size: 20px; color: #ffffff" th:each="comment, iterStat: ${taskComments}">
+  <div style=" margin: 25px 20px 0px 20px; font-size: 16px; color: #ffffff" th:each="comment, iterStat: ${taskComments}">
     <div th:if="${iterStat.first}" th:text="${#lists.size(taskComments)} + ' Comments'" style=" margin-bottom: 20px; font-size: 25px; ">1 Comments</div>
     <div style="margin-left: 15px;">
 
-      <!-- replace with profile image -->
-      <span style="height: 5rem; width: 5rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
-      <!-- replace with profile image -->
+      <div style=" height: 6rem; width: 6rem; border-radius: 50%; display: inline-block;">
+        <div class="menu">
+          <img th:src="@{{path}(path=${comment.getCommenter()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo"
+               style=" height: 6rem; display: inline-block; "/>
+          <span class="menu_label">
+                      <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
+                  </span>
+        </div>
+      </div>
 
-      <p style=" margin: -65px 0px 50px 95px; " th:text="${comment.getCommenter()?.getUsername()}">totallyLegitUser</p>
-      <p style=" margin: -50px 0px 50px 95px; " th:text="${comment.getHowLongAgo()}">2 months ago</p>
+      <p style=" margin: -75px 0px 50px 105px; " th:text="${comment.getCommenter()?.getUsername()}">totallyLegitUser</p>
+      <p style=" margin: -50px 0px 50px 105px; " th:text="${comment.getHowLongAgo()}">2 months ago</p>
       <p style=" margin: -15px 15px 20px 15px; overflow-wrap: break-word; overflow: auto; " th:text="${comment.getComment()}">This is a comment about this user. He was mediocre at best...</p>
     </div>
     <hr class="horizontal_line">

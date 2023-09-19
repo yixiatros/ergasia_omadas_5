@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>View Profile</title>
@@ -72,24 +72,19 @@
       background-color: #ff4500;
     }
 
-    #progress-bar5 {
-      width: 0%;
-    }
-    #progress-bar4 {
-      width: 0%;
-    }
-    #progress-bar3 {
-      width: 0%;
-    }
-    #progress-bar2 {
-      width: 0%;
-    }
-    #progress-bar1 {
-      width: 0%;
-    }
-
     .horizontal_line {
       border: 1px solid white;
+    }
+
+    #real_image {
+      margin-top: 50px;
+      height: 11rem;
+      width: 11rem;
+      border-radius: 50%;
+      display: inline-block;
+      background-repeat: no-repeat;
+      background-color: rgb(255, 255, 255, 1);
+      opacity: 1;
     }
   </style>
 </head>
@@ -102,9 +97,25 @@
 
       <td style=" width: 30%; text-align: center; vertical-align: top; ">
         <div id="user_preview">
-          <!-- replace with profile image -->
-          <span style=" margin-top: 50px; height: 11rem; width: 11rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
-          <!-- replace with profile image -->
+
+          <form id="pic_form" enctype="multipart/form-data" action="#" th:action="@{/users/profile_view/change_picture}" method="post">
+
+            <div style=" margin-top: 50px; height: 11rem; width: 11rem; border-radius: 50%; display: inline-block;"
+                 th:onmouseover="${user.getId() == logedInUserID} ? 'onImageHover(this)'"
+                 th:onmouseout="${user.getId() == logedInUserID} ? 'onImageHover(this)'"
+                 onmouseover="onImageHover(this)"
+                 onmouseout="onImageHover(this)"
+                 th:onclick="${user.getId() == logedInUserID} ? 'changePic()'">
+                <div class="menu">
+                  <img th:src="@{{path}(path=${user.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" />
+                  <span class="menu_label">
+                      <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
+                  </span>
+                </div>
+            </div>
+
+            <input id="input_file" type="file" name="image" accept="image/png, image/jpeg" onchange="form.submit()" hidden/>
+          </form>
 
           <div></div>
           <h5 th:text="${user.getUsername()}" style=" display: inline-block; margin-top: 5px; font-size: 20px; ">thisIsAUsername</h5>
@@ -156,7 +167,7 @@
       </td>
     </tr>
 
-    <tr>
+    <tr th:if="${isDeveloper != null}">
 
       <td style=" width: 30%; text-align: center; vertical-align: top; ">
         <h5 style=" font-size:  20px; ">Ratings</h5>
@@ -217,9 +228,15 @@
         <table id="review_table">
           <tr th:each="rating, iterStat: ${userRatings}">
             <td style="padding-top: 25px;">
-              <!-- replace with profile image -->
-              <span style="height: 5rem; width: 5rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
-              <!-- replace with profile image -->
+              <div style=" height: 5rem; width: 5rem; border-radius: 50%; display: inline-block;">
+                <div class="menu">
+                  <img th:src="@{{path}(path=${rating.getRater()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo"
+                  style=" height: 5rem; display: inline-block; "/>
+                  <span class="menu_label">
+                      <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
+                  </span>
+                </div>
+              </div>
 
               <h5 style=" margin: -65px 0px 50px 90px; font-size: 15px; " th:text="${rating.getRater()?.getUsername()}">thisIsAnotherUsername</h5>
               <div style=" margin: -40px 0px 50px 90px; ">
@@ -276,6 +293,29 @@
   moveProgressBar(document.getElementById("progress-bar2-value").textContent, "progress-bar2");
   moveProgressBar(document.getElementById("progress-bar1-value").textContent, "progress-bar1");
 
+  //document.getElementById("profile_pic").style.backgroundImage = "url('" + document.getElementById("real_image").src + "')";
+
+  var count = 0;
+  var cameraIcon = document.getElementById("camera_icon");
+  function onImageHover(node) {
+    if (count == 0){
+      node.style.backgroundColor = "rgb(0, 0, 0, 0.5)";
+      node.style.opacity = "0.2";
+      node.style.cursor = "pointer";
+      cameraIcon.style.color = "rgba(255, 255, 255, 1)";
+      count = 1;
+      return;
+    }
+
+    count = 0;
+    node.style.backgroundColor = "rgb(255, 255, 255, 1)";
+    node.style.opacity = "1";
+    cameraIcon.style.color = "rgba(0, 0, 0, 0)";
+  }
+
+  function changePic(){
+    document.getElementById("input_file").click();
+  }
   /*]]>*/
 </script>
 

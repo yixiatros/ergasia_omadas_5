@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
 
@@ -38,6 +39,9 @@ public class User implements UserDetails {
     private LocalDate dayOfBirth;
     @Transient
     private int age;
+    @Column(nullable = true, length = 64)
+    private String profilePicture;
+    private LocalDateTime registrationDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -49,21 +53,6 @@ public class User implements UserDetails {
 
     public User(){}
 
-    public User(Long id,
-                String name,
-                String username,
-                String password,
-                String email,
-                LocalDate dayOfBirth
-                ){
-        this.id = id;
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.dayOfBirth = dayOfBirth;
-    }
-
     public User(String name,
                 String username,
                 String password,
@@ -75,28 +64,6 @@ public class User implements UserDetails {
         this.password = password;
         this.email = email;
         this.dayOfBirth = dayOfBirth;
-    }
-
-    public User(String name,
-                String username,
-                String password,
-                String email,
-                LocalDate dayOfBirth,
-                Set<Role> roles) {
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.dayOfBirth = dayOfBirth;
-        this.roles = roles;
-    }
-
-    public User(String username,
-                String password,
-                String email){
-        this.username = username;
-        this.password = password;
-        this.email = email;
     }
 
     public String getName() {
@@ -207,5 +174,12 @@ public class User implements UserDetails {
 
     public void addRole(Role role){
         this.roles.add(role);
+    }
+
+    @Transient
+    public String getPhotosImagePath() {
+        if (profilePicture == null || id == null) return "/images/Default Profile Image.png";
+
+        return "/user-photos/" + id + "/" + profilePicture;
     }
 }

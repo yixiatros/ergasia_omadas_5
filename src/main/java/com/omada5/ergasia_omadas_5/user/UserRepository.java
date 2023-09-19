@@ -23,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long /* id */> {
 
     @Query("SELECT t FROM Task t WHERE t.creator.id = ?1")
     List<Task> findTasksOfUserById(Long userId);
+
+    @Query("SELECT u FROM User u WHERE u.username LIKE %?1%")
+    List<User> findUsersBySearch(String search);
 }
