@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder
@@ -40,5 +41,10 @@ public class Offer {
         this.bidder = bidder;
         this.task = task;
         this.price = price;
+    }
+
+    public String getFormattedOfferDateTime(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return offerDateTime.format(formatter);
     }
 }

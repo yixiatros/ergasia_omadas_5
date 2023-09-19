@@ -25,4 +25,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT o FROM Offer o WHERE o.task.id = ?1 AND o.bidder.username = ?2 AND o.isActive")
     List<Offer> findOffersOfUserToTask(Long taskId, String username);
+
+    @Query("SELECT t FROM TaskComment t WHERE t.task.id = ?1")
+    List<TaskComment> findCommentsOfTask(Long taskId);
 }

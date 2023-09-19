@@ -86,7 +86,7 @@
       background-color: rgba(255, 255, 255, 0.1);
     }
 
-    .bid_button {
+    .bid_button, #comment_button {
       width: 150px;
       margin-left: 15px;
       margin-top: 15px;
@@ -113,16 +113,39 @@
       box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
       transition-duration: .1s;
     }
-    #delete_offers_button {
+    #delete_offers_button, #comment_button {
       background-image: linear-gradient(92.88deg, #ff5914 9.16%, #ff4000 43.89%, #ff4500 64.72%);
     }
-    #delete_offers_button:hover {
+    #delete_offers_button:hover, #comment_button:hover {
       box-shadow: rgba(255, 53, 0, 0.5) 0 1px 30px;
       transition-duration: .1s;
     }
 
     @media (min-width: 768px) {
       .bid_button {
+        padding: 0 2.6rem;
+      }
+    }
+
+    .horizontal_line {
+      border: 1px solid white;
+    }
+
+    #comment_input {
+      display: block;
+      margin-left: 15px;
+      margin-right: auto;
+      color: #FFFFFF;
+      outline: 0;
+      padding: 0.5rem 1.2rem;
+      border-radius: 0.8rem;
+      font-size: 18px;
+      background-color: rgba(255, 255, 255, 0.07);
+      resize: none;
+    }
+
+    @media (min-width: 768px) {
+      #comment_button {
         padding: 0 2.6rem;
       }
     }
@@ -137,9 +160,9 @@
 
 <div class="content" style=" color: #FFFFFF; text-align: center; " th:object="${task}">
   <div class="wrapper">
-    <div class="rightContent" style=" font-size: 17px; padding-top: 10px; text-align: center; ">
+    <div class="rightContent" style=" font-size: 17px; padding-top: 20px; text-align: center; ">
       <label class="bid_label" for="end_date">End Date</label><br>
-      <p id="end_date" th:text="${task.getEndDate()}" >time</p>
+      <p id="end_date" th:text="${task.getFormattedDateTime()}" >time</p>
       <br>
       <label class="bid_label" for="time_till_end">Time remaining</label><br>
       <p id="time_till_end" >remaining</p> <!--th:text="${task.getRemainingMinutes()} + ' minutes'"-->
@@ -189,16 +212,45 @@
 </div>
 
 <div style=" margin-top: 50px; ">
-  <hr class="horizontal_line">
+  <hr th:if="${task.showPrice}" class="horizontal_line">
+  <p th:if="${task.showPrice && #lists.isEmpty(offers)}" style=" margin: 30px 15px; font-size: 20px; color: #ffffff; ">There are no offers yet.</p>
 
-  <div style=" margin: 25px 20px 0px 20px; font-size: 20px; color: #ffffff" th:each="offer: ${offers}">
+  <div th:if="${task.showPrice}" style=" margin: 25px 20px 0px 20px; font-size: 20px; color: #ffffff" th:each="offer, iterStat: ${offers}">
     <!-- replace with profile image -->
-    <span style=" display: inline-block; height: 65px; width: 65px; background-color: #bbb; border-radius: 50%; "></span>
+    <span style=" margin-left: 15px; display: inline-block; height: 65px; width: 65px; background-color: #bbb; border-radius: 50%; "></span>
     <!-- replace with profile image -->
-    <p style=" margin: -60px 0px 50px 80px; " th:text="${offer.getBidder()?.getUsername()}">thisIsAnotherUsername</p>
-    <p style=" margin: -45px 0px 50px 80px; " th:text="'Offer: ' + ${offer.getPrice()} + ' €'">Offer: 300 €</p>
+
+    <p style=" margin: -60px 0px 50px 95px; " th:text="${offer.getBidder()?.getUsername()}">thisIsAnotherUsername</p>
+    <p style=" margin: -45px 0px 50px 95px; " th:text="'Offer: ' + ${offer.getPrice()} + ' €'">Offer: 300 €</p>
+    <p style=" margin: -73px 0px 50px 395px; " th:text="${offer.getFormattedOfferDateTime()}">Time of offer: time</p>
+    <!--<hr class="horizontal_line" th:if="${!iterStat.last}">-->
+  </div>
+</div>
+
+<div>
+  <hr class="horizontal_line">
+  <div th:if="${#lists.size(taskComments) == 0}" style=" margin: 25px 20px 0px 20px; font-size: 25px; color: #ffffff ">0 Comments
     <hr class="horizontal_line">
   </div>
+  <div style=" margin: 25px 20px 0px 20px; font-size: 20px; color: #ffffff" th:each="comment, iterStat: ${taskComments}">
+    <div th:if="${iterStat.first}" th:text="${#lists.size(taskComments)} + ' Comments'" style=" margin-bottom: 20px; font-size: 25px; ">1 Comments</div>
+    <div style="margin-left: 15px;">
+
+      <!-- replace with profile image -->
+      <span style="height: 5rem; width: 5rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
+      <!-- replace with profile image -->
+
+      <p style=" margin: -65px 0px 50px 95px; " th:text="${comment.getCommenter()?.getUsername()}">totallyLegitUser</p>
+      <p style=" margin: -50px 0px 50px 95px; " th:text="${comment.getHowLongAgo()}">2 months ago</p>
+      <p style=" margin: -15px 15px 20px 15px; overflow-wrap: break-word; overflow: auto; " th:text="${comment.getComment()}">This is a comment about this user. He was mediocre at best...</p>
+    </div>
+    <hr class="horizontal_line">
+  </div>
+
+  <form action="#" th:action="@{/comment/{id}(id=${task.getId()})}" method="get" sec:authorize="isAuthenticated()">
+    <textarea id="comment_input" placeholder="Comment" name="comment" rows="3" maxlength="2000" minlength="1"></textarea>
+    <button id="comment_button" type="submit">comment</button>
+  </form>
 </div>
 
 <div id="contact_us" th:replace="~{fragments :: contact_us}"></div>
@@ -231,6 +283,7 @@
       document.getElementById("time_till_end").innerHTML = "EXPIRED";
     }
   }, 1000);
+
   /*]]>*/
 </script>
 

@@ -4,6 +4,7 @@ import com.omada5.ergasia_omadas_5.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 @Entity
@@ -22,6 +23,7 @@ public class Task {
     )
     private Long id;
     private String title;
+    @Column(length = 2000)
     private String description;
     private boolean isPublic;
     private boolean showPrice;
@@ -246,6 +248,11 @@ public class Task {
 
     public float getRemainingMinutes(){
         return ChronoUnit.MINUTES.between(LocalDateTime.now(), endDate);
+    }
+
+    public String getFormattedDateTime(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return endDate.format(formatter);
     }
 
     public User getCreator() {

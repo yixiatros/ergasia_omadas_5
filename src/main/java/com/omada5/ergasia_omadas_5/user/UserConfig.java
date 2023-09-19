@@ -42,7 +42,6 @@ public class UserConfig {
                         LocalDate.of(2000, AUGUST, 21)
                 );
                 optionalDeveloperRole.ifPresent(user1::addRole);
-                tasks.get(1).setCreator(user1);
                 users.add(user1);
             }
 
@@ -55,6 +54,7 @@ public class UserConfig {
                         LocalDate.of(1997, MARCH, 30)
                 );
                 optionalClientRole.ifPresent(user2::addRole);
+                tasks.get(1).setCreator(user2);
                 tasks.get(2).setCreator(user2);
                 users.add(user2);
             }
@@ -67,7 +67,7 @@ public class UserConfig {
                         "juana.linda@gmail.com",
                         LocalDate.of(1995, DECEMBER, 17)
                 );
-                optionalDeveloperRole.ifPresent(user3::addRole);
+                optionalClientRole.ifPresent(user3::addRole);
                 tasks.get(0).setCreator(user3);
                 users.add(user3);
             }

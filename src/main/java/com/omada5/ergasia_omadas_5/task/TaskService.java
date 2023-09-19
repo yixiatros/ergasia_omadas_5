@@ -10,11 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +23,7 @@ public class TaskService {
     private  final SubcategoryRepository subcategoryRepository;
     private final OfferRepository offerRepository;
     private final UserRepository userRepository;
+    private final TaskCommentRepository taskCommentRepository;
 
     @GetMapping
     public List<Task> getTasks(){
@@ -55,7 +54,7 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public void deleteTask(Long taskId){
+    public void deleteTask(Long taskId) {
         boolean exists = taskRepository.existsById(taskId);
 
         if(!exists)
@@ -72,11 +71,11 @@ public class TaskService {
         return taskRepository.findActiveOffersOfTaskById(taskId);
     }
 
-    public List<Offer> getOffersOfUser(Long taskId, String username){
+    public List<Offer> getOffersOfUser(Long taskId, String username) {
         return taskRepository.findOffersOfUserToTask(taskId, username);
     }
 
-    public void saveOffer(float offerPrice, Task task){
+    public void saveOffer(float offerPrice, Task task) {
         Optional<User> userOptional = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (!userOptional.isPresent())
             return;
@@ -102,7 +101,7 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public void deleteOffers(Long taskId){
+    public void deleteOffers(Long taskId) {
         Optional<User> userOptional = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (!userOptional.isPresent())
             return;
@@ -112,5 +111,23 @@ public class TaskService {
             if (o.isActive())
                 o.setActive(false);
         offerRepository.saveAll(offers);
+    }
+
+    public List<TaskComment> getCommentsOfTask(Long taskId) {
+        return taskRepository.findCommentsOfTask(taskId);
+    }
+
+    public void saveComment(String comment, Task task) {
+        Optional<User> userOptional = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (!userOptional.isPresent())
+            return;
+
+        var taskComment = TaskComment.builder()
+                .task(task)
+                .commenter(userOptional.get())
+                .comment(comment)
+                .dateTime(LocalDateTime.now())
+                .build();
+        taskCommentRepository.save(taskComment);
     }
 }

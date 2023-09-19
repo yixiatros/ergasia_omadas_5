@@ -23,9 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -61,6 +59,38 @@ public class UserController {
 
         model.addAttribute("user", user);
         model.addAttribute("tasks", tasks);
+
+        model.addAttribute("isClient", false);
+        Set<Role> roles = user.getRoles();
+        for (Role role : roles) {
+            if (role.getName().equals("client")){
+                model.addAttribute("isClient", true);
+                break;
+            }
+        }
+
+        List<UserRating> userRatings = userService.getUserRatingsOfUser(optionalUser.get().getId());
+        model.addAttribute("userRatings", userRatings);
+
+        float averageRating = 0;
+        int[] percentageOfRatings = new int[5];
+        for (int i = 0; i < 5; i++) {
+            percentageOfRatings[i] = 0;
+        }
+        if (userRatings.size() > 0){
+            for (UserRating rating : userRatings){
+                averageRating += rating.getRating();
+                percentageOfRatings[rating.getRating() - 1]++;
+            }
+            for (int i = 0; i < 5; i++) {
+                percentageOfRatings[i] = (int) ((float)percentageOfRatings[i] / (float)userRatings.size() * 100);
+            }
+            averageRating = averageRating / userRatings.size();
+        }
+
+        model.addAttribute("averageRating", (int) averageRating);
+        model.addAttribute("numberOfRatings", percentageOfRatings);
+
         return "profile_view";
     }
 

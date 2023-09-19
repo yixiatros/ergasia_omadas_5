@@ -3,11 +3,8 @@ package com.omada5.ergasia_omadas_5.task;
 import com.omada5.ergasia_omadas_5.bidding.Offer;
 import com.omada5.ergasia_omadas_5.bidding.OfferRepository;
 import com.omada5.ergasia_omadas_5.user.User;
-import com.omada5.ergasia_omadas_5.user.UserRepository;
 import com.omada5.ergasia_omadas_5.user.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,11 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.WebUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -256,6 +251,9 @@ public class TaskController {
             model.addAttribute("offers", offers);
         }
 
+        List<TaskComment> taskComments = taskService.getCommentsOfTask(taskId);
+        model.addAttribute("taskComments", taskComments);
+
         return "task_view";
     }
 
@@ -268,6 +266,12 @@ public class TaskController {
     @GetMapping(path = "/delete_offers/{taskId}")
     public RedirectView makeOffer(@PathVariable("taskId") Long taskId) {
         taskService.deleteOffers(taskId);
+        return new RedirectView("/task_view/" + taskId.toString());
+    }
+
+    @GetMapping(path = "/comment/{taskId}")
+    public RedirectView comment(@PathVariable("taskId") Long taskId, @RequestParam("comment") String comment) {
+        taskService.saveComment(comment, taskService.getTaskById(taskId).get());
         return new RedirectView("/task_view/" + taskId.toString());
     }
 

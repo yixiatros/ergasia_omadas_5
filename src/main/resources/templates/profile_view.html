@@ -72,11 +72,20 @@
       background-color: #ff4500;
     }
 
+    #progress-bar5 {
+      width: 0%;
+    }
     #progress-bar4 {
-      width: 50%;
+      width: 0%;
+    }
+    #progress-bar3 {
+      width: 0%;
     }
     #progress-bar2 {
-      width: 50%;
+      width: 0%;
+    }
+    #progress-bar1 {
+      width: 0%;
     }
 
     .horizontal_line {
@@ -100,10 +109,15 @@
           <div></div>
           <h5 th:text="${user.getUsername()}" style=" display: inline-block; margin-top: 5px; font-size: 20px; ">thisIsAUsername</h5>
           <span style=" display: inline-block; margin-left: 5px; font-size: 23px;" th:if="${user.getUsername()} == ${logedInUsername}"><a th:href="@{/index}"><ion-icon name="create-outline"></ion-icon></a></span>
+          <div>
+            <span>[&nbsp;&nbsp;</span>
+            <span class="user_roles" th:each="role, iterStat: ${user.getRoles()}" th:text="${iterStat.last} ? ${role.getName()} + '&nbsp;&nbsp;' : ${role.getName()} + ',&nbsp;'"></span>
+            <span>]</span>
+          </div>
         </div>
       </td>
 
-      <td style=" vertical-align: top; ">
+      <td style=" vertical-align: top; " th:if="${isClient}">
         <div class="tasks">
           <h5 style=" font-size: 20px; margin-bottom: -2px; ">Tasks</h5>
           <table id="task_table">
@@ -115,7 +129,7 @@
                       <span th:text="${task.getTitle()}" style=" font-size: 22px; ">Title</span>
                       <div style=" display: flex; justify-content: right; margin-top: -27px; ">
                         <span th:text="'Max Bidding Price: ' + ${task.getMaxPrice()} + ' €'" style="margin-right: 50px;">Max Bidding Price: 500€</span>
-                        <span th:text="'End Date: ' + ${task.getEndDate().toString()}" style="margin-right: 10px; ">End Date: date</span>
+                        <span th:text="'End Date: ' + ${task.getFormattedDateTime()}" style="margin-right: 10px; ">End Date: date</span>
                       </div>
                     </div>
                     <p th:text="${task.getDescription()}" >Description</p><br>
@@ -147,12 +161,17 @@
       <td style=" width: 30%; text-align: center; vertical-align: top; ">
         <h5 style=" font-size:  20px; ">Ratings</h5>
         <div style=" margin-top: -20px; ">
-          <span class="fa fa-star checked"></span>
-          <span class="fa fa-star checked"></span>
-          <span class="fa fa-star checked"></span>
-          <span class="fa fa-star"></span>
-          <span class="fa fa-star"></span>&nbsp&nbsp
-          <span>3</span>
+          <span class="fa fa-star checked" th:class="${averageRating > 0} ? 'fa fa-star checked' : 'fa fa-star'"></span>
+          <p id="progress-bar5-value" th:text="${numberOfRatings[4]}" hidden></p>
+          <span class="fa fa-star checked" th:class="${averageRating > 1} ? 'fa fa-star checked' : 'fa fa-star'"></span>
+          <p id="progress-bar4-value" th:text="${numberOfRatings[3]}" hidden></p>
+          <span class="fa fa-star checked" th:class="${averageRating > 2} ? 'fa fa-star checked' : 'fa fa-star'"></span>
+          <p id="progress-bar3-value" th:text="${numberOfRatings[2]}" hidden></p>
+          <span class="fa fa-star checked" th:class="${averageRating > 3} ? 'fa fa-star checked' : 'fa fa-star'"></span>
+          <p id="progress-bar2-value" th:text="${numberOfRatings[1]}" hidden></p>
+          <span class="fa fa-star checked" th:class="${averageRating > 4} ? 'fa fa-star checked' : 'fa fa-star'"></span>&nbsp;&nbsp;
+          <p id="progress-bar1-value" th:text="${numberOfRatings[0]}" hidden></p>
+          <span th:text="${averageRating}">5</span>
 
           <div>
             <div class="container">
@@ -193,52 +212,31 @@
       </td>
 
       <td style=" padding-right: 25px;">
+        <div style=" margin: 25px 0px 0px 0px; font-size: 25px; color: #ffffff " th:text="${#lists.size(userRatings) == 0} ? '0 Ratings' : ${#lists.size(userRatings)} + ' Ratings'">1 Ratings</div>
+        <hr class="horizontal_line">
         <table id="review_table">
-          <tr>
+          <tr th:each="rating, iterStat: ${userRatings}">
             <td style="padding-top: 25px;">
               <!-- replace with profile image -->
               <span style="height: 5rem; width: 5rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
               <!-- replace with profile image -->
 
-              <h5 style=" margin: -65px 0px 50px 90px; font-size: 15px; ">thisIsAnotherUsername</h5>
+              <h5 style=" margin: -65px 0px 50px 90px; font-size: 15px; " th:text="${rating.getRater()?.getUsername()}">thisIsAnotherUsername</h5>
               <div style=" margin: -40px 0px 50px 90px; ">
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>&nbsp&nbsp
-                <span>2</span>
-                <span>&nbsp&nbsp|&nbsp&nbsp</span>
-                <span>2 months ago</span>
+                <span class="fa fa-star checked" th:class="${rating.getRating() > 0} ? 'fa fa-star checked' : 'fa fa-star'"></span>
+                <span class="fa fa-star checked" th:class="${rating.getRating() > 1} ? 'fa fa-star checked' : 'fa fa-star'"></span>
+                <span class="fa fa-star checked" th:class="${rating.getRating() > 2} ? 'fa fa-star checked' : 'fa fa-star'"></span>
+                <span class="fa fa-star checked" th:class="${rating.getRating() > 3} ? 'fa fa-star checked' : 'fa fa-star'"></span>
+                <span class="fa fa-star checked" th:class="${rating.getRating() > 4} ? 'fa fa-star checked' : 'fa fa-star'"></span>&nbsp&nbsp
+                <span th:text="${rating.getRating()}">5</span>
+                <span th:text="'&nbsp&nbsp|&nbsp&nbsp' + ${rating.getHowLongAgo()}">&nbsp&nbsp|&nbsp&nbsp2 months ago</span>
               </div>
-              <div style="margin: -15px 0px 20px 15px; ">This is a comment about this user. He was mediocre at best...</div>
-              <hr class="horizontal_line">
-            </td>
-          </tr>
-          <tr>
-            <td style="padding-top: 25px;">
-              <!-- replace with profile image -->
-              <span style="height: 5rem; width: 5rem; background-color: #bbb; border-radius: 50%; display: inline-block;"></span>
-              <!-- replace with profile image -->
-
-              <h5 style=" margin: -65px 0px 50px 90px; font-size: 15px; ">totallyLegitUser</h5>
-              <div style=" margin: -40px 0px 50px 90px; ">
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star"></span>&nbsp&nbsp
-                <span>4</span>
-                <span>&nbsp&nbsp|&nbsp&nbsp</span>
-                <span>3 weeks ago</span>
-              </div>
-              <div style="margin: -15px 0px 20px 15px; ">A totally legit comment from a satisfied customer. 4 stars because there is always room for improvement</div>
+              <div style="margin: -15px 0px 20px 15px; " th:text="${rating.getComment()}">This is a comment about this user. He was mediocre at best...</div>
               <hr class="horizontal_line">
             </td>
           </tr>
         </table>
       </td>
-
     </tr>
   </table>
 </div>
@@ -250,9 +248,11 @@
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-<script>
-  var i = 0;
+<script th:inline="javascript">
+  /*<![CDATA[*/
+
   function moveProgressBar(fillAmount, elementName) {
+    var i = 0;
     if (i == 0) {
       i = 1;
       var elem = document.getElementById(elementName);
@@ -269,6 +269,14 @@
       }
     }
   }
+
+  moveProgressBar(document.getElementById("progress-bar5-value").textContent, "progress-bar5");
+  moveProgressBar(document.getElementById("progress-bar4-value").textContent, "progress-bar4");
+  moveProgressBar(document.getElementById("progress-bar3-value").textContent, "progress-bar3");
+  moveProgressBar(document.getElementById("progress-bar2-value").textContent, "progress-bar2");
+  moveProgressBar(document.getElementById("progress-bar1-value").textContent, "progress-bar1");
+
+  /*]]>*/
 </script>
 
 </body>

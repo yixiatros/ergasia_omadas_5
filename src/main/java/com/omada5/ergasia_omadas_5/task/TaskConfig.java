@@ -1,6 +1,7 @@
 package com.omada5.ergasia_omadas_5.task;
 
 import com.omada5.ergasia_omadas_5.user.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Configuration
+@RequiredArgsConstructor
 public class TaskConfig {
 
     @Bean

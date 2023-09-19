@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/users/profile_view/**").permitAll()
+                            .requestMatchers("/users/profile_view/**", "/tasks", "/task_view/**").permitAll()
                             .requestMatchers("/users/logout").hasAnyAuthority("client", "developer", "admin")
                             .requestMatchers("/users/**").hasAuthority("ROLE_ANONYMOUS")
                             .requestMatchers("/index", "/auth/**").permitAll()

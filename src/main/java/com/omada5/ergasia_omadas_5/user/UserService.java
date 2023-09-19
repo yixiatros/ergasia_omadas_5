@@ -5,10 +5,12 @@ import com.omada5.ergasia_omadas_5.security.auth.AuthenticationService;
 import com.omada5.ergasia_omadas_5.security.auth.RegisterRequest;
 import com.omada5.ergasia_omadas_5.task.Task;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationService authenticationService;
+    private final UserRatingRepository userRatingRepository;
 
     @GetMapping
     public List<User> getUsers(){
@@ -74,5 +77,24 @@ public class UserService {
             throw new IllegalStateException("User with id " + userId + "does not exist.");
 
         userRepository.deleteById(userId);
+    }
+
+    public void saveUserRating(int rating, String comment, User userWhoIsRated){
+        Optional<User> userOptional = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (!userOptional.isPresent())
+            return;
+
+        var userRating = UserRating.builder()
+                .rater(userOptional.get())
+                .userWhoIsRated(userWhoIsRated)
+                .rating(rating)
+                .comment(comment)
+                .dateTime(LocalDateTime.now())
+                .build();
+        userRatingRepository.save(userRating);
+    }
+
+    public List<UserRating> getUserRatingsOfUser(Long userId){
+        return userRatingRepository.findUserRatingByUserWhoIsRated(userId);
     }
 }
