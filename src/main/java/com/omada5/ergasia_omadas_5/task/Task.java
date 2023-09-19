@@ -2,11 +2,17 @@ package com.omada5.ergasia_omadas_5.task;
 
 import com.omada5.ergasia_omadas_5.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
+@Data
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class Task {
@@ -52,6 +58,13 @@ public class Task {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
     private User creator;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "tasks_developers",
+            joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+    private User assignedDeveloper;
 
     public Task() {
     }
@@ -269,5 +282,9 @@ public class Task {
 
     public void setActiveLowestPrice(float currentPrice) {
         this.activeLowestPrice = currentPrice;
+    }
+
+    public boolean hasBiddingEnded() {
+        return ChronoUnit.SECONDS.between(LocalDateTime.now(), endDate) <= 0;
     }
 }

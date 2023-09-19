@@ -257,6 +257,12 @@ public class TaskController {
         return "task_view";
     }
 
+    @PostMapping(path = "/task_view/hire")
+    public RedirectView hireDeveloper(@RequestParam("hireBidderId") Long hireBidderId, @RequestParam("currentTask") Long taskId) {
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + hireBidderId + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        return new RedirectView("/task_view/" + taskId.toString());
+    }
+
     @PostMapping(path = "/bid")
     public RedirectView makeOffer(@RequestParam("offer") float offerPrice, @RequestParam("currentTask") Long taskId){
         taskService.saveOffer(offerPrice, taskService.getTaskById(taskId).get());
