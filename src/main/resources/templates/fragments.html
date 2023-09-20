@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<div id="navbar-top" class="navbar-top" th:fragment="navbar_top(logedInUsername, logedInUserID)">
+<div id="navbar-top" class="navbar-top" th:fragment="navbar_top(logedInUsername, logedInUserID, notifications)">
   <div style=" font-size: 25px; ">
     <div style=" padding-top: 25px; margin-left: 10px; ">
       <a class="icon" href="https://github.com/"><ion-icon name="logo-github"></ion-icon></a>
@@ -29,12 +29,22 @@
         <span style=" font-size: 21px;" sec:authorize="isAuthenticated()">
             <nav class="drop_nav">
                 <label for="touch">
-                    <div class="drop_span" th:text="${logedInUsername}">username</div>
+                    <div class="drop_span" th:text="${logedInUsername}">
+                        username
+                    </div>
                 </label>
+                <span th:if="${#lists.size(notifications) > 0}" style="position: absolute; right: 10%; top: 10%;"><ion-icon name="notifications-circle-outline"></ion-icon></span>
                 <input type="checkbox" id="touch">
                 <ul class="slide">
-                    <li class="drop_list_item"><a class="drop_link" th:href="@{/users/profile_view/{id}(id=${logedInUserID})}" href="#">Profile</a></li>
-                    <li class="drop_list_item" style=" padding-top: 25px;"><a class="drop_link" th:href="@{/users/logout}" href="#">Logout</a></li>
+                    <li class="drop_list_item">
+                        <a class="drop_link" th:href="@{/users/profile_view/{id}(id=${logedInUserID})}" href="#">Profile</a>
+                    </li>
+                    <li class="drop_list_item" style=" padding-top: 25px;">
+                        <a class="drop_link" th:href="@{/users/profile_view/notifications/{id}(id=${logedInUserID})}" href="#">Notifications<span th:if="${#lists.size(notifications) > 0}"><ion-icon name="notifications-circle-outline"></ion-icon></span></a>
+                    </li>
+                    <li class="drop_list_item" style=" padding-top: 25px;">
+                        <a class="drop_link" th:href="@{/users/logout}" href="#">Logout</a>
+                    </li>
                 </ul>
             </nav>
         </span>

@@ -89,7 +89,7 @@
   </style>
 </head>
 <body>
-<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID})}"></div>
+<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID}, ${notifications})}"></div>
 
 <div style=" color: #FFFFFF; margin-top: 25px;" th:object="${user}" >
   <table class="profile_table">
@@ -287,13 +287,15 @@
     }
   }
 
-  moveProgressBar(document.getElementById("progress-bar5-value").textContent, "progress-bar5");
-  moveProgressBar(document.getElementById("progress-bar4-value").textContent, "progress-bar4");
-  moveProgressBar(document.getElementById("progress-bar3-value").textContent, "progress-bar3");
-  moveProgressBar(document.getElementById("progress-bar2-value").textContent, "progress-bar2");
-  moveProgressBar(document.getElementById("progress-bar1-value").textContent, "progress-bar1");
+  var isDeveloper = /*[[${isDeveloper} != null ? true:false]]*/ 'false';
 
-  //document.getElementById("profile_pic").style.backgroundImage = "url('" + document.getElementById("real_image").src + "')";
+  if (isDeveloper){
+    moveProgressBar(document.getElementById("progress-bar5-value").textContent, "progress-bar5");
+    moveProgressBar(document.getElementById("progress-bar4-value").textContent, "progress-bar4");
+    moveProgressBar(document.getElementById("progress-bar3-value").textContent, "progress-bar3");
+    moveProgressBar(document.getElementById("progress-bar2-value").textContent, "progress-bar2");
+    moveProgressBar(document.getElementById("progress-bar1-value").textContent, "progress-bar1");
+  }
 
   var count = 0;
   var cameraIcon = document.getElementById("camera_icon");

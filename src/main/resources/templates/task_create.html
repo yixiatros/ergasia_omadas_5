@@ -121,7 +121,7 @@
     </style>
 </head>
 <body>
-<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID})}"></div>
+<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID}, ${notifications})}"></div>
 
 <div style=" margin-top: 25px; color: rgb(255, 255, 255); ">
     <H3 style=" font-size: 30px; margin-left: 15px; ">Create a new Task:</H3>

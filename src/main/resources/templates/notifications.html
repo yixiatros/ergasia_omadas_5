@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Notifications</title>
+
+  <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    #user_table {
+      width: 90%;
+      border-spacing: 0px 20px;
+      font-family: 'Poppins',sans-serif;
+    }
+    .user_tr {
+      width: 95%;
+      height: 150px;
+      color: rgb(255, 255, 255);
+      transition: all .2s ease-in-out;
+    }
+    .user_td {
+      vertical-align: top;
+      padding: 10px;
+      background-color: #FF5719;
+      border: 1px solid #222222;
+      box-shadow: 3px 3px 5px #222222;
+      border-radius: 8px;
+    }
+
+    .prevent_select {
+      -webkit-user-select: none; /* Safari */
+      -ms-user-select: none; /* IE 10 and IE 11 */
+      user-select: none; /* Standard syntax */
+    }
+  </style>
+</head>
+<body>
+
+<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID}, ${notifications})}"></div>
+
+<div style="font-family: 'Poppins',sans-serif; color: #ffffff">
+  <h5 style=" margin-left: 15px; font-size: 21px; " th:text="${#lists.size(notifications)} + ' Notifications'">1 Notifications</h5>
+  <div id="user_list" style=" display: flex; align-items: center; justify-content: center; ">
+    <table id="user_table">
+      <tr class ="user_tr" th:each="notification: ${notifications}">
+        <td class="user_td">
+          <!--<a th:href="@{/users/profile_view/{id}(id=${notification.getSender().getId()})}" href="profile_view.html" style=" text-decoration: none; ">-->
+            <div>
+              <div>
+                <span th:text="${notification.getTitle()}" style=" font-size: 21px; ">Title</span>
+              </div>
+              <div>
+                <p th:text="${notification.getDescription()}">Description</p>
+                <div th:if="${notification.getIsDeletable()}" class="tooltip" style=" position: relative; left: 93%; margin-top: -10px;">
+                  <a th:href="@{/users/profile_view/notifications/{userId}/delete/{notificationId}(userId=${logedInUserID}, notificationId=${notification.getId()})}" style=" color: #222222; font-size: 30px; cursor: pointer; "><ion-icon name="trash-outline"></ion-icon></a>
+                  <span class="tooltiptext">Delete Notification</span>
+                </div>
+                <div th:if="${!notification.getIsDeletable() and notification.getIsHireRequest()}" style=" float: right; margin-top: -10px; color: #222222; font-size: 30px;">
+                  <div class="tooltip">
+                    <a th:href="@{/task_view/{taskId}/accept_hire/{userId}/{notificationId}(taskId=${notification.getTask()?.getId()}, userId=${notification.getRecipient()?.getId()}, notificationId=${notification.getId()})}"><ion-icon style=" cursor: pointer; " name="checkmark-outline"></ion-icon></a>
+                    <span class="tooltiptext" style="font-size: 15px;">Accept Task</span>
+                  </div>
+                  <span class="prevent_select">|</span>
+                  <div class="tooltip">
+                    <a th:href="@{/task_view/{taskId}/reject_hire/{userId}/{notificationId}(taskId=${notification.getTask()?.getId()}, userId=${notification.getRecipient()?.getId()}, notificationId=${notification.getId()})}"><ion-icon style=" cursor: pointer; " name="close-outline"></ion-icon></a>
+                    <span class="tooltiptext" style="font-size: 15px;">Reject Task</span>
+                  </div>
+                  <span class="prevent_select">|</span>
+                  <div class="tooltip">
+                    <ion-icon style=" cursor: pointer; " name="return-up-forward-outline"></ion-icon>
+                    <span class="tooltiptext" style="font-size: 15px;">Forward task to another developer</span>
+                  </div>
+                </div>
+              </div>
+              <div style=" margin-top: 30px;">
+                <span th:text="'from: ' + ${notification.getSender().getUsername()}">From: usernameOfSender</span>
+              </div>
+            </div>
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div id="contact_us" th:replace="~{fragments :: contact_us}"></div>
+
+<footer id="footer" th:replace="~{fragments :: footer}"></footer>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>

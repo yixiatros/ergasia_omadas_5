@@ -27,7 +27,7 @@
     .content
     {
       position: relative;
-      z-index: 1;
+      z-index: 0;
     }
     .content:after
     {
@@ -152,7 +152,8 @@
   </style>
 </head>
 <body>
-<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID})}"></div>
+
+<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID}, ${notifications})}"></div>
 
 <div class="container" style=" margin-top: 25px; ">
   <!--<a th:href="@{/tasks}" href="task_search.html" style=" text-decoration: underline; position: absolute; left: 0; margin-left: 15px; ">< Back</a>-->

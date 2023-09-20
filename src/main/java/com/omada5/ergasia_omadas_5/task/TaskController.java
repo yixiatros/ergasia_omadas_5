@@ -2,6 +2,7 @@ package com.omada5.ergasia_omadas_5.task;
 
 import com.omada5.ergasia_omadas_5.bidding.Offer;
 import com.omada5.ergasia_omadas_5.bidding.OfferRepository;
+import com.omada5.ergasia_omadas_5.notification.Notification;
 import com.omada5.ergasia_omadas_5.user.User;
 import com.omada5.ergasia_omadas_5.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -259,8 +261,67 @@ public class TaskController {
 
     @PostMapping(path = "/task_view/hire")
     public RedirectView hireDeveloper(@RequestParam("hireBidderId") Long hireBidderId, @RequestParam("currentTask") Long taskId) {
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + hireBidderId + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        Optional<User> currentUserOptional = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (!currentUserOptional.isPresent())
+            return new RedirectView("/task_view/" + taskId.toString());
+
+        User currentUser = currentUserOptional.get();
+        userService.saveNotification(
+                userService.getUserById(hireBidderId).get(),
+                taskService.getTaskById(taskId).get(),
+                "Hire request at task '" + taskService.getTaskById(taskId).get().getTitle() + "'.",
+                "User '" + currentUser.getUsername() + "' has elected you to develop his/her task.",
+                false,
+                true
+        );
+
         return new RedirectView("/task_view/" + taskId.toString());
+    }
+
+    @GetMapping(path = "/task_view/{taskId}/accept_hire/{userId}/{notificationId}")
+    public RedirectView acceptHireRequest(@PathVariable("taskId") Long taskId, @PathVariable("userId") Long userId, @PathVariable("notificationId") Long notificationId) {
+        Optional<Task> taskOptional = taskService.getTaskById(taskId);
+        if (!taskOptional.isPresent())
+            return new RedirectView("/index");
+
+        Task task = taskOptional.get();
+        if (task.getAssignedDeveloper() != null)
+            return new RedirectView("/index");
+
+        User assignUser = userService.getUserById(userId).get();
+        task.setAssignedDeveloper(assignUser);
+        userService.deleteNotification(userService.getNotificationById(notificationId).get());
+
+        userService.saveNotification(
+                task.getCreator(),
+                "Hire request ACCEPTED!",
+                "User '" + assignUser.getUsername() + "' has ACCEPTED your hire request at task '" + task.getTitle() + "'.",
+                true,
+                false
+        );
+
+        return new RedirectView("/task_view/" + taskId.toString());
+    }
+
+    @GetMapping(path = "/task_view/{taskId}/reject_hire/{userId}/{notificationId}")
+    public RedirectView rejectHireRequest(@PathVariable("taskId") Long taskId, @PathVariable("userId") Long userId, @PathVariable("notificationId") Long notificationId) {
+        Optional<Task> taskOptional = taskService.getTaskById(taskId);
+        if (!taskOptional.isPresent())
+            return new RedirectView("/index");
+        Task task = taskOptional.get();
+
+        User assignUser = userService.getUserById(userId).get();
+        userService.deleteNotification(userService.getNotificationById(notificationId).get());
+
+        userService.saveNotification(
+                task.getCreator(),
+                "Hire request REJECTED.",
+                "User '" + assignUser.getUsername() + "' has REJECTED your hire request at task '" + task.getTitle() + "'.",
+                true,
+                false
+        );
+
+        return new RedirectView("/users/profile_view/notifications/" + assignUser.getId());
     }
 
     @PostMapping(path = "/bid")
@@ -285,8 +346,12 @@ public class TaskController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             model.addAttribute("logedInUsername", authentication.getName());
-            Optional<User> user = userService.getUserByUsername(authentication.getName());
-            user.ifPresent(value -> model.addAttribute("logedInUserID", value.getId()));
+            Optional<User> userOptional = userService.getUserByUsername(authentication.getName());
+            if (userOptional.isPresent()){
+                model.addAttribute("logedInUserID", userOptional.get().getId());
+                List<Notification> notifications = userService.getNotificationsOfUser(userOptional.get().getId());
+                model.addAttribute("notifications", notifications);
+            }
         }
     }
 }

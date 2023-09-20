@@ -1,5 +1,7 @@
 package com.omada5.ergasia_omadas_5.user;
 
+import com.omada5.ergasia_omadas_5.notification.Notification;
+import com.omada5.ergasia_omadas_5.notification.NotificationRepository;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationResponse;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationService;
 import com.omada5.ergasia_omadas_5.security.auth.RegisterRequest;
@@ -22,6 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationService authenticationService;
     private final UserRatingRepository userRatingRepository;
+    private final NotificationRepository notificationRepository;
 
     @GetMapping
     public List<User> getUsers(){
@@ -100,5 +103,42 @@ public class UserService {
 
     public List<User> searchUsers(String search) {
         return userRepository.findUsersBySearch(search);
+    }
+
+    public Optional<Notification> getNotificationById(Long notificationId) {
+        return notificationRepository.findNotificationById(notificationId);
+    }
+
+    public void deleteNotification(Notification notification) {
+        notificationRepository.delete(notification);
+    }
+
+    public List<Notification> getNotificationsOfUser(Long userId) {
+        return notificationRepository.findNotificationByUserId(userId);
+    }
+
+    public void saveNotification(User recipient, Task task, String title, String description, boolean isDeletable, boolean isHireRequest) {
+        var notification = Notification.builder()
+                .sender(getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get())
+                .recipient(recipient)
+                .task(task)
+                .title(title)
+                .description(description)
+                .isDeletable(isDeletable)
+                .isHireRequest(isHireRequest)
+                .build();
+        notificationRepository.save(notification);
+    }
+
+    public void saveNotification(User recipient, String title, String description, boolean isDeletable, boolean isHireRequest) {
+        var notification = Notification.builder()
+                .sender(getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get())
+                .recipient(recipient)
+                .title(title)
+                .description(description)
+                .isDeletable(isDeletable)
+                .isHireRequest(isHireRequest)
+                .build();
+        notificationRepository.save(notification);
     }
 }

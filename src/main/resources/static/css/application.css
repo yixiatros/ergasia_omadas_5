@@ -77,11 +77,14 @@ input, textarea {
 /* username dropdown */
 .drop_list_item .drop_link {
     text-decoration : none;
+    display: block;
     color : #ffffff;
-    padding: 15px;
+    padding: 15px 15px;
     width: 100%;
-    margin-left: -40px;
+    margin-left: -35px;
+    margin-top: -25px;
     text-align: center;
+    tab-index: 9998;
     z-index: 9998;
 }
 
@@ -101,11 +104,12 @@ input, textarea {
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
     /* select text disabled */
+    tab-index: 9997;
     z-index: 9997;
 }
 
 .drop_span {
-    min-width: 80px;
+    min-width: 125px;
     overflow: hidden;
     padding: 15px 20px;
     background-color: rgb(255, 89, 20);
@@ -114,6 +118,7 @@ input, textarea {
     font-size : 1em;
     cursor : pointer;
     text-align: center;
+    tab-index: 9999;
     z-index: 9999;
 }
 
@@ -127,12 +132,14 @@ input, textarea {
     text-align: center;
     transition: height .3s ease;
     list-style-type: none;
+    tab-index: 9998;
     z-index: 9998;
 }
 
 .slide li {
     padding-top: 40px;
     font-size: 18px;
+    tab-index: 9998;
     z-index: 9998;
 }
 
@@ -143,12 +150,11 @@ input, textarea {
 }
 
 #touch:checked + .slide {
-    height: 125px;
+    height: 175px;
 }
 
 .drop_list_item .drop_link:hover {
     background-color: rgb(255, 69, 0);
-    padding: 15px 2rem;
     border-radius: 8px;
 }
 /* username dropdown */
@@ -176,3 +182,32 @@ input, textarea {
     border-radius: 50%;
 }
 /* Profile Image */
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #222222;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+    width: 120px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+/* Tooltip container */

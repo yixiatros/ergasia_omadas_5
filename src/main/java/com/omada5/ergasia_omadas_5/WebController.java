@@ -1,5 +1,6 @@
 package com.omada5.ergasia_omadas_5;
 
+import com.omada5.ergasia_omadas_5.notification.Notification;
 import com.omada5.ergasia_omadas_5.security.JwtService;
 import com.omada5.ergasia_omadas_5.user.User;
 import com.omada5.ergasia_omadas_5.user.UserService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.WebUtils;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -29,9 +31,12 @@ public class WebController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             model.addAttribute("logedInUsername", authentication.getName());
-            Optional<User> user = userService.getUserByUsername(authentication.getName());
-            if (user.isPresent())
-                model.addAttribute("logedInUserID", user.get().getId());
+            Optional<User> userOptional = userService.getUserByUsername(authentication.getName());
+            if (userOptional.isPresent()){
+                model.addAttribute("logedInUserID", userOptional.get().getId());
+                List<Notification> notifications = userService.getNotificationsOfUser(userOptional.get().getId());
+                model.addAttribute("notifications", notifications);
+            }
         }
         return "index";
     }

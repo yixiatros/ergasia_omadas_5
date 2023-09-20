@@ -1,5 +1,6 @@
 package com.omada5.ergasia_omadas_5.notification;
 
+import com.omada5.ergasia_omadas_5.task.Task;
 import com.omada5.ergasia_omadas_5.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,8 +26,28 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipient_id", referencedColumnName = "id")
     private User recipient;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", referencedColumnName = "id")
+    private Task task;
 
     private String title;
     @Column(length = 2000)
     private String description;
+
+    private boolean isDeletable;
+    private boolean isHireRequest;
+
+    public boolean getIsDeletable(){
+        return isDeletable;
+    }
+    public void setIsDeletable(boolean isDeletable){
+        this.isDeletable = isDeletable;
+    }
+
+    public boolean getIsHireRequest(){
+        return isHireRequest;
+    }
+    public void setIsHireRequest(boolean isHireRequest){
+        this.isHireRequest = isHireRequest;
+    }
 }

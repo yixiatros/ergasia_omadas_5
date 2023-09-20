@@ -1,6 +1,7 @@
 package com.omada5.ergasia_omadas_5.user;
 
 import com.omada5.ergasia_omadas_5.image.FileUploadUtil;
+import com.omada5.ergasia_omadas_5.notification.Notification;
 import com.omada5.ergasia_omadas_5.security.LogoutService;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationRequest;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationResponse;
@@ -118,13 +119,41 @@ public class UserController {
         return new RedirectView("/users/profile_view/" + user.getId());
     }
 
-    /*@GetMapping(path = "/changePicture")
-    public String changeProfilePic(Model model) {
+    @GetMapping(path = "/profile_view/notifications/{userId}")
+    public String showNotifications(@PathVariable("userId") Long userId, Model model){
         putUsername(model);
-        //
+        Optional<User> optionalUser = userService.getUserById(userId);
+        if (!optionalUser.isPresent())
+            return "/index";
 
-        return "/index";
-    }*/
+        /*userService.saveNotification(
+                optionalUser.get(),
+                "You have a new friend",
+                "You have a new friend congratulations buddy you made it! I am so happy for you!",
+                true,
+                false);
+        userService.saveNotification(
+                optionalUser.get(),
+                "Will you develope my task",
+                "Request to develop a task",
+                false,
+                true);*/
+
+        List<Notification> notifications = userService.getNotificationsOfUser(userId);
+        model.addAttribute("notifications", notifications);
+        return "/notifications";
+    }
+
+    @GetMapping(path = "/profile_view/notifications/{userId}/delete/{notificationId}")
+    public RedirectView deleteNotification(@PathVariable("userId") Long userId, @PathVariable("notificationId") Long notificationId, Model model){
+        Optional<Notification> notificationOptional = userService.getNotificationById(notificationId);
+        if (!notificationOptional.isPresent())
+            return new RedirectView("/users/profile_view/notifications/" + userId.toString());
+
+        userService.deleteNotification(notificationOptional.get());
+
+        return new RedirectView("/users/profile_view/notifications/" + userId.toString());
+    }
 
     @GetMapping(path = "/loginToAccess")
     public String loginToAccess(Model model){
@@ -267,8 +296,12 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             model.addAttribute("logedInUsername", authentication.getName());
-            Optional<User> user = userService.getUserByUsername(authentication.getName());
-            user.ifPresent(value -> model.addAttribute("logedInUserID", value.getId()));
+            Optional<User> userOptional = userService.getUserByUsername(authentication.getName());
+            if (userOptional.isPresent()){
+                model.addAttribute("logedInUserID", userOptional.get().getId());
+                List<Notification> notifications = userService.getNotificationsOfUser(userOptional.get().getId());
+                model.addAttribute("notifications", notifications);
+            }
         }
     }
 }
