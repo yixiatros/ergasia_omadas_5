@@ -175,33 +175,49 @@
       <p id="current_price" th:text="${task.getActiveLowestPrice()} + ' €'">400 €</p>
       <br>
       <form id="bid_form" action="#" th:action="@{/bid}" method="post" sec:authorize="hasAuthority('developer')" th:if="${!task.hasBiddingEnded()}">
-        <input id="bid_input" type="number" name="offer" th:max="${task.getMaxPrice()}" min="1" th:value="${task.getMaxPrice()}" /><br>
+        <input id="bid_input" type="number" name="offer" th:max="${task.getMaxPrice()}" min="1" th:value="${task.getMaxPrice()}" th:if="${logedInUserID != task.getCreator().getId()}"/><br>
         <input type="number" name="currentTask" th:value="${taskId}" hidden/>
-        <div th:if="${myActiveOffer == null}">
+        <div th:if="${myActiveOffer == null and logedInUserID != task.getCreator().getId()}">
           <button class="bid_button" type="submit">Make Offer</button>
           <p style=" margin-top: 25px; ">you have not made an offer yet</p>
         </div>
-        <div th:if="${myActiveOffer != null}">
+        <div th:if="${myActiveOffer != null and logedInUserID != task.getCreator().getId()}">
           <button class="bid_button" type="submit" style=" font-size: 15px; display: inline-block ">Make new offer</button>
           <a th:href="@{/delete_offers/{id}(id=${taskId})}"><button id="delete_offers_button" class="bid_button" type="button" style=" font-size: 15px;">Delete offers</button></a>
           <p style=" margin-top: 25px; "  th:text="'Your offer: ' + ${myActiveOffer} + '€'">Your offer: 0€</p>
         </div>
       </form>
+      <div th:if="${task.hasBiddingEnded()}">
+        <p th:if="${task.getAssignedDeveloper() == null}">The creator of the task is choosing developer</p>
+        <p th:if="${task.getAssignedDeveloper() != null and !task.getDeveloperHasCompleted()}" th:text="${task.getAssignedDeveloper().getUsername().toString().toUpperCase()} + ' is up to the task'">username is up to the task</p>
+
+        <div th:if="${task.getAssignedDeveloper() != null and (logedInUserID == task.getAssignedDeveloper().getId() or logedInUserID == task.getCreator().getId())}">
+          <p th:if="${logedInUserID == task.getCreator().getId() and !task.getDeveloperHasCompleted()}">Waiting for the developer to finish the task...</p>
+          <form th:action="@{/task_view/{taskId}/complete/{userId}(taskId=${task.getId()}, userId=${logedInUserID})}" method="get" th:if="${(logedInUserID == task.getCreator().getId() and task.getDeveloperHasCompleted() and !task.getClientHasCompleted()) or (logedInUserID == task.assignedDeveloper.getId() and !task.getDeveloperHasCompleted())}">
+            <button type="submit" class="bid_button">Complete Task</button>
+          </form>
+        </div>
+        <div th:if="${task.getDeveloperHasCompleted() and !task.getClientHasCompleted()}">
+          <p>Developer has completed the task</p>
+        </div>
+        <div th:if="${task.getDeveloperHasCompleted() and task.getClientHasCompleted()}">
+          <p>This task has been completed.</p>
+        </div>
+      </div>
       <br>
       <br>
 
-      <p sec:authorize="!hasAuthority('developer')">You cannot bid because you are not a developer</p>
+      <p sec:authorize="!hasAuthority('developer')" th:if="${logedInUserID != task.getCreator().getId()}">You cannot bid because you are not a developer</p>
     </div>
     <div class="leftContent" style=" font-size: 20px; text-align: left; margin-left: 15px; ">
       <h3 style=" font-size: 25px; " th:text="${task.getTitle()}">Title</h3>
 
       <div style=" height: 5rem; width: 5rem; border-radius: 50%; display: inline-block;">
         <div class="menu">
-          <img th:src="@{{path}(path=${task.getCreator()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo"
-               style=" height: 5rem; display: inline-block; "/>
+          <img th:src="@{{path}(path=${task.getCreator()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" style=" height: 5rem; display: inline-block; "/>
           <span class="menu_label">
-                      <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
-                  </span>
+            <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
+          </span>
         </div>
       </div>
 
@@ -232,7 +248,7 @@
     <p style=" margin: -60px 0px 50px 95px; " th:text="${offer.getBidder()?.getUsername()}">thisIsAnotherUsername</p>
     <p style=" margin: -45px 0px 50px 95px; " th:text="'Offer: ' + ${offer.getPrice()} + ' €'">Offer: 300 €</p>
     <p style=" margin: -73px 0px 50px 395px; " th:text="${offer.getFormattedOfferDateTime()}">Time of offer: time</p>
-    <form action="#" th:action="@{/task_view/hire}" style=" margin: -115px 0px 50px 600px; " method="post" th:if="${logedInUserID == offer.getTask().getCreator().getId() and offer.getTask().hasBiddingEnded()}">
+    <form action="#" th:action="@{/task_view/hire}" style=" margin: -115px 0px 50px 600px; " method="post" th:if="${logedInUserID == offer.getTask().getCreator().getId() and offer.getTask().hasBiddingEnded() and offer.getTask().getAssignedDeveloper() == null}">
       <input name="hireBidderId" th:value="${offer.getBidder().getId()}" hidden/>
       <input type="number" name="currentTask" th:value="${taskId}" hidden/>
       <button class="bid_button" type="submit">Hire</button>
@@ -252,11 +268,10 @@
 
       <div style=" height: 6rem; width: 6rem; border-radius: 50%; display: inline-block;">
         <div class="menu">
-          <img th:src="@{{path}(path=${comment.getCommenter()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo"
-               style=" height: 6rem; display: inline-block; "/>
+          <img th:src="@{{path}(path=${comment.getCommenter()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" style=" height: 6rem; display: inline-block; "/>
           <span class="menu_label">
-                      <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
-                  </span>
+            <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
+          </span>
         </div>
       </div>
 

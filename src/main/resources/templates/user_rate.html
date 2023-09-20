@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>View Profile</title>
+
+    <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        #rating_user {
+            color: #ffffff;
+            font-family: 'Poppins',sans-serif;
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .radio-input {
+            position: fixed;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .radio-label {
+            cursor: pointer;
+            font-size: 0;
+            color: rgba(0,0,0,0.2);
+            transition: color 0.1s ease-in-out;
+        }
+        .radio-label:before {
+            content: "★";
+            display: inline-block;
+            font-size: 32px;
+        }
+        .radio-input:checked ~ .radio-label {
+            color: #ffc700;
+            color: gold;
+        }
+        .radio-label:hover,
+        .radio-label:hover ~ .radio-label {
+            color: goldenrod;
+        }
+        .radio-input:checked + .radio-label:hover,
+        .radio-input:checked + .radio-label:hover ~ .radio-label,
+        .radio-input:checked ~ .radio-label:hover,
+        .radio-input:checked ~ .radio-label:hover ~ .radio-label,
+        .radio-label:hover ~ .radio-input:checked ~ .radio-label {
+            color: darkgoldenrod;
+        }
+
+        #comment_button {
+            width: 150px;
+            margin-left: 15px;
+            margin-top: 15px;
+            background-image: linear-gradient(92.88deg, #ff5914 9.16%, #ff4000 43.89%, #ff4500 64.72%);
+            border-radius: 8px;
+            border-style: none;
+            box-sizing: border-box;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            flex-shrink: 0;
+            font-family: "Inter UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,Ubuntu,Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            height: 3.5rem;
+            padding: 0 1.6rem;
+            text-align: center;
+            text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+            transition: all .5s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        #comment_button:hover {
+            box-shadow: rgba(255, 53, 0, 0.5) 0 1px 30px;
+            transition-duration: .1s;
+        }
+        @media (min-width: 768px) {
+            #comment_button {
+                padding: 0 2.6rem;
+            }
+        }
+
+        #comment_input {
+            display: block;
+            margin-left: 15px;
+            color: #FFFFFF;
+            outline: 0;
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.8rem;
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.07);
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID}, ${notifications})}"></div>
+
+<div id="rating_user" style=" margin-top: 35px; margin-left: 15px;">
+    <img style=" display: block; margin-left: auto; margin-right: auto; width: 50%; " th:src="@{{path}(path=${ratedUser?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" />
+    <p style=" text-align:center; font-size: 18px;">username</p>
+    <form th:action="@{/users/profile_view/rate/{userId}(userId=${ratedUser.getId()})}" action="#" method="post">
+        <div style=" justify-content: center; margin-top: -25px; " class="star-rating">
+            <input class="radio-input" type="radio" id="star5" name="star_input" value="5" required/>
+            <label class="radio-label" for="star5" title="5 stars">5 stars</label>
+
+            <input class="radio-input" type="radio" id="star4" name="star_input" value="4" required/>
+            <label class="radio-label" for="star4" title="4 stars">4 stars</label>
+
+            <input class="radio-input" type="radio" id="star3" name="star_input" value="3" required/>
+            <label class="radio-label" for="star3" title="3 stars">3 stars</label>
+
+            <input class="radio-input" type="radio" id="star2" name="star_input" value="2" required/>
+            <label class="radio-label" for="star2" title="2 stars">2 stars</label>
+
+            <input class="radio-input" type="radio" id="star1" name="star_input" value="1" required/>
+            <label class="radio-label" for="star1" title="1 star">1 star</label>
+        </div>
+
+        <div style="margin-top: 50px; ">
+            <textarea id="comment_input" placeholder="Comment" name="comment" rows="3" maxlength="2000" minlength="1" required></textarea>
+            <button id="comment_button" type="submit">Rate user</button>
+        </div>
+    </form>
+</div>
+
+<div id="contact_us" th:replace="~{fragments :: contact_us}"></div>
+
+<footer id="footer" th:replace="~{fragments :: footer}"></footer>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>

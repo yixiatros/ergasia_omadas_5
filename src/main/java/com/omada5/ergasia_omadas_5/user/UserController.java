@@ -97,12 +97,6 @@ public class UserController {
         if (user.getRoles().contains(roleRepository.findByName("developer").get()))
             model.addAttribute("isDeveloper", true);
 
-        // todo delete
-        // Testing //
-        Random r = new Random();
-        userService.saveUserRating(r.nextInt((5 - 1) + 1) + 1, "aaaaa", userService.getUserById(1L).get());
-        // Testing //
-
         return "profile_view";
     }
 
@@ -125,19 +119,6 @@ public class UserController {
         Optional<User> optionalUser = userService.getUserById(userId);
         if (!optionalUser.isPresent())
             return "/index";
-
-        /*userService.saveNotification(
-                optionalUser.get(),
-                "You have a new friend",
-                "You have a new friend congratulations buddy you made it! I am so happy for you!",
-                true,
-                false);
-        userService.saveNotification(
-                optionalUser.get(),
-                "Will you develope my task",
-                "Request to develop a task",
-                false,
-                true);*/
 
         List<Notification> notifications = userService.getNotificationsOfUser(userId);
         model.addAttribute("notifications", notifications);
@@ -282,6 +263,29 @@ public class UserController {
                     break;
                 }
         return newUsers;
+    }
+
+    @GetMapping(path = "/profile_view/rate/{userId}")
+    public String rateUserPage(@PathVariable("userId") Long userId, Model model) {
+        putUsername(model);
+        User ratedUser = userService.getUserById(userId).get();
+        model.addAttribute("ratedUser", ratedUser);
+
+        return "/user_rate";
+    }
+
+    @PostMapping(path = "/profile_view/rate/{userId}")
+    public RedirectView rateUser(@PathVariable("userId") Long userId,
+                                 @RequestParam(name = "star_input", defaultValue = "1") int starInput,
+                                 @RequestParam(name = "comment", defaultValue = "") String comment) {
+
+        userService.saveUserRating(
+                starInput,
+                comment,
+                userService.getUserById(userId).get()
+        );
+
+        return new RedirectView("/users/profile_view/" + userId.toString());
     }
 
     private ResponseEntity<String> editSession(AuthenticationResponse authenticationResponse) {

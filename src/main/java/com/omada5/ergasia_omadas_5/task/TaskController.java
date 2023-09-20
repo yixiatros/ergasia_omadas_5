@@ -3,6 +3,7 @@ package com.omada5.ergasia_omadas_5.task;
 import com.omada5.ergasia_omadas_5.bidding.Offer;
 import com.omada5.ergasia_omadas_5.bidding.OfferRepository;
 import com.omada5.ergasia_omadas_5.notification.Notification;
+import com.omada5.ergasia_omadas_5.notification.NotificationRepository;
 import com.omada5.ergasia_omadas_5.user.User;
 import com.omada5.ergasia_omadas_5.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.nio.file.Path;
+import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,8 +28,10 @@ import java.util.Optional;
 public class TaskController {
 
     private final TaskService taskService;
+    private final TaskRepository taskRepository;
     private final UserService userService;
     private final OfferRepository offerRepository;
+    private final NotificationRepository notificationRepository;
 
     public List<Task> getTasks(){
         List<Task> allTasks = taskService.getTasks();
@@ -263,7 +266,11 @@ public class TaskController {
     public RedirectView hireDeveloper(@RequestParam("hireBidderId") Long hireBidderId, @RequestParam("currentTask") Long taskId) {
         Optional<User> currentUserOptional = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (!currentUserOptional.isPresent())
-            return new RedirectView("/task_view/" + taskId.toString());
+            return new RedirectView("/index");
+
+        List<Notification> notifications = notificationRepository.findNotificationByUserIdAndTaskTitle(hireBidderId, taskService.getTaskById(taskId).get().getTitle());
+        if (notifications.size() > 0)
+            return new RedirectView("/index");
 
         User currentUser = currentUserOptional.get();
         userService.saveNotification(
@@ -285,11 +292,14 @@ public class TaskController {
             return new RedirectView("/index");
 
         Task task = taskOptional.get();
-        if (task.getAssignedDeveloper() != null)
+        if (task.getAssignedDeveloper() != null){
+            userService.deleteNotification(userService.getNotificationById(notificationId).get());
             return new RedirectView("/index");
+        }
 
         User assignUser = userService.getUserById(userId).get();
         task.setAssignedDeveloper(assignUser);
+        taskRepository.save(task);
         userService.deleteNotification(userService.getNotificationById(notificationId).get());
 
         userService.saveNotification(
@@ -326,12 +336,53 @@ public class TaskController {
 
     @PostMapping(path = "/bid")
     public RedirectView makeOffer(@RequestParam("offer") float offerPrice, @RequestParam("currentTask") Long taskId){
+        if (taskService.getTaskById(taskId).get().hasBiddingEnded())
+            return new RedirectView("/index");
+
         taskService.saveOffer(offerPrice, taskService.getTaskById(taskId).get());
         return new RedirectView("/task_view/" + taskId.toString());
     }
 
+    @GetMapping(path = "/task_view/{taskId}/complete/{userId}")
+    public RedirectView completeTask(@PathVariable("taskId") Long taskId, @PathVariable("userId") Long userId) {
+        Optional<Task> taskOptional = taskService.getTaskById(taskId);
+        Optional<User> userOptional = userService.getUserById(userId);
+        if (!taskOptional.isPresent() || !userOptional.isPresent())
+            return new RedirectView("/index");
+
+        Task task = taskOptional.get();
+        User user = userOptional.get();
+        if (task.getAssignedDeveloper().getId().equals(user.getId())){
+            task.setDeveloperHasCompleted(true);
+            userService.saveNotification(
+                    task.getCreator(),
+                    "Task '" + task.getTitle() + "' has been COMPLETED.",
+                    "The developer '" + user.getUsername() + "' has completed the task. Waiting for the creator of the task to approve it.",
+                    true,
+                    false
+            );
+
+            taskRepository.save(task);
+            return new RedirectView("/task_view/" + taskId.toString());
+        }
+
+        // if (task.getCreator().getId().equals(user.getId()))
+        task.setClientHasCompleted(true);
+        userService.saveNotification(
+                task.getAssignedDeveloper(),
+                "Task '" + task.getTitle() + "' has been APPROVED.",
+                "The creator '" + user.getUsername() + "' has approved the task. Now the task has been completed.",
+                true,
+                false
+        );
+        taskRepository.save(task);
+        return new RedirectView("/users/profile_view/rate/" + task.getAssignedDeveloper().getId());
+    }
+
     @GetMapping(path = "/delete_offers/{taskId}")
     public RedirectView makeOffer(@PathVariable("taskId") Long taskId) {
+        if (taskService.getTaskById(taskId).get().hasBiddingEnded())
+            return new RedirectView("/index");
         taskService.deleteOffers(taskId);
         return new RedirectView("/task_view/" + taskId.toString());
     }

@@ -65,6 +65,8 @@ public class Task {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
     private User assignedDeveloper;
+    private boolean developerHasCompleted;
+    private boolean clientHasCompleted;
 
     public Task() {
     }
@@ -286,5 +288,18 @@ public class Task {
 
     public boolean hasBiddingEnded() {
         return ChronoUnit.SECONDS.between(LocalDateTime.now(), endDate) <= 0;
+    }
+
+    public boolean getDeveloperHasCompleted(){
+        return developerHasCompleted;
+    }
+    public void setDeveloperHasCompleted(boolean developerHasCompleted){
+        this.developerHasCompleted = developerHasCompleted;
+    }
+    public boolean getClientHasCompleted(){
+        return clientHasCompleted;
+    }
+    public void setClientHasCompleted(boolean clientHasCompleted){
+        this.clientHasCompleted = clientHasCompleted;
     }
 }

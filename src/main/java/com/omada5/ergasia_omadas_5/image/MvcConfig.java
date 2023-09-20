@@ -18,6 +18,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
         if (dirName.startsWith("../")) dirName = dirName.replace("../", "");
 
+        // todo check image not saving
         registry.addResourceHandler("/" + dirName + "/**").addResourceLocations("file:/"+ uploadPath + "/");
     }
 }
