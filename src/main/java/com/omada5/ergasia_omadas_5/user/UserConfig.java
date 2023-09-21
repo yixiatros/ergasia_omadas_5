@@ -30,8 +30,21 @@ public class UserConfig {
         return args -> {
             Optional<Role> optionalDeveloperRole = roleRepository.findByName("developer");
             Optional<Role> optionalClientRole = roleRepository.findByName("client");
+            Optional<Role> optionalAdminRole = roleRepository.findByName("admin");
             List<Task> tasks = taskRepository.findAll();
             List<User> users = new ArrayList<>();
+
+            if (!repository.findByUsername("admin").isPresent()){
+                User user = new User(
+                        "admin",
+                        "admin",
+                        passwordEncoder.encode("admin"),
+                        "admin@taskcode.gr",
+                        LocalDate.of(2023, 9, 21)
+                );
+                optionalAdminRole.ifPresent(user::addRole);
+                users.add(user);
+            }
 
             if (!repository.findByUsername("mpampis21").isPresent()){
                 User user1 = new User(

@@ -212,7 +212,7 @@
     <div class="leftContent" style=" font-size: 20px; text-align: left; margin-left: 15px; ">
       <div>
         <h3 style=" font-size: 25px; " th:text="${task.getTitle()}">Title</h3>
-        <div sec:authorize="hasAuthority('developer')" style=" margin-left: 50px; margin-top: -20px; margin-bottom: 30px; ">
+        <div sec:authorize="hasAnyAuthority('developer', 'admin')" style=" margin-left: 50px; margin-top: -20px; margin-bottom: 30px; ">
           <div class="tooltip">
             <a th:href="@{/users/user_search/forward/{taskId}(taskId=${task.getId()})}"><ion-icon style=" cursor: pointer; font-size: 21px; " name="return-up-forward-outline"></ion-icon></a>
             <span class="tooltiptext" style="font-size: 15px;">Forward task</span>
@@ -222,6 +222,16 @@
           <div class="tooltip">
             <a th:href="@{/users/user_search/forward/{taskId}(taskId=${task.getId()})}"><ion-icon style=" cursor: pointer; font-size: 21px; " name="return-up-forward-outline"></ion-icon></a>
             <span class="tooltiptext" style="font-size: 15px;">Forward task</span>
+          </div>
+          <div class="tooltip" style=" margin-left: 15px;">
+            <a th:href="@{/task_view/{taskId}/delete(taskId=${task.getId()})}" style=" font-size: 21px; cursor: pointer; "><ion-icon name="trash-outline"></ion-icon></a>
+            <span class="tooltiptext" style="font-size: 15px;">Delete Task</span>
+          </div>
+        </div>
+        <div sec:authorize="hasAuthority('admin')" style=" margin-left: 50px; margin-top: -20px; margin-bottom: 30px; ">
+          <div class="tooltip" style=" margin-left: 15px;">
+            <a th:href="@{/task_view/{taskId}/delete(taskId=${task.getId()})}" style=" font-size: 21px; cursor: pointer; "><ion-icon name="trash-outline"></ion-icon></a>
+            <span class="tooltiptext" style="font-size: 15px;">Delete Task</span>
           </div>
         </div>
       </div>

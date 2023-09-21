@@ -1,6 +1,8 @@
 package com.omada5.ergasia_omadas_5.task;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "subcategories")
@@ -23,6 +25,7 @@ public class Subcategory {
             joinColumns = @JoinColumn(name = "subcategory_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id")
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
 
     public Subcategory() {

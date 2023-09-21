@@ -26,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long /* id */> {
 
     @Query("SELECT u FROM User u WHERE u.username LIKE %?1%")
     List<User> findUsersBySearch(String search);
+
+    @Query("SELECT u FROM User u Left JOIN u.roles r WHERE r.name = ?1")
+    List<User> findUsersByRoleName(String roleName);
 }

@@ -42,11 +42,6 @@ public class TaskController {
         return publicTasks;
     }
 
-    @DeleteMapping(path="{taskid}")
-    public void deleteTask(@PathVariable("taskid") Long taskId){
-        taskService.deleteTask(taskId);
-    }
-
     @GetMapping("/tasks")
     public String showTasks(Model model){
         putUsername(model);
@@ -391,6 +386,12 @@ public class TaskController {
     public RedirectView comment(@PathVariable("taskId") Long taskId, @RequestParam("comment") String comment) {
         taskService.saveComment(comment, taskService.getTaskById(taskId).get());
         return new RedirectView("/task_view/" + taskId.toString());
+    }
+
+    @GetMapping(path = "/task_view/{taskId}/delete")
+    public RedirectView deleteTask(@PathVariable("taskId") Long taskId) {
+        taskService.deleteTask(taskId);
+        return new RedirectView("/index");
     }
 
     private void putUsername(Model model) {

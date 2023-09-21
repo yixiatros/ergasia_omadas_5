@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,6 +41,7 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id")
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
     @ManyToOne
     @JoinTable(
@@ -46,24 +49,27 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "subcategory_id", referencedColumnName = "id")
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Subcategory subcategory;
     private boolean isPayingByTheHour;
     private float maxPrice;
     private float activeLowestPrice = 0;
     private LocalDateTime endDate;
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinTable(
             name = "tasks_users",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User creator;
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinTable(
             name = "tasks_developers",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User assignedDeveloper;
     private boolean developerHasCompleted;
     private boolean clientHasCompleted;

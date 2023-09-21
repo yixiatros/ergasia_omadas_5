@@ -125,6 +125,12 @@
             <span class="user_roles" th:each="role, iterStat: ${user.getRoles()}" th:text="${iterStat.last} ? ${role.getName()} + '&nbsp;&nbsp;' : ${role.getName()} + ',&nbsp;'"></span>
             <span>]</span>
           </div>
+          <div sec:authorize="hasAuthority('admin')" style=" margin-left: -15px; margin-bottom: 30px; ">
+            <div class="tooltip" style=" margin-left: 15px;">
+              <a th:href="@{/users/profile_view/{userId}/delete(userId=${user.getId()})}" style=" font-size: 21px; cursor: pointer; "><ion-icon name="trash-outline"></ion-icon></a>
+              <span class="tooltiptext" style="font-size: 15px;">Delete Task</span>
+            </div>
+          </div>
         </div>
       </td>
 

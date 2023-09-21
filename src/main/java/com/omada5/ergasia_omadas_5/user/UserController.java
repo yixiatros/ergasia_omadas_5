@@ -45,9 +45,15 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @DeleteMapping(path="user/{userId}")
+    /*@DeleteMapping(path="user/{userId}")
     public void deleteUser(@PathVariable("userId") Long userId){
         userService.deleteUser(userId);
+    }*/
+
+    @GetMapping(path = "/profile_view/{userId}/delete")
+    public RedirectView deleteUser(@PathVariable("userId") Long userId) {
+        userService.deleteUser(userId);
+        return new RedirectView("/index");
     }
 
     @GetMapping(path = "/profile_view/{userId}")
@@ -264,6 +270,12 @@ public class UserController {
             users = userService.getUsers();
         else
             users = userService.searchUsers(keyword);
+
+        List<User> adminUsers = userRepository.findUsersByRoleName("admin");
+        for (User u : adminUsers) {
+            if (users.contains(u))
+                users.remove(u);
+        }
 
         List<Role> roles = roleRepository.findAll();
         roles.remove(roleRepository.findByName("admin").get());
