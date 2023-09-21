@@ -183,10 +183,6 @@
 ![Use Case 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/d260e74a-3af6-4d61-a0fa-c85e6d65fccb)
 
 
-
-Σχεδιασμός Βάση δεδομένων v.1
-![[ergasiadb_localhost.png]]
-
 ---
 ### Φάση: εκπόνησης μελέτης (elaboration)
 - Ανάλυση-Σχεδιασμός
