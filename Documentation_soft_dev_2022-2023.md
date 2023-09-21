@@ -180,7 +180,7 @@
 ![ClassDiagramV1]([UML Diagrams/Version 1/ClassDiagramVersion1.png](https://github.com/yixiatros/ergasia_omadas_5/blob/32be36a75f6c7756923b92ecd52da4cdc47cfa46/UML%20Diagrams/Version%201/ClassDiagramVersion1.png))
 
 ##### **Διαγράμματα-χρήσης**
-![ClassDiagramVersion1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/936b5cac-b191-4c1e-aa63-7cbfc5ec2e69)
+![ClassDiagramVersion1](UML Diagrams/Version 1/ClassDiagramVersion1.png)
 
 
 Σχεδιασμός Βάση δεδομένων v.1
