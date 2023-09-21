@@ -240,7 +240,7 @@
  #### Διάγραμμα-δραστηριοτήτων-v2
  
  #### Διάγραμμα-καταστάσεων-v2
- ![Use Case Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/ac9ac379-1b87-4716-89c5-c008e14e0fef)
+ ![State Machine Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/01588cfb-5f51-4c4f-9e27-d2c052bc5f65)
 
  #### Διάγραμμα-εξαρτημάτων-v2
  ![ComponentDiagramVersion2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/7cdc8c43-576c-4b15-8518-29fa79e76c3e)
