@@ -177,7 +177,7 @@
 ### Ανάλυση-σχεδιασμός
 
 ##### **Διαγράμματα-τάξεων**
-![[ClassDiagramVersion1.png]]
+![alt](./UML Diagrams/Version 1/ClassDiagramVersion1.png)
 
 ##### **Διαγράμματα-χρήσης**
 ![[Use Case 1.png]]
