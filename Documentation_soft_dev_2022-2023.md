@@ -32,7 +32,7 @@
 ### Φάση: εκπόνησης μελέτης (elaboration)
 - Ανάλυση-Σχεδιασμός
 	- [Διαγράμματα Περιπτώσεων Χρήσης (2η έκδοση)](#διάγραμμα-χρήσης-v2)
-	- [Διαγράμματα Τάξεων  (2η έκδοση)](#διάγραμμα-τάξεων-v2)
+	- [Διαγράμματα Τάξεων  (2η έκδοση)](#διάγραμμα-τάξεων-v2)
 	- [Διαγράμματα Αντικειμένων (1η έκδοση)](#διάγραμμα-αντικειμένων-v1)
 	- [Διαγράμματα Συνεργασίας (1η έκδοση)](#διάγραμμα-συνεργασίας-v1)
 	- [Διαγράμματα Σειράς (1η έκδοση)](#διάγραμμα-σειράς-v1)
@@ -202,7 +202,7 @@
  ![SequenceDiagramVersion1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/20a9e4d9-7928-4131-8cc4-3d52c51ae0dc)
 
  #### Διάγραμμα-δραστηριοτήτων-v1
- ![Activity Diagram Version 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/c0d58956-1fe0-4ec5-95ff-781e0da4dbae)
+ ![Activity Diagram Version 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/9f80cd5c-514a-431d-8c3e-9a06b9929e71)
 
  #### Διάγραμμα-καταστάσεων-v1
  ![state machine 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/5225a1c1-559b-4bd5-995a-e8bc4f925f50)
@@ -238,7 +238,8 @@
  ![Sequence Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/75cc2a8e-effa-48d3-8bc2-82d3f269f4d4)
 
  #### Διάγραμμα-δραστηριοτήτων-v2
- 
+ ![Activity Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/af8ccc6f-60c0-4634-a6c3-6729da3b79fb)
+
  #### Διάγραμμα-καταστάσεων-v2
  ![State Machine Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/01588cfb-5f51-4c4f-9e27-d2c052bc5f65)
 
