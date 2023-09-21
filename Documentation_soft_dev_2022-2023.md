@@ -180,7 +180,8 @@
 ![ClassDiagramV1](https://github.com/yixiatros/ergasia_omadas_5/blob/main/UML%20Diagrams/Version%201/ClassDiagramVersion1.png)
 
 ##### **Διαγράμματα-χρήσης**
-![ClassDiagramVersion1](UML Diagrams/Version 1/ClassDiagramVersion1.png)
+![Use Case 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/d260e74a-3af6-4d61-a0fa-c85e6d65fccb)
+
 
 
 Σχεδιασμός Βάση δεδομένων v.1
@@ -190,14 +191,32 @@
 ### Φάση: εκπόνησης μελέτης (elaboration)
 - Ανάλυση-Σχεδιασμός
  #### Διάγραμμα-χρήσης-v2
+ ![Use Case Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/92e924fa-ab38-4c11-908b-bbd3a8d5c605)
+
  #### Διάγραμμα-τάξεων-v2
+ ![ClassDiagramVersion2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/082dbd8f-2e42-47d5-8ba9-13e877f1bbd9)
+
  #### Διάγραμμα-αντικειμένων-v1
+ ![Object Diagram Version 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/ef0e6fec-1b53-4087-8b2f-ae3ce653b440)
+
  #### Διάγραμμα-συνεργασίας-v1
+ ![Collaboration Diagram1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/b278504f-429d-4df0-bb41-d8719c1b721e)
+
  #### Διάγραμμα-σειράς-v1
+ ![SequenceDiagramVersion1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/20a9e4d9-7928-4131-8cc4-3d52c51ae0dc)
+
  #### Διάγραμμα-δραστηριοτήτων-v1
+ ![Activity Diagram Version 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/c0d58956-1fe0-4ec5-95ff-781e0da4dbae)
+
  #### Διάγραμμα-καταστάσεων-v1
+ ![state machine 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/5225a1c1-559b-4bd5-995a-e8bc4f925f50)
+
  #### Διάγραμμα-εξαρτημάτων-v1
+ ![ComponentDiagramVersion1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/917853cd-37a3-42c0-b5c8-68d03e6b4596)
+
  #### Διάγραμμα-διανομής-v1
+ ![Deployment Diagram Version 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/f4362bdc-4a4a-4fa9-90b1-28e984d158d0)
+
 - Υλοποίηση-Έλεγχος
  #### Υλοποίηση-v1
  #### Αναφορά-ελέγχου-v1
@@ -207,6 +226,7 @@
 ### Φάση: Κατασκευή  (Construction)
 - Ανάλυση-Σχεδιασμός
  #### Διάγραμμα-χρήσης-v3
+ 
  #### Διάγραμμα-τάξεων-v3
  #### Διάγραμμα-αντικειμένων-v2
  #### Διάγραμμα-συνεργασίας-v2
