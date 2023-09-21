@@ -53,7 +53,7 @@
                 <span th:text="${notification.getTitle()}" style=" font-size: 21px; ">Title</span>
               </div>
               <div>
-                <p th:text="${notification.getDescription()}">Description</p>
+                <p th:utext="${notification.getDescription()}">Description</p>
                 <div th:if="${notification.getIsDeletable()}" class="tooltip" style=" position: relative; left: 93%; margin-top: -10px;">
                   <a th:href="@{/users/profile_view/notifications/{userId}/delete/{notificationId}(userId=${logedInUserID}, notificationId=${notification.getId()})}" style=" color: #222222; font-size: 30px; cursor: pointer; "><ion-icon name="trash-outline"></ion-icon></a>
                   <span class="tooltiptext">Delete Notification</span>
@@ -67,11 +67,6 @@
                   <div class="tooltip">
                     <a th:href="@{/task_view/{taskId}/reject_hire/{userId}/{notificationId}(taskId=${notification.getTask()?.getId()}, userId=${notification.getRecipient()?.getId()}, notificationId=${notification.getId()})}"><ion-icon style=" cursor: pointer; " name="close-outline"></ion-icon></a>
                     <span class="tooltiptext" style="font-size: 15px;">Reject Task</span>
-                  </div>
-                  <span class="prevent_select">|</span>
-                  <div class="tooltip">
-                    <ion-icon style=" cursor: pointer; " name="return-up-forward-outline"></ion-icon>
-                    <span class="tooltiptext" style="font-size: 15px;">Forward task to another developer</span>
                   </div>
                 </div>
               </div>

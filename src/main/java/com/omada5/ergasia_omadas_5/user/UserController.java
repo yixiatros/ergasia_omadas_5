@@ -7,6 +7,7 @@ import com.omada5.ergasia_omadas_5.security.auth.AuthenticationRequest;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationResponse;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationService;
 import com.omada5.ergasia_omadas_5.task.Task;
+import com.omada5.ergasia_omadas_5.task.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class UserController {
     private final AuthenticationService authenticationService;
     private final LogoutService logoutService;
     private final UserRepository userRepository;
+    private final TaskService taskService;
 
     @GetMapping
     public List<User> getUsers(){
@@ -225,6 +227,36 @@ public class UserController {
                              @RequestParam(name = "ability", defaultValue = "-1") List<Long> abilityId,
                              Model model){
 
+        return getUserSearch(model, keyword, roleId, abilityId);
+    }
+
+    @GetMapping(path = "/user_search/forward/{taskId}")
+    public String searchUserForForward(@PathVariable("taskId") Long taskId,
+                                       @RequestParam(name = "keyword", defaultValue = "") String keyword,
+                                       @RequestParam(name = "role", defaultValue = "-1") List<Long> roleId,
+                                       @RequestParam(name = "ability", defaultValue = "-1") List<Long> abilityId,
+                                       Model model) {
+
+        model.addAttribute("forwardingTaskId", taskId);
+
+        roleId = new ArrayList<>();
+        roleId.add(2L);
+        return getUserSearch(model, keyword, roleId, abilityId);
+    }
+
+    @GetMapping(path = "/user_search/forward/task/{taskId}/{userId}")
+    public RedirectView forwardTask(@PathVariable("taskId") Long taskId, @PathVariable("userId") Long userId) {
+        userService.saveNotification(
+                userService.getUserById(userId).get(),
+                "Task check invitation",
+                userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get().getUsername() + " has invited you to check out the task with Title '" + taskService.getTaskById(taskId).get().getTitle() + "'. <a href=\"http://localhost:8080/task_view/" + taskId + "\" style=\"text-decoration: underline; cursor: pointer; color: blue;\">click here to go to the task</a>",
+                true,
+                false
+        );
+        return new RedirectView("/index");
+    }
+
+    private String getUserSearch(Model model , String keyword, List<Long> roleId, List<Long> abilityId){
         putUsername(model);
 
         List<User> users = new ArrayList<>();

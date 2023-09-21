@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>View Profile</title>
+    <title>Rate User</title>
 
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -56,6 +56,7 @@
         #comment_button {
             width: 150px;
             margin-left: 15px;
+            margin-right: auto;
             margin-top: 15px;
             background-image: linear-gradient(92.88deg, #ff5914 9.16%, #ff4000 43.89%, #ff4500 64.72%);
             border-radius: 8px;
@@ -124,7 +125,7 @@
             <label class="radio-label" for="star1" title="1 star">1 star</label>
         </div>
 
-        <div style="margin-top: 50px; ">
+        <div style=" margin-top: 50px; ">
             <textarea id="comment_input" placeholder="Comment" name="comment" rows="3" maxlength="2000" minlength="1" required></textarea>
             <button id="comment_button" type="submit">Rate user</button>
         </div>

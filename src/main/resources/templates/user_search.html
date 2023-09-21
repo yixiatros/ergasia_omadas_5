@@ -92,16 +92,25 @@
             <td class="user_td" >
                 <a th:href="@{/users/profile_view/{id}(id=${user.getId()})}" href="profile_view.html" style=" text-decoration: none; ">
                     <div>
-                        <div>
+                        <div style=" height: 6rem; width: 6rem; border-radius: 50%; display: inline-block;">
+                            <img th:src="@{{path}(path=${user?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" style=" height: 6rem; display: inline-block; "/>
+                        </div>
+                        <div style=" margin: -75px 0px 50px 105px; ">
                             <span th:text="${user.getUsername()}" style=" font-size: 22px; ">username</span>
                         </div>
-                        <div>
+                        <div style=" margin: -50px 0px 50px 105px; ">
                             <span>[&nbsp;&nbsp;</span>
                             <span class="user_roles" th:each="role, iterStat: ${user.getRoles()}" th:text="${iterStat.last} ? ${role.getName()} + '&nbsp;&nbsp;' : ${role.getName()} + ',&nbsp;'"></span>
                             <span>]</span>
                         </div>
                         <div style=" margin-top: 15px;">
                             <span th:text="'Name: ' + ${user.getName()}">Name: a</span>
+                        </div>
+                        <div th:if="${forwardingTaskId != null and logedInUserID != user.getId()}" style=" float: right; margin: -90px 10px 55px 0px;">
+                            <div class="tooltip">
+                                <a th:href="@{/users/user_search/forward/task/{taskId}/{userId}(taskId=${forwardingTaskId}, userId=${user.getId()})}"><ion-icon style=" cursor: pointer; font-size: 30px; " name="return-up-forward-outline"></ion-icon></a>
+                                <span class="tooltiptext" style="font-size: 15px;">Forward task</span>
+                            </div>
                         </div>
                     </div>
                 </a>
