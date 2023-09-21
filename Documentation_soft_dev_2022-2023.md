@@ -177,7 +177,7 @@
 ### Ανάλυση-σχεδιασμός
 
 ##### **Διαγράμματα-τάξεων**
-https://github.com/yixiatros/ergasia_omadas_5/blob/main/UML%20Diagrams/Version%201/ClassDiagramVersion1.png
+![Screenshot](ClassDiagramVersion1.png)
 
 ##### **Διαγράμματα-χρήσης**
 ![[Use Case 1.png]]
