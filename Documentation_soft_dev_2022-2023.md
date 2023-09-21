@@ -226,15 +226,30 @@
 ### Φάση: Κατασκευή  (Construction)
 - Ανάλυση-Σχεδιασμός
  #### Διάγραμμα-χρήσης-v3
- 
+ ![ClassDiagramVersion3](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/26bc92d6-f9ad-4cd9-91ca-0a09c9d4d26d)
+
  #### Διάγραμμα-τάξεων-v3
+ 
  #### Διάγραμμα-αντικειμένων-v2
+ ![Object Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/d5e6a017-52f3-4ccc-a9dd-4e8166abad2b)
+
  #### Διάγραμμα-συνεργασίας-v2
+ ![Collaboration Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/871d5a7e-7381-4736-ad03-bea863d6be32)
+
  #### Διάγραμμα-σειράς-v2
+ ![Sequence Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/75cc2a8e-effa-48d3-8bc2-82d3f269f4d4)
+
  #### Διάγραμμα-δραστηριοτήτων-v2
+ 
  #### Διάγραμμα-καταστάσεων-v2
+ ![Use Case Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/ac9ac379-1b87-4716-89c5-c008e14e0fef)
+
  #### Διάγραμμα-εξαρτημάτων-v2
+ ![ComponentDiagramVersion2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/7cdc8c43-576c-4b15-8518-29fa79e76c3e)
+
  #### Διάγραμμα-διανομής-v2
+ ![Deployment Diagram Version 2](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/2f585848-a625-4ddd-bffa-ece7153a8008)
+
 - Υλοποίηση-Έλεγχος
  #### υλοποίηση-τελική
  #### αναφορά-ελέγχου-τελική 
