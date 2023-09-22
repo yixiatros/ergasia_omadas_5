@@ -6,7 +6,9 @@ import com.omada5.ergasia_omadas_5.security.auth.AuthenticationResponse;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationService;
 import com.omada5.ergasia_omadas_5.security.auth.RegisterRequest;
 import com.omada5.ergasia_omadas_5.task.Task;
+import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,11 +58,13 @@ public class UserService {
         Optional<User> userOptional1 = userRepository.findByUsername(user.getUsername());
 
         if (userOptional.isPresent()){
-            throw new IllegalStateException("email taken");
+            return AuthenticationResponse.builder().accessToken("null").refreshToken("Email taken").build();
+//            throw new IllegalStateException("email taken");
         }
 
         if (userOptional1.isPresent()){
-            throw new IllegalStateException("username taken");
+            return AuthenticationResponse.builder().accessToken(null).refreshToken("Username taken").build();
+//            throw new IllegalStateException("username taken");
         }
 
         return authenticationService.register(

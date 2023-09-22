@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -31,22 +33,27 @@ public class AuthenticationService {
     private final TokenRepository tokenRepository;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .roles(request.getRoles())
-                .build();
+        try {
+            var user = User.builder()
+                    .username(request.getUsername())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .roles(request.getRoles())
+                    .registrationDate(LocalDateTime.now())
+                    .build();
 
-        var savedUser = userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(savedUser, jwtToken);
+            var savedUser = userRepository.save(user);
+            var jwtToken = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefreshToken(user);
+            saveUserToken(savedUser, jwtToken);
 
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
+            return AuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } catch (Exception e) {
+            return AuthenticationResponse.builder().accessToken(null).build();
+        }
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

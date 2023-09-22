@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
@@ -45,14 +46,10 @@ public class UserController {
         return userService.getUsers();
     }
 
-    /*@DeleteMapping(path="user/{userId}")
-    public void deleteUser(@PathVariable("userId") Long userId){
-        userService.deleteUser(userId);
-    }*/
-
     @GetMapping(path = "/profile_view/{userId}/delete")
-    public RedirectView deleteUser(@PathVariable("userId") Long userId) {
+    public RedirectView deleteUser(@PathVariable("userId") Long userId, RedirectAttributes redirectAttributes) {
         userService.deleteUser(userId);
+        redirectAttributes.addFlashAttribute("hasDeletedUser", true);
         return new RedirectView("/index");
     }
 
@@ -129,17 +126,20 @@ public class UserController {
             return "/index";
 
         List<Notification> notifications = userService.getNotificationsOfUser(userId);
+        notifications.sort(Comparator.comparing(Notification::getId).reversed());
         model.addAttribute("notifications", notifications);
         return "/notifications";
     }
 
     @GetMapping(path = "/profile_view/notifications/{userId}/delete/{notificationId}")
-    public RedirectView deleteNotification(@PathVariable("userId") Long userId, @PathVariable("notificationId") Long notificationId, Model model){
+    public RedirectView deleteNotification(@PathVariable("userId") Long userId, @PathVariable("notificationId") Long notificationId, Model model, RedirectAttributes redirectAttributes){
         Optional<Notification> notificationOptional = userService.getNotificationById(notificationId);
         if (!notificationOptional.isPresent())
             return new RedirectView("/users/profile_view/notifications/" + userId.toString());
 
         userService.deleteNotification(notificationOptional.get());
+
+        redirectAttributes.addFlashAttribute("hasNotificationDeleted", true);
 
         return new RedirectView("/users/profile_view/notifications/" + userId.toString());
     }
@@ -188,6 +188,15 @@ public class UserController {
         return "login";
     }
 
+    @GetMapping(path = "/register/registrationError/{message}")
+    public String registerPageError(Model model, @PathVariable(name = "message") String message){
+        model.addAttribute("registrationError", true);
+        if (message.equals("null"))
+            message = "Email is not valid";
+        model.addAttribute("registrationErrorMessage", message);
+        return returnToRegisterPage(model);
+    }
+
     @GetMapping(path = "/register")
     public String registerPage(Model model){
         return returnToRegisterPage(model);
@@ -197,7 +206,7 @@ public class UserController {
     public RedirectView register(@ModelAttribute User newUser,
                            @RequestParam(name = "client", required = false, defaultValue = "false") Boolean isClient,
                            @RequestParam(name = "developer", required = false, defaultValue = "false") Boolean isDeveloper,
-                           Model model) {
+                           Model model, RedirectAttributes redirectAttributes) {
         if (isClient)
             newUser.addRole(roleRepository.findByName("client").get());
         if (isDeveloper)
@@ -205,7 +214,13 @@ public class UserController {
 
         AuthenticationResponse authenticationResponse = userService.addNewUser(newUser);
 
-        return new RedirectView("/index");
+        if (authenticationResponse.getAccessToken() == null){
+            return new RedirectView("/users/register/registrationError/" + authenticationResponse.getRefreshToken());
+        }
+
+        redirectAttributes.addFlashAttribute("hasRegistered", true);
+
+        return new RedirectView("/users/login");
     }
 
     private String returnToRegisterPage(Model model){
@@ -218,12 +233,15 @@ public class UserController {
     }
 
     @GetMapping(path = "/logout")
-    public RedirectView logout(HttpServletRequest request, HttpServletResponse response){
+    public RedirectView logout(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes){
         logoutService.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         CookieClearingLogoutHandler cookieClearingLogoutHandler = new CookieClearingLogoutHandler(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         cookieClearingLogoutHandler.logout(request, response, null);
         securityContextLogoutHandler.logout(request, response, null);
+
+        redirectAttributes.addFlashAttribute("hasLoggedOut", true);
+
         return new RedirectView("/index");
     }
 
@@ -259,7 +277,7 @@ public class UserController {
                 true,
                 false
         );
-        return new RedirectView("/index");
+        return new RedirectView("/task_view/" + taskId);
     }
 
     private String getUserSearch(Model model , String keyword, List<Long> roleId, List<Long> abilityId){

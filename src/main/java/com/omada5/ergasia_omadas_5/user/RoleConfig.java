@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,18 +16,28 @@ import static java.time.Month.MARCH;
 public class RoleConfig {
     @Bean
     CommandLineRunner commandLineRunner2(RoleRepository repository){
-        Optional<Role> role = repository.findByName("client");
-        if (role.isPresent())
-            return null;
-
         return args -> {
-            Role clientRole = new Role("client");
-            Role developerRole = new Role("developer");
-            Role adminRole = new Role("admin");
+            List<Role> roles = new ArrayList<>();
 
-            repository.saveAll(
-                    List.of(clientRole, developerRole, adminRole)
-            );
+            Optional<Role> roleOptional = repository.findByName("client");
+            if (!roleOptional.isPresent()){
+                Role clientRole = new Role("client");
+                roles.add(clientRole);
+            }
+
+            roleOptional = repository.findByName("developer");
+            if (!roleOptional.isPresent()){
+                Role developerRole = new Role("developer");
+                roles.add(developerRole);
+            }
+
+            roleOptional = repository.findByName("admin");
+            if (!roleOptional.isPresent()){
+                Role adminRole = new Role("admin");
+                roles.add(adminRole);
+            }
+
+            repository.saveAll(roles);
         };
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.swing.text.html.Option;
@@ -219,7 +220,7 @@ public class TaskController {
 
         taskService.addNewTask(task);
 
-        return new RedirectView("/index");
+        return new RedirectView("/task_view/" + task.getId());
     }
 
     @GetMapping(path = "/task_view/{taskId}")
@@ -258,14 +259,16 @@ public class TaskController {
     }
 
     @PostMapping(path = "/task_view/hire")
-    public RedirectView hireDeveloper(@RequestParam("hireBidderId") Long hireBidderId, @RequestParam("currentTask") Long taskId) {
+    public RedirectView hireDeveloper(@RequestParam("hireBidderId") Long hireBidderId, @RequestParam("currentTask") Long taskId, RedirectAttributes redirectAttributes) {
         Optional<User> currentUserOptional = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (!currentUserOptional.isPresent())
             return new RedirectView("/index");
 
         List<Notification> notifications = notificationRepository.findNotificationByUserIdAndTaskTitle(hireBidderId, taskService.getTaskById(taskId).get().getTitle());
-        if (notifications.size() > 0)
-            return new RedirectView("/index");
+        if (notifications.size() > 0){
+            redirectAttributes.addFlashAttribute("hireBidderUserHireRequestFail", userService.getUserById(hireBidderId));
+            return new RedirectView("/task_view/" + taskId);
+        }
 
         User currentUser = currentUserOptional.get();
         userService.saveNotification(
@@ -277,11 +280,16 @@ public class TaskController {
                 true
         );
 
+        redirectAttributes.addFlashAttribute("hasSendHireRequest", true);
+
         return new RedirectView("/task_view/" + taskId.toString());
     }
 
     @GetMapping(path = "/task_view/{taskId}/accept_hire/{userId}/{notificationId}")
-    public RedirectView acceptHireRequest(@PathVariable("taskId") Long taskId, @PathVariable("userId") Long userId, @PathVariable("notificationId") Long notificationId) {
+    public RedirectView acceptHireRequest(@PathVariable("taskId") Long taskId,
+                                          @PathVariable("userId") Long userId,
+                                          @PathVariable("notificationId") Long notificationId,
+                                          RedirectAttributes redirectAttributes) {
         Optional<Task> taskOptional = taskService.getTaskById(taskId);
         if (!taskOptional.isPresent())
             return new RedirectView("/index");
@@ -289,7 +297,8 @@ public class TaskController {
         Task task = taskOptional.get();
         if (task.getAssignedDeveloper() != null){
             userService.deleteNotification(userService.getNotificationById(notificationId).get());
-            return new RedirectView("/index");
+            redirectAttributes.addFlashAttribute("hasAnotherAccepted", true);
+            return new RedirectView("/task_view/" + taskId);
         }
 
         User assignUser = userService.getUserById(userId).get();
@@ -300,7 +309,7 @@ public class TaskController {
         userService.saveNotification(
                 task.getCreator(),
                 "Hire request ACCEPTED!",
-                "User '" + assignUser.getUsername() + "' has ACCEPTED your hire request at task '" + task.getTitle() + "'.",
+                "User '" + assignUser.getUsername() + "' has ACCEPTED your hire request at task '" + task.getTitle() + "'. <a href=\"http://localhost:8080/task_view/" + taskId + "\" style=\"text-decoration: underline; cursor: pointer; color: blue;\">click here to go to the task</a>",
                 true,
                 false
         );
@@ -321,7 +330,7 @@ public class TaskController {
         userService.saveNotification(
                 task.getCreator(),
                 "Hire request REJECTED.",
-                "User '" + assignUser.getUsername() + "' has REJECTED your hire request at task '" + task.getTitle() + "'.",
+                "User '" + assignUser.getUsername() + "' has REJECTED your hire request at task '" + task.getTitle() + "'. <a href=\"http://localhost:8080/task_view/" + taskId + "\" style=\"text-decoration: underline; cursor: pointer; color: blue;\">click here to go to the task</a>",
                 true,
                 false
         );
@@ -330,9 +339,11 @@ public class TaskController {
     }
 
     @PostMapping(path = "/bid")
-    public RedirectView makeOffer(@RequestParam("offer") float offerPrice, @RequestParam("currentTask") Long taskId){
-        if (taskService.getTaskById(taskId).get().hasBiddingEnded())
-            return new RedirectView("/index");
+    public RedirectView makeOffer(@RequestParam("offer") float offerPrice, @RequestParam("currentTask") Long taskId, RedirectAttributes redirectAttributes){
+        if (taskService.getTaskById(taskId).get().hasBiddingEnded()){
+            redirectAttributes.addFlashAttribute("hasBiddingEndedBeforeBid", true);
+            return new RedirectView("/task_view/" + taskId);
+        }
 
         taskService.saveOffer(offerPrice, taskService.getTaskById(taskId).get());
         return new RedirectView("/task_view/" + taskId.toString());
@@ -352,7 +363,7 @@ public class TaskController {
             userService.saveNotification(
                     task.getCreator(),
                     "Task '" + task.getTitle() + "' has been COMPLETED.",
-                    "The developer '" + user.getUsername() + "' has completed the task. Waiting for the creator of the task to approve it.",
+                    "The developer '" + user.getUsername() + "' has completed the task. Waiting for the creator of the task to approve it. <a href=\"http://localhost:8080/task_view/" + taskId + "\" style=\"text-decoration: underline; cursor: pointer; color: blue;\">click here to go to the task</a>",
                     true,
                     false
             );
@@ -366,7 +377,7 @@ public class TaskController {
         userService.saveNotification(
                 task.getAssignedDeveloper(),
                 "Task '" + task.getTitle() + "' has been APPROVED.",
-                "The creator '" + user.getUsername() + "' has approved the task. Now the task has been completed.",
+                "The creator '" + user.getUsername() + "' has approved the task. Now the task has been completed. <a href=\"http://localhost:8080/task_view/" + taskId + "\" style=\"text-decoration: underline; cursor: pointer; color: blue;\">click here to go to the task</a>",
                 true,
                 false
         );
@@ -375,9 +386,12 @@ public class TaskController {
     }
 
     @GetMapping(path = "/delete_offers/{taskId}")
-    public RedirectView makeOffer(@PathVariable("taskId") Long taskId) {
-        if (taskService.getTaskById(taskId).get().hasBiddingEnded())
-            return new RedirectView("/index");
+    public RedirectView makeOffer(@PathVariable("taskId") Long taskId, RedirectAttributes redirectAttributes) {
+        if (taskService.getTaskById(taskId).get().hasBiddingEnded()){
+            redirectAttributes.addFlashAttribute("hasBiddingEndedBeforeBid", true);
+            return new RedirectView("/task_view/" + taskId);
+        }
+
         taskService.deleteOffers(taskId);
         return new RedirectView("/task_view/" + taskId.toString());
     }
@@ -389,8 +403,9 @@ public class TaskController {
     }
 
     @GetMapping(path = "/task_view/{taskId}/delete")
-    public RedirectView deleteTask(@PathVariable("taskId") Long taskId) {
+    public RedirectView deleteTask(@PathVariable("taskId") Long taskId, RedirectAttributes redirectAttributes) {
         taskService.deleteTask(taskId);
+        redirectAttributes.addFlashAttribute("hasDeletedTask", true);
         return new RedirectView("/index");
     }
 

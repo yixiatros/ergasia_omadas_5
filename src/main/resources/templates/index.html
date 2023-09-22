@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:x-transition="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>CodeTask</title>
 
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/application.css}" href="../static/css/application.css"/>
 
     <style>
@@ -91,6 +96,7 @@
 
 </head>
 <body>
+
 <div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID}, ${notifications})}"></div>
 
 <div id="banner">
@@ -132,6 +138,10 @@
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script><script  src="./script.js"></script>
+<script th:src="@{/js/application.js}" src="../static/js/application.js"></script>
+
 <script>
     function hireNow(){
         window.location.href = "tasks";
@@ -140,6 +150,16 @@
     function createTask(){
         window.location.href = "task_create";
     }
+</script>
+
+<script th:if="${hasLoggedOut != null and hasLoggedOut}">
+    window.onload = (event) => {createAlert('Logged Out','','You have logged out from your account.','info',false,true,'pageMessages');}
+</script>
+<script th:if="${hasDeletedUser != null and hasDeletedUser}">
+    window.onload = (event) => {createAlert('','','You have deleted a user.','warning',false,true,'pageMessages');}
+</script>
+<script th:if="${hasDeletedTask != null and hasDeletedTask}">
+    window.onload = (event) => {createAlert('','','You have deleted a task.','warning',false,true,'pageMessages');}
 </script>
 
 </body>

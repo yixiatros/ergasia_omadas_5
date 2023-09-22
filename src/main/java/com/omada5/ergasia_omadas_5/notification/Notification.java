@@ -38,9 +38,9 @@ public class Notification {
     private String title;
     @Column(length = 2000)
     private String description;
-
     private boolean isDeletable;
     private boolean isHireRequest;
+    private boolean isSeen;
 
     public boolean getIsDeletable(){
         return isDeletable;
@@ -54,5 +54,11 @@ public class Notification {
     }
     public void setIsHireRequest(boolean isHireRequest){
         this.isHireRequest = isHireRequest;
+    }
+    public boolean getIsSeen(){
+        return isSeen;
+    }
+    public void setIsSeen(boolean isSeen){
+        this.isSeen = isSeen;
     }
 }

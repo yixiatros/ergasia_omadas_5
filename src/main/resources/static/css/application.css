@@ -210,3 +210,66 @@ input, textarea {
     visibility: visible;
 }
 /* Tooltip container */
+
+/* Alerts */
+#pageMessages {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    width: 30%;
+}
+
+.alert {
+    position: relative;
+    background-color: #222222;
+    border-radius: 8px;
+    border-right: 5px solid #222222;
+    border-left: 10px solid #222222;
+    color: #ffffff;
+    font-family: 'Poppins',sans-serif;
+    margin-top: 10px;
+}
+
+.alert .close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 1em;
+}
+
+.alert .fa {
+    margin-right:.3em;
+}
+
+.alert-danger {
+    background-color: #d9534f;
+    border-right: 10px solid #d9534f;
+    border-left: 20px solid #d9534f;
+    border-top: 0.1em solid #d9534f;
+    border-bottom: 0.1rem solid #d9534f;
+}
+
+.alert-success {
+    background-color: #5cb85c;
+    border-right: 10px solid #5cb85c;
+    border-left: 20px solid #5cb85c;
+    border-top: 1em solid #5cb85c;
+    border-bottom: 0.1rem solid #5cb85c;
+}
+
+.alert-info {
+    background-color: #5bc0de;
+    border-right: 10px solid #5bc0de;
+    border-left: 20px solid #5bc0de;
+    border-top: 0.1em solid #5bc0de;
+    border-bottom: 0.1rem solid #5bc0de;
+}
+
+.alert-warning {
+    background-color: #f0ad4e;
+    border-right: 10px solid #f0ad4e;
+    border-left: 20px solid #f0ad4e;
+    border-top: 0.1em solid #f0ad4e;
+    border-bottom: 0.1rem solid #f0ad4e;
+}
+/* Alerts */

@@ -1,6 +1,8 @@
 package com.omada5.ergasia_omadas_5.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +37,7 @@ public class User implements UserDetails {
     private String name;
     private String username;
     private String password;
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE)
     private String email;
     private LocalDate dayOfBirth;
     @Transient

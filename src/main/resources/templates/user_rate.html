@@ -106,7 +106,7 @@
 
 <div id="rating_user" style=" margin-top: 35px; margin-left: 15px;">
     <img style=" display: block; margin-left: auto; margin-right: auto; width: 50%; " th:src="@{{path}(path=${ratedUser?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" />
-    <p style=" text-align:center; font-size: 18px;">username</p>
+    <p style=" text-align:center; font-size: 18px;" th:text="${ratedUser?.getUsername()}">username</p>
     <form th:action="@{/users/profile_view/rate/{userId}(userId=${ratedUser.getId()})}" action="#" method="post">
         <div style=" justify-content: center; margin-top: -25px; " class="star-rating">
             <input class="radio-input" type="radio" id="star5" name="star_input" value="5" required/>
