@@ -11,6 +11,8 @@ import com.omada5.ergasia_omadas_5.task.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +25,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -105,7 +108,7 @@ public class UserController {
         return "profile_view";
     }
 
-    @PostMapping(path = "/profile_view/change_picture")
+    /*@PostMapping(path = "/profile_view/change_picture")
     public RedirectView changeProfilePicture(Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException{
         User user = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 
@@ -116,6 +119,27 @@ public class UserController {
         String uploadDir = "user-photos/" + user.getId();
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         return new RedirectView("/users/profile_view/" + user.getId());
+    }*/
+    @PostMapping(path = "/profile_view/change_picture")
+    public RedirectView changeProfilePicture(Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException{
+        User user = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+
+
+        user.setImageData(multipartFile.getBytes());
+        userRepository.save(user);
+
+        return new RedirectView("/users/profile_view/" + user.getId());
+    }
+
+    @GetMapping(value = "/image/{userId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public Resource downloadImage(@PathVariable("userId") Long userId) {
+        Optional<User> userOptional = userService.getUserById(userId);
+        if (!userOptional.isPresent())
+            return null;
+
+        byte[] image = userOptional.get().getImageData();
+
+        return new ByteArrayResource(image);
     }
 
     @GetMapping(path = "/profile_view/notifications/{userId}")

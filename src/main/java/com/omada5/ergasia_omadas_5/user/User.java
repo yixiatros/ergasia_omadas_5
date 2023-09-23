@@ -7,10 +7,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StreamUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -42,8 +48,9 @@ public class User implements UserDetails {
     private LocalDate dayOfBirth;
     @Transient
     private int age;
-    @Column(nullable = true, length = 64)
-    private String profilePicture;
+    @Lob
+    @Column(length = 2000)
+    private byte[] imageData;
     private LocalDateTime registrationDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -179,10 +186,17 @@ public class User implements UserDetails {
         this.roles.add(role);
     }
 
-    @Transient
+    /*@Transient
     public String getPhotosImagePath() {
         if (profilePicture == null || id == null) return "/images/Default Profile Image.png";
 
         return "/user-photos/" + id + "/" + profilePicture;
+    }*/
+    public String generateBase64Image() throws IOException {
+        if (imageData != null && id != null) return Base64.encodeBase64String(imageData);
+
+        var imgFile = new ClassPathResource("./static/images/Default Profile Image.png");
+        byte[] bytes = StreamUtils.copyToByteArray(imgFile.getInputStream());
+        return Base64.encodeBase64String(bytes);
     }
 }

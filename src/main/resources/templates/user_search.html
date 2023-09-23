@@ -93,7 +93,7 @@
                 <a th:href="@{/users/profile_view/{id}(id=${user.getId()})}" href="profile_view.html" style=" text-decoration: none; ">
                     <div>
                         <div style=" height: 6rem; width: 6rem; border-radius: 50%; display: inline-block;">
-                            <img th:src="@{{path}(path=${user?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" style=" height: 6rem; display: inline-block; "/>
+                            <img th:src="@{'data:image/jpeg;base64,'+ ${user.generateBase64Image()}}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" style=" height: 6rem; display: inline-block; "/>
                         </div>
                         <div style=" margin: -75px 0px 50px 105px; ">
                             <span th:text="${user.getUsername()}" style=" font-size: 22px; ">username</span>

@@ -107,7 +107,8 @@
                  onmouseout="onImageHover(this)"
                  th:onclick="${user.getId() == logedInUserID} ? 'changePic()'">
                 <div class="menu">
-                  <img th:src="@{{path}(path=${user.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" />
+                  <!--<img th:src="@{{path}(path=${user.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" />-->
+                  <img th:src="@{'data:image/jpeg;base64,'+ ${user.generateBase64Image()}}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" />
                   <span class="menu_label">
                       <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
                   </span>
@@ -236,7 +237,7 @@
             <td style="padding-top: 25px;">
               <div style=" height: 5rem; width: 5rem; border-radius: 50%; display: inline-block;">
                 <div class="menu">
-                  <img th:src="@{{path}(path=${rating.getRater()?.getPhotosImagePath()})}" src="../static/images/Default%20Profile%20Image.png" class="real_photo"
+                  <img th:src="@{'data:image/jpeg;base64,'+ ${rating.getRater()?.generateBase64Image()}}" src="../static/images/Default%20Profile%20Image.png" class="real_photo"
                   style=" height: 5rem; display: inline-block; "/>
                   <span class="menu_label">
                       <ion-icon id="camera_icon" name="camera-outline" style=" margin-top: -500px; font-size: 30px; color: rgba(0, 0, 0, 0);"></ion-icon>
