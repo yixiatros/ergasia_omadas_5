@@ -247,6 +247,7 @@
       <p style=" text-align: justify; " th:text="${task.getDescription()}">Description</p>
       <p th:text="'category: ' + ${task.getCategory().getName()}">category: app</p>
       <p th:text="'subcategory: ' + ${task.getSubcategory()?.getName()}" style=" margin-top: -15px; ">subcategory: app</p>
+      <p th:text="'proposed technology: ' + ${task.getProposedTechnology()?.getTechnology().toString()}" style=" margin-top: -15px; ">proposed technology: java</p>
     </div>
   </div>
 </div>

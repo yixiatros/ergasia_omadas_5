@@ -108,22 +108,9 @@ public class UserController {
         return "profile_view";
     }
 
-    /*@PostMapping(path = "/profile_view/change_picture")
-    public RedirectView changeProfilePicture(Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException{
-        User user = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        user.setProfilePicture(fileName);
-        userRepository.save(user);
-
-        String uploadDir = "user-photos/" + user.getId();
-        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-        return new RedirectView("/users/profile_view/" + user.getId());
-    }*/
     @PostMapping(path = "/profile_view/change_picture")
     public RedirectView changeProfilePicture(Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException{
         User user = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-
 
         user.setImageData(multipartFile.getBytes());
         userRepository.save(user);

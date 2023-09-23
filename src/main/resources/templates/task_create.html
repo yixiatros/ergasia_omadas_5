@@ -22,7 +22,7 @@
             font-size: 17px;
         }
 
-        .creation_input, .creation_textarea, #creation_category, #creation_subcategory {
+        .creation_input, .creation_textarea, #creation_category, #creation_subcategory, .creation_select {
             margin-left: 15px;
             color: #FFFFFF;
             outline: 0;
@@ -36,10 +36,10 @@
         .creation_input {
             height: 25px;
         }
-        #creation_category, #creation_subcategory {
+        #creation_category, #creation_subcategory, .creation_select {
             font-size: 15px;
         }
-        #creation_category option, #creation_subcategory option {
+        #creation_category option, #creation_subcategory option, .creation_select option {
             background: rgba(0, 0, 0, 0.7);
         }
 
@@ -154,6 +154,18 @@
             <select name="subcategory" id="creation_subcategory">
                 <option value="">Please select</option>
                 <option class="subcategories_creation" th:data-category="${subcategory.getCategory().getId()}" th:each="subcategory: ${subcategories}" th:value="${subcategory.getId()}" th:text="${subcategory.getName()}">Spring boot</option>
+            </select>
+        </div>
+        <div>
+            <label class="creation_label" for="creation_language" style="margin-left: 15px;" >Language</label>
+            <select name="language" id="creation_language" class="creation_select" required>
+                <option value="">Please select</option>
+                <option class="language_creation" th:each="language: ${languages}" th:value="${language}" th:text="${language}">English</option>
+            </select>
+            <label class="creation_label" for="creation_technology" style="margin-left: 30px;" >Technology</label>
+            <select name="technology" id="creation_technology" class="creation_select">
+                <option value="">Please select</option>
+                <option class="language_creation" th:each="technology: ${proposedTechnologies}" th:value="${technology}" th:text="${technology}">Java</option>
             </select>
         </div>
         <input type="text" th:value="${logedInUsername}" name="creatorUsername" hidden/>

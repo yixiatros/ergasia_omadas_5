@@ -54,6 +54,12 @@ public class TaskController {
         model.addAttribute("tasksSize", tasks.size());
         model.addAttribute("categories", categories);
         model.addAttribute("subcategories", subcategories);
+        model.addAttribute("languages", AvailableLanguages.values());
+        List<String> technologies = new ArrayList<>();
+        for (var proposedTechnology : ProposedTechnologies.values()) {
+            technologies.add(proposedTechnology.getTechnology());
+        }
+        model.addAttribute("proposedTechnologies", technologies);
         return "task_search";
     }
 
@@ -61,6 +67,8 @@ public class TaskController {
     public String searchTask(@RequestParam("keyword") String keyword,
                              @RequestParam(name = "category", defaultValue = "-1") List<Long> categoryId,
                              @RequestParam(name = "subcategory", defaultValue = "-1") List<Long> subcategoryId,
+                             @RequestParam(name = "language", defaultValue = "") List<String> languages,
+                             @RequestParam(name = "technology", defaultValue = "") List<String> technologies,
                              Model model){
 
         putUsername(model);
@@ -71,14 +79,23 @@ public class TaskController {
         else
             tasks = taskService.searchTask(keyword);
 
+        List<String> tech = new ArrayList<>();
+        for (var proposedTechnology : ProposedTechnologies.values()) {
+            tech.add(proposedTechnology.getTechnology());
+        }
+
         tasks = filterTasksByCategory(tasks, categoryId);
         tasks = filterTasksBySubcategory(tasks, subcategoryId);
+        tasks = filterTasksByLanguage(tasks, languages);
+        tasks = filterTasksByTechnologies(tasks, technologies);
         List<Category> categories = taskService.getCategories();
         List<Subcategory> subcategories = taskService.getSubCategories();
         model.addAttribute("tasks", tasks);
         model.addAttribute("tasksSize", tasks.size());
         model.addAttribute("categories", categories);
         model.addAttribute("subcategories", subcategories);
+        model.addAttribute("languages", AvailableLanguages.values());
+        model.addAttribute("proposedTechnologies", tech);
         List<Category> appliedCategories = new ArrayList<>();
         for (Long id:
              categoryId) {
@@ -92,6 +109,40 @@ public class TaskController {
         }
         model.addAttribute("appliedSubcategories", appliedSubcategories);
         return "task_search";
+    }
+
+    private List<Task> filterTasksByTechnologies(List<Task> tasks, List<String> technologies) {
+        if (technologies.size() == 0)
+            return tasks;
+
+        List<Task> newTasks = new ArrayList<>();
+        for (Task task: tasks) {
+            for (String technology: technologies) {
+                if (task.getProposedTechnology().getTechnology().equals(technology)){
+                    newTasks.add(task);
+                    break;
+                }
+            }
+        }
+
+        return newTasks;
+    }
+
+    private List<Task> filterTasksByLanguage(List<Task> tasks, List<String> languages) {
+        if (languages.size() == 0)
+            return tasks;
+
+        List<Task> newTasks = new ArrayList<>();
+        for (Task task: tasks) {
+            for (String language: languages) {
+                if (task.getAvailableLanguage().toString().equals(language)){
+                    newTasks.add(task);
+                    break;
+                }
+            }
+        }
+
+        return newTasks;
     }
 
     private List<Task> filterTasksByCategory(List<Task> tasks, List<Long> categoryId){
@@ -109,9 +160,7 @@ public class TaskController {
 
 
         List<Task> newTasks = new ArrayList<>();
-        for (Task task:
-             tasks) {
-
+        for (Task task: tasks) {
             for (Category category:
                  categories) {
                 if (task.getCategory() == category){
@@ -119,7 +168,6 @@ public class TaskController {
                     break;
                 }
             }
-
         }
 
         return newTasks;
@@ -163,6 +211,12 @@ public class TaskController {
         List<Subcategory> subcategories = taskService.getSubCategories();
         model.addAttribute("categories", categories);
         model.addAttribute("subcategories", subcategories);
+        model.addAttribute("languages", AvailableLanguages.values());
+        List<String> technologies = new ArrayList<>();
+        for (var proposedTechnology : ProposedTechnologies.values()) {
+            technologies.add(proposedTechnology.getTechnology());
+        }
+        model.addAttribute("proposedTechnologies", technologies);
         return "task_create";
     }
 
@@ -188,7 +242,9 @@ public class TaskController {
                                        @RequestParam("maxPrice") float maxPrice,
                                        @RequestParam("endDate") LocalDateTime endDate,
                                        @RequestParam("category") String categoryId,
-                                       @RequestParam(value = "subcategory", required = false, defaultValue = "-1") String subcategoryId){
+                                       @RequestParam(value = "subcategory", required = false, defaultValue = "-1") String subcategoryId,
+                                       @RequestParam(name = "language", defaultValue = "") String language,
+                                       @RequestParam(name = "technology", defaultValue = "") String technology){
 
         Optional<Task> userOptional = taskService.getTasks().stream()
                 .filter(u->title.equals(u.getTitle()))
@@ -217,6 +273,16 @@ public class TaskController {
 
         Optional<User> user = userService.getUserByUsername(creatorUsername);
         user.ifPresent(task::setCreator);
+
+        if (!language.equals(""))
+            task.setAvailableLanguage(AvailableLanguages.valueOf(language));
+
+        if (!technology.equals(""))
+            for (var proposedTechnology : ProposedTechnologies.values())
+                if (proposedTechnology.getTechnology().equals(technology)){
+                    task.setProposedTechnology(proposedTechnology);
+                    break;
+                }
 
         taskService.addNewTask(task);
 

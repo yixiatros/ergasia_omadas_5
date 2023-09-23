@@ -77,24 +77,14 @@
         </div>
         <div id="languages" class="dropdown-check-list" tabindex="100" style=" margin-left: 320px; ">
             <span class="anchor">Languages</span>
-            <ul class="items">
-                <li><input type="checkbox" />English</li>
-                <li><input type="checkbox" />Greek</li>
-                <li><input type="checkbox" />Spanish</li>
-                <li><input type="checkbox" />Italian</li>
-                <li><input type="checkbox" />German</li>
-                <li><input type="checkbox" />French</li>
+            <ul class="items" th:each="language, iteration: ${languages}">
+                <li><input type="checkbox" name="language" th:value="${language}" th:text="${language}"/></li>
             </ul>
         </div>
         <div id="technologies" class="dropdown-check-list" tabindex="100" style=" margin-left: 470px; ">
             <span class="anchor">Technologies</span>
-            <ul class="items">
-                <li><input type="checkbox" />Java</li>
-                <li><input type="checkbox" />C#</li>
-                <li><input type="checkbox" />Python</li>
-                <li><input type="checkbox" />C++/C</li>
-                <li><input type="checkbox" />Html/Css</li>
-                <li><input type="checkbox" />SpringBoot</li>
+            <ul class="items" th:each="technology, iteration: ${proposedTechnologies}">
+                <li><input type="checkbox" name="technology" th:value="${technology}" th:text="${technology}"/></li>
             </ul>
         </div>
         <button id="filter_button" type="submit" onclick="onFilter()" style=" margin-left: 640px; margin-top: -5px; ">Filter</button>
@@ -116,7 +106,7 @@
                             <span th:text="${task.getTitle()}" style=" font-size: 22px; ">Title</span>
                             <div style=" text-align: right; margin-top: -27px; ">
                                 <span th:text="'Max Bidding Price: ' + ${task.getMaxPrice()} + ' €'" style="margin-right: 50px;">Max Bidding Price: 500€</span>
-                                <span th:text="'Time Remaining: ' + ${task.getRemainingMinutes()} + ' minutes'" style="margin-right: 10px; ">Time Remaining: 1000 minutes</span>
+                                <span th:text="'End Date: ' + ${task.getFormattedDateTime()}" style="margin-right: 10px; ">End Date: date</span>
                             </div>
                         </div>
                         <p th:text="${task.getDescription()}" >Description</p><br>

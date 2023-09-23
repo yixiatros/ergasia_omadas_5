@@ -30,6 +30,8 @@ public class TaskConfig {
                     200,
                     LocalDateTime.of(2023, 11, 3, 20, 30)
             );
+            task1.setAvailableLanguage(AvailableLanguages.English);
+            task1.setProposedTechnology(ProposedTechnologies.HTML);
 
             Task task2 = new Task(
                     "This is a Title",
@@ -43,6 +45,8 @@ public class TaskConfig {
 
             Optional<Category> optionalCategory2 = categoryRepository.findCategoryByName("Android App");
             optionalCategory2.ifPresent(task2::setCategory);
+            task2.setAvailableLanguage(AvailableLanguages.English);
+            task2.setProposedTechnology(ProposedTechnologies.JAVA);
 
             Task task3 = new Task(
                     "Web application",
@@ -53,6 +57,8 @@ public class TaskConfig {
                     1000,
                     LocalDateTime.of(2023, 12, 28, 12, 40)
             );
+            task3.setAvailableLanguage(AvailableLanguages.English);
+            task3.setProposedTechnology(ProposedTechnologies.JAVA);
 
             Optional<Category> optionalCategory1 = categoryRepository.findCategoryByName("Web App");
             Optional<Subcategory> optionalSubcategory1 = subcategoryRepository.findSubcategoryByName("Spring Boot");

@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth
                             .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/vendor/**", "/fonts/**").permitAll()
-                            .requestMatchers("/index", "/users/profile_view/**", "/users/user_search/**", "/task_search/**", "/tasks", "/task_view/**").permitAll()
+                            .requestMatchers("/index", "/users/profile_view/**", "/users/user_search/**", "/task_search/**", "/tasks").permitAll()
                             .requestMatchers("/users/logout").hasAnyAuthority("client", "developer", "admin")
                             .requestMatchers("/users/**").hasAuthority("ROLE_ANONYMOUS") // restrict access to login/register page to loggedIn users
                             .requestMatchers("/task_create").hasAuthority("client")
@@ -43,8 +43,8 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(login -> {
                     login.loginPage("/users/loginToAccess");
-                    login.failureUrl("/users/loginError");
-                    login.failureForwardUrl("/users/loginError");
+                    login.failureUrl("/index");
+                    login.failureForwardUrl("/index");
                 })
                 .logout(logout -> {
                     logout.logoutSuccessUrl("/index")

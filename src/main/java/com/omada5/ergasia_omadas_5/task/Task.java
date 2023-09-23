@@ -73,84 +73,12 @@ public class Task {
     private User assignedDeveloper;
     private boolean developerHasCompleted;
     private boolean clientHasCompleted;
+    @Enumerated(EnumType.STRING)
+    private AvailableLanguages availableLanguage;
+    @Enumerated(EnumType.STRING)
+    private ProposedTechnologies proposedTechnology;
 
     public Task() {
-    }
-
-    public Task(String title,
-                String description,
-                boolean isPublic,
-                boolean showPrice,
-                Category category,
-                Subcategory subcategory,
-                boolean isPayingByTheHour,
-                float maxPrice,
-                LocalDateTime endDate,
-                User creator) {
-        this.title = title;
-        this.description = description;
-        this.isPublic = isPublic;
-        this.showPrice = showPrice;
-        this.category = category;
-        this.subcategory = subcategory;
-        this.isPayingByTheHour = isPayingByTheHour;
-        this.maxPrice = maxPrice;
-        this.endDate = endDate;
-        this.creator = creator;
-    }
-
-    public Task(String title,
-                String description,
-                boolean isPublic,
-                boolean showPrice,
-                Category category,
-                Subcategory subcategory,
-                boolean isPayingByTheHour,
-                float maxPrice,
-                LocalDateTime endDate) {
-        this.title = title;
-        this.description = description;
-        this.isPublic = isPublic;
-        this.showPrice = showPrice;
-        this.category = category;
-        this.subcategory = subcategory;
-        this.isPayingByTheHour = isPayingByTheHour;
-        this.maxPrice = maxPrice;
-        this.endDate = endDate;
-    }
-
-    public Task(String title,
-                String description,
-                boolean isPublic,
-                boolean showPrice,
-                boolean isPayingByTheHour,
-                float maxPrice,
-                LocalDateTime endDate,
-                User creator) {
-        this.title = title;
-        this.description = description;
-        this.isPublic = isPublic;
-        this.showPrice = showPrice;
-        this.isPayingByTheHour = isPayingByTheHour;
-        this.maxPrice = maxPrice;
-        this.endDate = endDate;
-        this.creator = creator;
-    }
-
-    public Task(String title,
-                String description,
-                boolean isPublic,
-                boolean showPrice,
-                Category category,
-                Subcategory subcategory,
-                boolean isPayingByTheHour) {
-        this.title = title;
-        this.description = description;
-        this.isPublic = isPublic;
-        this.showPrice = showPrice;
-        this.category = category;
-        this.subcategory = subcategory;
-        this.isPayingByTheHour = isPayingByTheHour;
     }
 
     public Task(String title,
