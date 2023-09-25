@@ -67,8 +67,8 @@ public class TaskController {
     public String searchTask(@RequestParam("keyword") String keyword,
                              @RequestParam(name = "category", defaultValue = "-1") List<Long> categoryId,
                              @RequestParam(name = "subcategory", defaultValue = "-1") List<Long> subcategoryId,
-                             @RequestParam(name = "language", defaultValue = "") List<String> languages,
-                             @RequestParam(name = "technology", defaultValue = "") List<String> technologies,
+                             @RequestParam(name = "language", defaultValue = "empty") List<String> languages,
+                             @RequestParam(name = "technology", defaultValue = "empty") List<String> technologies,
                              Model model){
 
         putUsername(model);
@@ -112,6 +112,9 @@ public class TaskController {
     }
 
     private List<Task> filterTasksByTechnologies(List<Task> tasks, List<String> technologies) {
+        if (technologies.get(0).equals("empty"))
+            return tasks;
+
         if (technologies.size() == 0)
             return tasks;
 
@@ -129,6 +132,9 @@ public class TaskController {
     }
 
     private List<Task> filterTasksByLanguage(List<Task> tasks, List<String> languages) {
+        if (languages.get(0).equals("empty"))
+            return tasks;
+
         if (languages.size() == 0)
             return tasks;
 

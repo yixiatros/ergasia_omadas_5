@@ -41,7 +41,7 @@
 
 
 
-.dropdown-check-list, #results_per_page{
+.dropdown-check-list, #results_per_page, #ratings, #datetimes, #num_of_completed{
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -khtml-user-select: none; /* Konqueror HTML */
@@ -51,13 +51,16 @@
     font-family: 'Poppins',sans-serif;
     font-size: 12px;
 }
-.dropdown-check-list {
+.dropdown-check-list, #ratings, #datetimes, #num_of_completed {
     position: absolute;
     display: inline-block;
     background-color: rgb(255, 89, 20);
     color: rgb(255, 255, 255);
     border-radius: 8px;
     z-index: 9999;
+}
+#ratings, #datetimes, #num_of_completed {
+    background-color: rgb(0, 0, 0, 0);
 }
 .dropdown-check-list .anchor {
     position: relative;

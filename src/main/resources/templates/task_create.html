@@ -140,7 +140,7 @@
         </div>
         <div style=" margin-top: 25px;">
             <label class="creation_label">Max price (€)</label><br>
-            <input class="creation_input" type="number" name="maxPrice" min="0"/><br>
+            <input class="creation_input" type="number" name="maxPrice" min="0" required/><br>
             <label class="creation_label">End of bidding time</label><br>
             <input id="date_time" type="datetime-local" name="endDate" th:min="${currentDateTime}" min="2023-08-07T00:00" th:value="${currentDateTime}" required />
         </div>

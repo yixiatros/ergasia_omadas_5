@@ -28,4 +28,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT t FROM TaskComment t WHERE t.task.id = ?1")
     List<TaskComment> findCommentsOfTask(Long taskId);
+
+    @Query("SELECT t FROM Task t WHERE t.assignedDeveloper.id = ?1 AND t.developerHasCompleted AND t.clientHasCompleted")
+    List<Task> findNumberOfCompletedTasksOfUser(Long userId);
 }

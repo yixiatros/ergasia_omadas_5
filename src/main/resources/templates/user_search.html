@@ -38,15 +38,40 @@
             border-radius: 8px;
         }
 
-        #input_datetime {
-            width: 7rem;
+        /*#input_datetime {
+            width: 7.6rem;
             height: 0.5rem;
             border-radius: 8px;
             color-scheme: dark;
-            font-size: 15px;
+            font-size: 12px;
             padding-top: 10px;
             background-color: #FF5719;
             margin-top: -2px;
+        }*/
+
+        .ratings_select, .date_select {
+            margin-left: 15px;
+            color: #FFFFFF;
+            outline: 0;
+            border: none;
+            padding: 0.25rem 1.5rem;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: rgb(255, 89, 20);
+            font-family: 'Poppins',sans-serif;
+            font-size: 12px;
+        }
+        .ratings_select option, .date_select option{
+            background-color: rgb(255, 89, 20);
+        }
+        .date_select {
+            padding: 0.29rem 1rem;
+        }
+        .ratings_select:hover, .date_select:hover {
+            cursor: pointer;
+        }
+        .ratings_select:focus, .date_select:focus {
+            color: black;
         }
     </style>
 </head>
@@ -64,25 +89,42 @@
     <form id="filter_form" th:action="@{/users/user_search}" method="get">
         <input type="hidden" id="hidden_search" name="keyword" />
 
-        <div id="roles" class="dropdown-check-list" tabindex="100" style=" margin-left: 80px; ">
+        <div id="roles" class="dropdown-check-list" tabindex="100" style=" margin-left: 65px; ">
             <span class="anchor">Roles</span>
             <ul class="items" th:each="role, iteration: ${userRoles}">
                 <li><input type="checkbox" name="role" th:value="${role.getId()}" th:text="${role.getName()}"/></li>
             </ul>
         </div>
-        <div id="abilities" class="dropdown-check-list" tabindex="100" style=" margin-left: 195px; ">
-            <span class="anchor">Abilities</span>
+        <div id="num_of_completed" tabindex="100" style=" margin-left: 160px; ">
+            <!--<span class="anchor">Abilities</span>
             <ul class="items" th:each="ability, iteration: ${abilities}">
-                <li><input type="checkbox" name="subcategory" th:value="${role.get}" th:text="${subcategory.getName()}"/></li>
-            </ul>
+                <li><input type="checkbox" name="subcategory" th:value="${ability.getId()}" th:text="${ability.getName()}"/></li>
+            </ul>-->
+            <select name="num_of_completed" class="date_select">
+                <option value="">Completed Tasks</option>
+                <option value="0" style="color: white">Most first</option>
+                <option value="1" style="color: white">Least first</option>
+            </select>
         </div>
-        <div id="languages" class="dropdown-check-list" tabindex="100" style=" margin-left: 320px; ">
-            <input id="input_datetime" type="datetime-local"/>
+        <div id="datetimes" tabindex="100" style=" margin-left: 340px; ">
+            <!--<input id="input_datetime" type="datetime-local"/>-->
+            <select name="datetime" class="date_select">
+                <option value="">Account date</option>
+                <option value="0" style="color: white">Newest first</option>
+                <option value="1" style="color: white">Oldest first</option>
+            </select>
         </div>
-        <div id="technologies" class="dropdown-check-list" tabindex="100" style=" margin-left: 470px; ">
-            <span class="anchor">Technologies</span>
+        <div id="ratings" tabindex="100" style=" margin-left: 495px; ">
+            <select name="rating" class="ratings_select">
+                <option value="">Ratings</option>
+                <option value="0" style="color: white">Rating > 0</option>
+                <option value="1" style="color: white">Rating > 1</option>
+                <option value="2" style="color: white">Rating > 2</option>
+                <option value="3" style="color: white">Rating > 3</option>
+                <option value="4" style="color: white">Rating > 4</option>
+            </select>
         </div>
-        <button id="filter_button" type="submit" onclick="onFilter()" style=" margin-left: 640px; margin-top: -5px; ">Filter</button>
+        <button id="filter_button" type="submit" onclick="onFilter()" style=" margin-left: 655px; margin-top: -5px; ">Filter</button>
     </form>
 </div>
 

@@ -7,10 +7,13 @@ import com.omada5.ergasia_omadas_5.security.auth.AuthenticationRequest;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationResponse;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationService;
 import com.omada5.ergasia_omadas_5.task.Task;
+import com.omada5.ergasia_omadas_5.task.TaskRepository;
 import com.omada5.ergasia_omadas_5.task.TaskService;
+import jakarta.persistence.Tuple;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -43,6 +46,7 @@ public class UserController {
     private final LogoutService logoutService;
     private final UserRepository userRepository;
     private final TaskService taskService;
+    private final TaskRepository taskRepository;
 
     @GetMapping
     public List<User> getUsers(){
@@ -259,24 +263,28 @@ public class UserController {
     @GetMapping(path = "/user_search")
     public String searchUser(@RequestParam(name = "keyword", defaultValue = "") String keyword,
                              @RequestParam(name = "role", defaultValue = "-1") List<Long> roleId,
-                             @RequestParam(name = "ability", defaultValue = "-1") List<Long> abilityId,
+                             @RequestParam(name = "rating", defaultValue = "-1") int rating,
+                             @RequestParam(name = "datetime", defaultValue = "-1") int datetime,
+                             @RequestParam(name = "num_of_completed", defaultValue = "-1") int num_of_completed,
                              Model model){
 
-        return getUserSearch(model, keyword, roleId, abilityId);
+        return getUserSearch(model, keyword, roleId, rating, datetime, num_of_completed);
     }
 
     @GetMapping(path = "/user_search/forward/{taskId}")
     public String searchUserForForward(@PathVariable("taskId") Long taskId,
                                        @RequestParam(name = "keyword", defaultValue = "") String keyword,
                                        @RequestParam(name = "role", defaultValue = "-1") List<Long> roleId,
-                                       @RequestParam(name = "ability", defaultValue = "-1") List<Long> abilityId,
+                                       @RequestParam(name = "rating", defaultValue = "-1") int rating,
+                                       @RequestParam(name = "datetime", defaultValue = "-1") int datetime,
+                                       @RequestParam(name = "num_of_completed", defaultValue = "-1") int num_of_completed,
                                        Model model) {
 
         model.addAttribute("forwardingTaskId", taskId);
 
         roleId = new ArrayList<>();
         roleId.add(2L);
-        return getUserSearch(model, keyword, roleId, abilityId);
+        return getUserSearch(model, keyword, roleId, rating, datetime, num_of_completed);
     }
 
     @GetMapping(path = "/user_search/forward/task/{taskId}/{userId}")
@@ -291,7 +299,7 @@ public class UserController {
         return new RedirectView("/task_view/" + taskId);
     }
 
-    private String getUserSearch(Model model , String keyword, List<Long> roleId, List<Long> abilityId){
+    private String getUserSearch(Model model , String keyword, List<Long> roleId, int rating, int datetime, int num_of_completed){
         putUsername(model);
 
         List<User> users = new ArrayList<>();
@@ -311,9 +319,66 @@ public class UserController {
         model.addAttribute("userRoles", roles);
 
         users = filterUsersByRole(users, roleId);
+        users = filterUsersByRating(users, rating);
+        users = filterUsersByNumOfCompleted(users, num_of_completed);
+        if (datetime == 0)
+            users.sort(Comparator.comparing(User::getId).reversed());
+
         model.addAttribute("users", users);
 
         return "/user_search";
+    }
+
+    private List<User> filterUsersByNumOfCompleted(List<User> users, int num_of_completed) {
+        if (num_of_completed == -1)
+            return users;
+
+        List<Long> rolesId = new ArrayList<>();
+        rolesId.add(2L); // developer id = 2
+        users = filterUsersByRole(users, rolesId);
+
+        List<Pair<Integer, Long>> numberOfCompleted = new ArrayList<>();
+        for (User user: users){
+            Pair<Integer, Long> pair = new Pair<Integer, Long>(taskRepository.findNumberOfCompletedTasksOfUser(user.getId()).size(), user.getId());
+            numberOfCompleted.add(pair);
+        }
+        Collections.sort(numberOfCompleted, new Comparator<Pair<Integer, Long>>() {
+            @Override
+            public int compare(final Pair<Integer, Long> o1, final Pair<Integer, Long> o2) {
+                return o1.a.compareTo(o2.a);
+            }
+        });
+
+        List<User> newUsers = new ArrayList<>();
+        if (num_of_completed == 0){
+            Collections.reverse(numberOfCompleted);
+        }
+
+        for (Pair<Integer, Long> num : numberOfCompleted) {
+            newUsers.add(userService.getUserById(num.b).get());
+        }
+        return newUsers;
+    }
+
+    private List<User> filterUsersByRating(List<User> users, int rating) {
+        if (rating == -1)
+            return users;
+
+        List<User> newUsers = new ArrayList<>();
+        for (User user: users){
+            if (user.getRoles().contains(roleRepository.findByName("developer").get())) {
+                List<UserRating> userRatings = userService.getUserRatingsOfUser(user.getId());
+                int averageRating = 0;
+                if (userRatings.size() > 0) {
+                    for (UserRating r : userRatings)
+                        averageRating += r.getRating();
+                    averageRating = averageRating / userRatings.size();
+                    if (averageRating > rating)
+                        newUsers.add(user);
+                }
+            }
+        }
+        return newUsers;
     }
 
     private List<User> filterUsersByRole(List<User> users, List<Long> roleId){
