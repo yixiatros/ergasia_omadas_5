@@ -248,7 +248,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/logout")
-    public RedirectView logout(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes){
+    public RedirectView logout(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes, @RequestParam(defaultValue = "true") boolean cantChange){
         logoutService.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         CookieClearingLogoutHandler cookieClearingLogoutHandler = new CookieClearingLogoutHandler(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY);
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
@@ -256,6 +256,8 @@ public class UserController {
         securityContextLogoutHandler.logout(request, response, null);
 
         redirectAttributes.addFlashAttribute("hasLoggedOut", true);
+        if (!cantChange)
+            redirectAttributes.addFlashAttribute("cantChange", false);
 
         return new RedirectView("/index");
     }
@@ -424,6 +426,24 @@ public class UserController {
         );
 
         return new RedirectView("/users/profile_view/" + userId.toString());
+    }
+
+    @PostMapping(path = "/profile_view/{userId}/change_username")
+    public RedirectView changeUsername(@PathVariable("userId") Long userId,
+                                       @RequestParam(name = "username") String username,
+                                       RedirectAttributes redirectAttributes) {
+
+        Optional<User> userOptional = userService.getUserByUsername(username);
+        if (userOptional.isPresent()){
+            redirectAttributes.addFlashAttribute("cantChange", true);
+            return new RedirectView("/users/profile_view/" + userId);
+        }
+
+        User user = userService.getUserById(userId).get();
+        user.setUsername(username);
+        userRepository.save(user);
+        redirectAttributes.addAttribute("cantChange", false);
+        return new RedirectView("/users/logout");
     }
 
     private ResponseEntity<String> editSession(AuthenticationResponse authenticationResponse) {

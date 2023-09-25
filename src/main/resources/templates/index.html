@@ -162,5 +162,9 @@
     window.onload = (event) => {createAlert('','','You have deleted a task.','warning',false,true,'pageMessages');}
 </script>
 
+<script th:if="${cantChange != null and !cantChange}">
+    window.onload = (event) => {createAlert('', 'Username Changed!', 'You have successfully changed your username.', 'success', true, true, 'pageMessages');}
+</script>
+
 </body>
 </html>
