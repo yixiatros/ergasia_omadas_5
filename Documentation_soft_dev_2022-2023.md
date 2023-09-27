@@ -216,6 +216,14 @@
 
  #### Διάγραμμα-αντικειμένων-v1
  ![Object Diagram Version 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/ef0e6fec-1b53-4087-8b2f-ae3ce653b440)
+ 
+Στο παραπάνω διάγραμμα αποτυπώνονται οι βασικές σχέσεις μεταξύ των αντικειμένων: client, project, developer, recommendation, offer, comment, rating and review.
+
+•	Ένας πελάτης μπορεί να δημιουργήσει πολλά έργα.\
+•	Κάθε έργο μπορεί να έχει πολλές προσφορές από διάφορους developers.\
+•	Κάθε προσφορά σχετίζεται με ένα συγκεκριμένο έργο και έναν developer.\
+•	Ένας πελάτης μπορεί να επιλέξει μία από τις προσφορές για ένα έργο που δημιούργησε.
+
 
  #### Διάγραμμα-συνεργασίας-v1
  ![Collaboration Diagram1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/b278504f-429d-4df0-bb41-d8719c1b721e)
