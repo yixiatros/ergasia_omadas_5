@@ -295,9 +295,49 @@ public class TaskController {
         return new RedirectView("/task_view/" + task.getId());
     }
 
+    @PostMapping(path = "/task_view/{taskId}/change_info")
+    public RedirectView changeTaskInfo(@PathVariable("taskId") Long taskId,
+                                       @RequestParam(name = "title", defaultValue = "empty") String title,
+                                       @RequestParam(name = "description", defaultValue = "empty") String description,
+                                       @Param("isPublic") boolean isPublic,
+                                       @Param("showPrice") boolean showPrice,
+                                       @RequestParam(name = "maxPrice", defaultValue = "-1") float maxPrice,
+                                       @Param("endDate") LocalDateTime endDate,
+                                       RedirectAttributes redirectAttributes) {
+        Optional<Task> optionalTask = taskService.getTaskById(taskId);
+        if (!optionalTask.isPresent()){
+            redirectAttributes.addFlashAttribute("somethingWentWrong", true);
+            return new RedirectView("/index");
+        }
+
+        Task task = optionalTask.get();
+
+        if (!title.equals("empty"))
+            task.setTitle(title);
+
+        if (!description.equals("empty"))
+            task.setDescription(description);
+
+        task.setPublic(isPublic);
+        task.setShowPrice(showPrice);
+
+        if (maxPrice != -1)
+            task.setMaxPrice(maxPrice);
+
+        if (endDate != null)
+            task.setEndDate(endDate);
+
+        taskRepository.save(task);
+
+        redirectAttributes.addFlashAttribute("successfulChange", true);
+        return new RedirectView("/task_view/" + taskId);
+    }
+
     @GetMapping(path = "/task_view/{taskId}")
     public String seeTask(@PathVariable("taskId") Long taskId, Model model){
         putUsername(model);
+
+        model.addAttribute("currentDateTime", LocalDate.now());
 
         Optional<Task> optionalTask = taskService.getTaskById(taskId);
         Task task = null;

@@ -166,5 +166,9 @@
     window.onload = (event) => {createAlert('', 'Username Changed!', 'You have successfully changed your username.', 'success', true, true, 'pageMessages');}
 </script>
 
+<script th:if="${somethingWentWrong != null and somethingWentWrong}">
+    window.onload = (event) => {createAlert('Opps!','Something went wrong.', 'We were not able to execute your task.','danger',true,false,'pageMessages');}
+</script>
+
 </body>
 </html>

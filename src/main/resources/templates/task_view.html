@@ -151,6 +151,142 @@
         padding: 0 2.6rem;
       }
     }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      transition: opacity 500ms;
+      visibility: hidden;
+      opacity: 0;
+    }
+    .overlay:target {
+      visibility: visible;
+      opacity: 1;
+    }
+    .popup {
+      margin: 70px auto;
+      padding: 20px;
+      background: rgb(51, 51, 51, 1);
+      border-radius: 5px;
+      width: 30%;
+      position: relative;
+      transition: all 5s ease-in-out;
+    }
+    .popup h2 {
+      margin-top: 0;
+      color: white;
+      font-family: 'Poppins',sans-serif;
+    }
+    .popup .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      transition: all 200ms;
+      font-size: 30px;
+      font-weight: bold;
+      text-decoration: none;
+      color: black;
+    }
+    .popup .close:hover {
+      color: rgb(255, 69, 0);
+    }
+    .popup .content {
+      max-height: 100%;
+      overflow: auto;
+      font-family: 'Poppins',sans-serif;
+    }
+    @media screen and (max-width: 10000px){
+      .box{
+        width: 70%;
+      }
+      .popup{
+        width: 70%;
+      }
+    }
+    .change_input, .change_textarea {
+      color: #FFFFFF;
+      outline: 0;
+      padding: 0.5rem 1.2rem;
+      margin-bottom: 20px;
+      margin-top: 5px;
+      border-radius: 0.8rem;
+      font-size: 20px;
+      background-color: rgba(255, 255, 255, 0.07);
+      resize: none;
+    }
+    .change_button {
+      width: 150px;
+      background-image: linear-gradient(92.88deg, #ff5914 9.16%, #ff3500 43.89%, #ff4500 64.72%);
+      border-radius: 8px;
+      border-style: none;
+      box-sizing: border-box;
+      color: rgb(255, 255, 255);
+      cursor: pointer;
+      flex-shrink: 0;
+      font-family: "Inter UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,Ubuntu,Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      height: 3rem;
+      padding: 0 1.6rem;
+      text-align: center;
+      text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+      transition: all .5s;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    .change_button:hover {
+      box-shadow: rgba(255, 53, 0, 0.5) 0 1px 30px;
+      transition-duration: .1s;
+    }
+
+    .creation_label {
+      margin-left: 15px;
+      color: rgb(255, 255, 255);
+      font-size: 17px;
+    }
+    .creation_checkbox {
+      margin-top: -8px;
+      margin-left: 10px;
+      margin-right: 25px;
+      -webkit-appearance: initial;
+      appearance: initial;
+      background: rgb(0,0,0,0.0);
+      width: 20px;
+      height: 25px;
+      border: 2px solid rgb(255, 255, 255);
+      border-radius: 30%;
+      position: relative;
+      vertical-align: middle;
+      transform: scale(80%);
+    }
+    .creation_checkbox:checked {
+      background: rgb(0,0,0,0.2);
+    }
+    .creation_checkbox:checked:after {
+      content: "✔";
+      color: rgb(255, 255, 255);
+      zoom: 0.75;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      -webkit-transform: translate(-50%,-50%);
+      -moz-transform: translate(-50%,-50%);
+      -ms-transform: translate(-50%,-50%);
+      transform: translate(-50%,-50%);
+    }
+
+    #date_time {
+      color-scheme: dark;
+      color: #FFFFFF;
+      border-radius: 0.8rem;
+      width: 92%;
+      background-color: rgba(255,255,255,0.07);
+    }
   </style>
 </head>
 <body>
@@ -158,7 +294,32 @@
 <div id="navbar-top" th:replace="~{fragments :: navbar_top(${logedInUsername}, ${logedInUserID}, ${notifications})}"></div>
 
 <div class="container" style=" margin-top: 25px; ">
-  <!--<a th:href="@{/tasks}" href="task_search.html" style=" text-decoration: underline; position: absolute; left: 0; margin-left: 15px; ">< Back</a>-->
+  <a th:href="@{/tasks}" href="task_search.html" style=" text-decoration: underline; position: absolute; left: 0; margin-left: 15px; ">< Back</a>
+</div>
+
+<div id="popup1" class="overlay" tabindex="1000" style=" z-index: 9999; " th:if="${task.getCreator().getId() == logedInUserID}">
+  <form action="#" th:action="@{/task_view/{taskId}/change_info(taskId=${task.getId()})}" method="post">
+    <div class="popup">
+      <h2>Change Task Info</h2>
+      <a class="close" href="#">&times;</a>
+      <div class="content">
+        <input class="change_input" type="text" placeholder="Title" name="title"/><br>
+        <textarea class="change_textarea" type="text" placeholder="Description" name="description" cols="40" rows="5" maxlength="2000"></textarea>
+        <div style=" margin-top: 5px; ">
+          <label class="creation_label">Public</label>
+          <input class="creation_checkbox" name="isPublic" type="checkbox" />
+          <label class="creation_label">Show the price</label>
+          <input class="creation_checkbox" name="showPrice" type="checkbox" />
+        </div>
+        <div style=" margin-top: 25px;">
+          <input class="change_input" type="number" name="maxPrice" min="1"/><br>
+          <input id="date_time" type="datetime-local" name="endDate" th:min="${currentDateTime}" min="2023-08-07T00:00" th:value="${currentDateTime}" />
+        </div>
+        <br>
+      </div>
+      <button class="change_button" type="submit">Change</button>
+    </div>
+  </form>
 </div>
 
 <div class="content" style=" color: #FFFFFF; text-align: center; " th:object="${task}">
@@ -214,12 +375,6 @@
     <div class="leftContent" style=" font-size: 20px; text-align: left; margin-left: 15px; ">
       <div>
         <h3 style=" font-size: 25px; " th:text="${task.getTitle()}">Title</h3>
-        <div sec:authorize="hasAnyAuthority('developer', 'admin')" th:if="${logedInUserID != task.getCreator().getId()}" style=" margin-left: 50px; margin-top: -20px; margin-bottom: 30px; ">
-          <div class="tooltip">
-            <a th:href="@{/users/user_search/forward/{taskId}(taskId=${task.getId()})}"><ion-icon style=" cursor: pointer; font-size: 21px; " name="return-up-forward-outline"></ion-icon></a>
-            <span class="tooltiptext" style="font-size: 15px;">Forward task</span>
-          </div>
-        </div>
         <div th:if="${logedInUserID == task.getCreator().getId()}" style=" margin-left: 50px; margin-top: -20px; margin-bottom: 30px; ">
           <div class="tooltip">
             <a th:href="@{/users/user_search/forward/{taskId}(taskId=${task.getId()})}"><ion-icon style=" cursor: pointer; font-size: 21px; " name="return-up-forward-outline"></ion-icon></a>
@@ -229,11 +384,25 @@
             <a th:href="@{/task_view/{taskId}/delete(taskId=${task.getId()})}" style=" font-size: 21px; cursor: pointer; "><ion-icon name="trash-outline"></ion-icon></a>
             <span class="tooltiptext" style="font-size: 15px;">Delete Task</span>
           </div>
+          <div class="tooltip" style=" margin-left: 15px;">
+            <a href="#popup1" style=" font-size: 21px; cursor: pointer; "><ion-icon name="create-outline"></ion-icon></a>
+            <span class="tooltiptext" style="font-size: 15px;">Edit Task</span>
+          </div>
         </div>
-        <div sec:authorize="hasAuthority('admin')" style=" margin-left: 50px; margin-top: -20px; margin-bottom: 30px; ">
+        <div sec:authorize="hasAnyAuthority('developer', 'admin')" th:if="${logedInUserID != task.getCreator().getId()}" style=" display: inline-block; margin-left: 50px; margin-top: -20px; margin-bottom: 30px; ">
+          <div class="tooltip">
+            <a th:href="@{/users/user_search/forward/{taskId}(taskId=${task.getId()})}"><ion-icon style=" cursor: pointer; font-size: 21px; " name="return-up-forward-outline"></ion-icon></a>
+            <span class="tooltiptext" style="font-size: 15px;">Forward task</span>
+          </div>
+        </div>
+        <div sec:authorize="hasAuthority('admin')" style=" display: inline-block; margin-top: -20px; margin-bottom: 30px; ">
           <div class="tooltip" style=" margin-left: 15px;">
             <a th:href="@{/task_view/{taskId}/delete(taskId=${task.getId()})}" style=" font-size: 21px; cursor: pointer; "><ion-icon name="trash-outline"></ion-icon></a>
             <span class="tooltiptext" style="font-size: 15px;">Delete Task</span>
+          </div>
+          <div class="tooltip" style=" margin-left: 15px;">
+            <a href="#popup1" style=" font-size: 21px; cursor: pointer; "><ion-icon name="create-outline"></ion-icon></a>
+            <span class="tooltiptext" style="font-size: 15px;">Edit Task</span>
           </div>
         </div>
       </div>
@@ -340,17 +509,17 @@
 <script th:if="${hireBidderUserHireRequestFail != null}">
   window.onload = (event) => {createAlert('Opps!','You can not send hire request to the same user again', 'This Developer has already received your hire request.','danger',true,false,'pageMessages');}
 </script>
-
 <script th:if="${hasSendHireRequest != null and hasSendHireRequest}">
   window.onload = (event) => {createAlert('', 'Hire Request Was Send!', 'Your hire request has reached the developer.', 'success', true, true, 'pageMessages');}
 </script>
-
 <script th:if="${hasAnotherAccepted != null and hasAnotherAccepted}">
   window.onload = (event) => {createAlert('Opps!','The hire request has expired', 'Another Developer has already accepted the hire request to this task.','danger',true,false,'pageMessages');}
 </script>
-
 <script th:if="${hasBiddingEndedBeforeBid != null and hasBiddingEndedBeforeBid}">
   window.onload = (event) => {createAlert('','','Bidding has ended.','warning',false,true,'pageMessages');}
+</script>
+<script th:if="${successfulChange != null and successfulChange}">
+  window.onload = (event) => {createAlert('', 'Successful Change!', 'Task new info have been successfully changed.', 'success', true, true, 'pageMessages');}
 </script>
 
 </body>
