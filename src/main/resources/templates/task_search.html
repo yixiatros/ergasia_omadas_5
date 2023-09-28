@@ -23,7 +23,7 @@
         }
 
         #task_table {
-            width: 90%;
+            width: 85%;
             border-spacing: 0px 20px;
             font-family: 'Poppins',sans-serif;
         }
@@ -101,16 +101,17 @@
         <tr class ="task_tr" th:each="task: ${tasks}">
             <td class="task_td" >
                 <a th:href="@{/task_view/{type}(type=${task.getId()})}" href="task_view.html" style=" text-decoration: none; ">
-                    <div>
-                        <div>
+                    <div style="position: relative;">
+                        <img th:src="@{'data:image/jpeg;base64,'+ ${task.getCreator()?.generateBase64Image()}}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" style=" position: absolute; left: -60px; box-shadow: 3px 3px 10px #222222;  height: 9.5rem; display: inline-block; "/>
+                        <div style="margin-left: 100px;">
                             <span th:text="${task.getTitle()}" style=" font-size: 22px; ">Title</span>
                             <div style=" text-align: right; margin-top: -27px; ">
                                 <span th:text="'Max Bidding Price: ' + ${task.getMaxPrice()} + ' €'" style="margin-right: 50px;">Max Bidding Price: 500€</span>
                                 <span th:text="'End Date: ' + ${task.getFormattedDateTime()}" style="margin-right: 10px; ">End Date: date</span>
                             </div>
                         </div>
-                        <p th:text="${task.getDescription()}" >Description</p><br>
-                        <div style=" margin-top: 15px;">
+                        <p th:text="${task.getDescription()}" style=" margin-left: 120px; ">Description</p><br>
+                        <div style=" margin-top: 15px; margin-left: 100px;">
                             <span th:text="'Creator: ' + ${task.getCreator()?.getUsername()}">Creator: a</span>
                             <div style=" display: flex; justify-content: right; margin-top: -17px; margin-right: 10px; ">
                                 <span th:text="'Category: ' + ${task.getCategory()?.getName()}" style="margin-left: 50px;">Category: b</span>

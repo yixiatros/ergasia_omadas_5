@@ -38,17 +38,6 @@
             border-radius: 8px;
         }
 
-        /*#input_datetime {
-            width: 7.6rem;
-            height: 0.5rem;
-            border-radius: 8px;
-            color-scheme: dark;
-            font-size: 12px;
-            padding-top: 10px;
-            background-color: #FF5719;
-            margin-top: -2px;
-        }*/
-
         .ratings_select, .date_select {
             margin-left: 15px;
             color: #FFFFFF;
@@ -72,6 +61,51 @@
         }
         .ratings_select:focus, .date_select:focus {
             color: black;
+        }
+
+        .column {
+            display: inline-block;
+            width: 23%;
+            padding: 10px 10px;
+        }
+        @media screen and (max-width: 1200px) {
+            .column {
+                width: 31%;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+        }
+        @media screen and (max-width: 1000px) {
+            .column {
+                width: 47%;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+        }
+        @media screen and (max-width: 800px) {
+            .column {
+                width: 95%;
+                display: block;
+                margin-bottom: 20px;
+            }
+        }
+        .card {
+            background-color: #FF5719;
+            border: 1px solid #222222;
+            box-shadow: 3px 3px 5px #222222;
+            border-radius: 8px;
+            padding: 40px 12px;
+            text-align: center;
+            color: #ffffff;
+            transition: all .2s ease-in-out;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 5px 5px 8px #222222;
+            cursor: pointer;
+        }
+        img {
+            border-radius: 10px 10px 10px 10px;
         }
     </style>
 </head>
@@ -128,7 +162,30 @@
     </form>
 </div>
 
-<div id="user_list" style=" display: flex; align-items: center; justify-content: center; ">
+<div>
+    <div class="column" th:each="user: ${users}">
+        <div class="card">
+            <div style=" border-radius: 50%; display: inline-block;">
+                <img th:src="@{'data:image/jpeg;base64,'+ ${user.generateBase64Image()}}" src="../static/images/Default%20Profile%20Image.png" class="real_photo" style=" height: 10rem; display: inline-block; box-shadow: 1px 1px 10px #222222; "/>
+            </div>
+            <h2 th:text="${user.getUsername()}">Username</h2>
+            <span>[&nbsp;&nbsp;</span>
+            <span class="user_roles" th:each="role, iterStat: ${user.getRoles()}" th:text="${iterStat.last} ? ${role.getName()} + '&nbsp;&nbsp;' : ${role.getName()} + ',&nbsp;'"></span>
+            <span>]</span>
+            <div style=" margin-top: 15px;">
+                <span th:text="'Name: ' + ${user.getName()}">Name: a</span>
+            </div>
+            <div th:if="${forwardingTaskId != null and logedInUserID != user.getId()}" style=" float: right; margin: -300px 10px 55px 0px;">
+                <div class="tooltip">
+                    <a th:href="@{/users/user_search/forward/task/{taskId}/{userId}(taskId=${forwardingTaskId}, userId=${user.getId()})}"><ion-icon style=" cursor: pointer; font-size: 30px; " name="return-up-forward-outline"></ion-icon></a>
+                    <span class="tooltiptext" style="font-size: 15px;">Forward task</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div id="user_list" style=" display: flex; align-items: center; justify-content: center; ">
     <table id="user_table">
         <tr class ="user_tr" th:each="user: ${users}">
             <td class="user_td" >
@@ -159,7 +216,7 @@
             </td>
         </tr>
     </table>
-</div>
+</div>-->
 
 <div id="contact_us" th:replace="~{fragments :: contact_us}"></div>
 

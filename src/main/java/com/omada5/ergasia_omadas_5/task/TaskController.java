@@ -6,6 +6,7 @@ import com.omada5.ergasia_omadas_5.notification.Notification;
 import com.omada5.ergasia_omadas_5.notification.NotificationRepository;
 import com.omada5.ergasia_omadas_5.user.User;
 import com.omada5.ergasia_omadas_5.user.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.swing.text.html.Option;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -334,15 +336,22 @@ public class TaskController {
     }
 
     @GetMapping(path = "/task_view/{taskId}")
-    public String seeTask(@PathVariable("taskId") Long taskId, Model model){
+    public String seeTask(@PathVariable("taskId") Long taskId,
+                          Model model,
+                          HttpServletResponse httpServletResponse,
+                          RedirectAttributes redirectAttributes) throws IOException {
+
         putUsername(model);
 
         model.addAttribute("currentDateTime", LocalDate.now());
 
         Optional<Task> optionalTask = taskService.getTaskById(taskId);
-        Task task = null;
-        if (optionalTask.isPresent())
-            task = optionalTask.get();
+        if (!optionalTask.isPresent()){
+            redirectAttributes.addFlashAttribute("somethingWentWrong", true);
+            httpServletResponse.sendRedirect("/index");
+            return null;
+        }
+        Task task = optionalTask.get();
 
         model.addAttribute("task", task);
         model.addAttribute("endDate", task.getEndDate());
