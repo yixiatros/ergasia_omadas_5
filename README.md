@@ -179,7 +179,7 @@
 ---
 ### Ανάλυση-σχεδιασμός
 
-##### **Διαγράμματα-χρήσης**
+##### **Διαγράμματα-περιπτώσεων-χρήσης**
 ![Use Case 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/d260e74a-3af6-4d61-a0fa-c85e6d65fccb)
 
 1.	**Κοινές Λειτουργίες Πελάτη-Developer (Common Functions):**
