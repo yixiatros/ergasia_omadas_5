@@ -179,9 +179,6 @@
 ---
 ### Ανάλυση-σχεδιασμός
 
-##### **Διαγράμματα-τάξεων**
-![ClassDiagramV1](https://github.com/yixiatros/ergasia_omadas_5/blob/main/UML%20Diagrams/Version%201/ClassDiagramVersion1.png)
-
 ##### **Διαγράμματα-χρήσης**
 ![Use Case 1](https://github.com/yixiatros/ergasia_omadas_5/assets/26073247/d260e74a-3af6-4d61-a0fa-c85e6d65fccb)
 
@@ -206,7 +203,8 @@
 	**Υποβολή πρότασης έργου σε άλλο Developer (Recomendation):** Ο developer μπορεί να προτείνει ένα έργο σε κάποιο άλλο developer.\
 	**Αποδοχή έργου (Accept Project):** Ο developer μπορεί να αποδεχτεί έργου που του έχει ανατεθεί από πελάτη.
 
-
+##### **Διαγράμματα-τάξεων**
+![ClassDiagramV1](https://github.com/yixiatros/ergasia_omadas_5/blob/main/UML%20Diagrams/Version%201/ClassDiagramVersion1.png)
 
 ---
 ### Φάση: εκπόνησης μελέτης (elaboration)
