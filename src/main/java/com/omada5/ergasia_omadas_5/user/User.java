@@ -49,7 +49,7 @@ public class User implements UserDetails {
     @Transient
     private int age;
     @Lob
-    @Column(length = 2000)
+    @Column(length = 1000000)
     private byte[] imageData;
     private LocalDateTime registrationDate;
 
