@@ -16,11 +16,11 @@ function createAlert(title, summary, details, severity, dismissible, autoDismiss
     }
 
     var msgIcon = $("<i />", {
-        "class": iconMap[severity] // you need to quote "class" since it's a reserved keyword
+        "class": iconMap[severity]
     });
 
     var msg = $("<div />", {
-        "class": alertClasses.join(" ") // you need to quote "class" since it's a reserved keyword
+        "class": alertClasses.join(" ")
     });
 
     if (title) {
@@ -59,7 +59,7 @@ function createAlert(title, summary, details, severity, dismissible, autoDismiss
 
     if (dismissible) {
         var msgClose = $("<span />", {
-            "class": "close", // you need to quote "class" since it's a reserved keyword
+            "class": "close",
             "data-dismiss": "alert",
             html: "<i class='fa fa-times-circle'></i>"
         }).appendTo(msg);

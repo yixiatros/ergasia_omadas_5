@@ -67,8 +67,6 @@ public class UserConfig {
                         LocalDate.of(1997, MARCH, 30)
                 );
                 optionalClientRole.ifPresent(user2::addRole);
-                //tasks.get(1).setCreator(user2);
-                //tasks.get(2).setCreator(user2);
                 users.add(user2);
             }
 
@@ -81,7 +79,6 @@ public class UserConfig {
                         LocalDate.of(1995, DECEMBER, 17)
                 );
                 optionalClientRole.ifPresent(user3::addRole);
-                //tasks.get(0).setCreator(user3);
                 users.add(user3);
             }
 
