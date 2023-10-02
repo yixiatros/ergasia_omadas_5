@@ -67,8 +67,8 @@ public class UserConfig {
                         LocalDate.of(1997, MARCH, 30)
                 );
                 optionalClientRole.ifPresent(user2::addRole);
-                tasks.get(1).setCreator(user2);
-                tasks.get(2).setCreator(user2);
+                //tasks.get(1).setCreator(user2);
+                //tasks.get(2).setCreator(user2);
                 users.add(user2);
             }
 
@@ -81,11 +81,18 @@ public class UserConfig {
                         LocalDate.of(1995, DECEMBER, 17)
                 );
                 optionalClientRole.ifPresent(user3::addRole);
-                tasks.get(0).setCreator(user3);
+                //tasks.get(0).setCreator(user3);
                 users.add(user3);
             }
 
             repository.saveAll(users);
+
+            if (tasks.get(0).getCreator() == null)
+                repository.findUserById(4L).ifPresent(tasks.get(0)::setCreator);
+            if (tasks.get(1).getCreator() == null)
+                repository.findUserById(3L).ifPresent(tasks.get(1)::setCreator);
+            if (tasks.get(2).getCreator() == null)
+                repository.findUserById(3L).ifPresent(tasks.get(2)::setCreator);
 
             taskRepository.saveAll(tasks);
         };

@@ -1,6 +1,6 @@
 package com.omada5.ergasia_omadas_5.user;
 
-import com.omada5.ergasia_omadas_5.image.FileUploadUtil;
+
 import com.omada5.ergasia_omadas_5.notification.Notification;
 import com.omada5.ergasia_omadas_5.security.LogoutService;
 import com.omada5.ergasia_omadas_5.security.auth.AuthenticationRequest;
@@ -9,7 +9,6 @@ import com.omada5.ergasia_omadas_5.security.auth.AuthenticationService;
 import com.omada5.ergasia_omadas_5.task.Task;
 import com.omada5.ergasia_omadas_5.task.TaskRepository;
 import com.omada5.ergasia_omadas_5.task.TaskService;
-import jakarta.persistence.Tuple;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +23,9 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
