@@ -64,7 +64,7 @@
 
 ---
 
-### [Εγχειρίδιο Χρήστη](CodeTaskUserManual.md)
+### [Εγχειρίδιο Χρήστη](CodeTaskUserManual.pdf)
 
 ---
 ### Στόχοι
